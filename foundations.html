@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Dev Foundations — From Claude Code User to Team Developer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --bg:       #0e1117;
+  --surface:  #161b27;
+  --panel:    #1f2535;
+  --border:   #2a3450;
+  --amber:    #e8c547;
+  --amber-dim:#a88c2e;
+  --blue:     #5b8ff9;
+  --green:    #52c97a;
+  --red:      #e05c5c;
+  --text:     #c4cfe8;
+  --text-dim: #6b7a99;
+  --heading:  #eef2ff;
+  --muted:    #3d4d6a;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;min-height:100vh}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:268px;min-width:268px;background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border)}
+
+.brand{padding:22px 20px 18px;border-bottom:1px solid var(--border)}
+.brand-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
+.brand-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--heading);line-height:1.3}
+.brand-sub{font-size:11px;color:var(--text-dim);margin-top:3px}
+
+.prog-wrap{margin-top:14px}
+.prog-bar{height:3px;background:var(--panel);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--blue));width:0%;transition:width .4s}
+.prog-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);margin-top:5px}
+
+.nav-section{padding:8px 0}
+.phase-label{padding:10px 18px 4px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.phase-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-amber{background:var(--amber)}
+.dot-blue{background:var(--blue)}
+.dot-green{background:var(--green)}
+.dot-red{background:var(--red)}
+.dot-purple{background:#a78bfa}
+.dot-teal{background:#2dd4bf}
+
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 18px 7px 28px;font-size:12px;color:var(--text-dim);cursor:pointer;border-left:2px solid transparent;transition:all .15s;position:relative}
+.nav-item:hover{color:var(--text);background:rgba(232,197,71,.04)}
+.nav-item.active{color:var(--amber);border-left-color:var(--amber);background:rgba(232,197,71,.06)}
+.nav-item.locked{opacity:.4;cursor:not-allowed}
+.nav-item .lock-icon{margin-left:auto;font-size:10px;opacity:.5}
+.nav-item.done::after{content:'✓';position:absolute;right:14px;font-size:10px;color:var(--green)}
+.nav-item .mod-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);min-width:24px}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;max-width:820px}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-thumb{background:var(--border)}
+
+/* ── HERO / ASSESSMENT ── */
+.hero{padding:56px 60px 52px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;color:var(--heading);line-height:1.12;margin-bottom:18px;max-width:580px}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero-sub{font-size:16px;color:var(--text-dim);max-width:560px;margin-bottom:36px;line-height:1.7}
+
+.honest-box{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:8px;padding:24px 28px;margin-bottom:36px}
+.honest-box-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+.honest-box p{font-size:14px;color:var(--text);line-height:1.7;margin-bottom:8px}
+.honest-box p:last-child{margin-bottom:0}
+
+.assessment{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:28px;margin-bottom:28px}
+.assessment h3{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:var(--heading);margin-bottom:6px}
+.assessment p.sub{font-size:13px;color:var(--text-dim);margin-bottom:22px}
+.assess-q{margin-bottom:16px}
+.assess-q-text{font-size:14px;color:var(--text);margin-bottom:10px;font-weight:500}
+.assess-opts{display:flex;flex-direction:column;gap:7px}
+.assess-opt{display:flex;align-items:center;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:13px;color:var(--text-dim);transition:all .15s}
+.assess-opt:hover{border-color:var(--amber);color:var(--text)}
+.assess-opt.selected{border-color:var(--amber);background:rgba(232,197,71,.08);color:var(--heading)}
+.assess-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;transition:all .15s}
+.assess-opt.selected .assess-dot{background:var(--amber);border-color:var(--amber)}
+.assess-btn{margin-top:20px;padding:11px 28px;background:var(--amber);color:var(--bg);border:none;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.05em;transition:background .15s}
+.assess-btn:hover{background:#f0d060}
+.assess-result{display:none;margin-top:20px;padding:18px 22px;border-radius:6px;border-left:3px solid}
+.assess-result.show{display:block}
+.assess-result.honest{background:rgba(232,197,71,.07);border-color:var(--amber)}
+.assess-result h4{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--heading);margin-bottom:8px}
+.assess-result p{font-size:13px;color:var(--text);line-height:1.65}
+
+.path-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:28px}
+.path-card{padding:18px;border:1px solid var(--border);border-radius:7px;text-align:center}
+.path-card .num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--amber);margin-bottom:4px}
+.path-card .lbl{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em}
+
+/* ── MODULE SECTIONS ── */
+.section{padding:52px 60px;border-bottom:1px solid var(--border);display:none}
+.section.visible{display:block}
+
+.mod-header{margin-bottom:32px}
+.mod-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.phase-badge{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:3px 9px;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.badge-amber{background:rgba(232,197,71,.15);color:var(--amber);border:1px solid rgba(232,197,71,.3)}
+.badge-blue{background:rgba(91,143,249,.15);color:var(--blue);border:1px solid rgba(91,143,249,.3)}
+.badge-green{background:rgba(82,201,122,.15);color:var(--green);border:1px solid rgba(82,201,122,.3)}
+.badge-red{background:rgba(224,92,92,.15);color:var(--red);border:1px solid rgba(224,92,92,.3)}
+.badge-purple{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
+.badge-teal{background:rgba(45,212,191,.15);color:#2dd4bf;border:1px solid rgba(45,212,191,.3)}
+.mod-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim)}
+
+.section h2{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--heading);line-height:1.2;margin-bottom:8px}
+.section-lead{font-size:15px;color:var(--text-dim);max-width:620px;line-height:1.75;margin-bottom:36px}
+
+h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:var(--heading);margin:32px 0 12px}
+h4{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--heading);margin:20px 0 8px}
+p{margin-bottom:14px;font-size:14px;color:var(--text);line-height:1.75}
+ul,ol{padding-left:20px;margin-bottom:16px}
+li{font-size:14px;color:var(--text);line-height:1.7;margin-bottom:5px}
+strong{color:var(--heading);font-weight:600}
+
+/* ── CALLOUTS ── */
+.callout{border-radius:6px;padding:18px 22px;margin:24px 0;border-left:3px solid}
+.callout-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px}
+.callout p{font-size:14px;margin-bottom:0}
+.callout.truth{background:rgba(82,201,122,.07);border-color:var(--green)}
+.callout.truth .callout-label{color:var(--green)}
+.callout.warn{background:rgba(232,197,71,.07);border-color:var(--amber)}
+.callout.warn .callout-label{color:var(--amber)}
+.callout.danger{background:rgba(224,92,92,.07);border-color:var(--red)}
+.callout.danger .callout-label{color:var(--red)}
+.callout.info{background:rgba(91,143,249,.07);border-color:var(--blue)}
+.callout.info .callout-label{color:var(--blue)}
+
+/* ── CODE ── */
+.code-block{background:var(--panel);border:1px solid var(--border);border-radius:6px;margin:22px 0;overflow:hidden}
+.code-top{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2)}
+.code-filename{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim)}
+.code-dots{display:flex;gap:5px}
+.cd{width:8px;height:8px;border-radius:50%}
+.cd:nth-child(1){background:rgba(224,92,92,.6)}
+.cd:nth-child(2){background:rgba(232,197,71,.6)}
+.cd:nth-child(3){background:rgba(82,201,122,.6)}
+pre{padding:20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;color:var(--text);overflow-x:auto;white-space:pre}
+.c{color:var(--muted)}
+.k{color:var(--blue)}
+.v{color:var(--amber)}
+.s{color:var(--green)}
+.fn{color:#a78bfa}
+.kw{color:var(--red)}
+
+/* ── CONCEPT PAIR (wrong vs right) ── */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+.pair-box{border-radius:6px;overflow:hidden}
+.pair-label{padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em}
+.pair-box.wrong .pair-label{background:rgba(224,92,92,.15);color:var(--red)}
+.pair-box.right .pair-label{background:rgba(82,201,122,.15);color:var(--green)}
+.pair-box pre{border-radius:0;margin:0}
+.pair-box.wrong pre{border:1px solid rgba(224,92,92,.2);border-top:none}
+.pair-box.right pre{border:1px solid rgba(82,201,122,.2);border-top:none}
+
+/* ── FLOOR TEST ── */
+.floor-test{background:var(--panel);border:1px solid var(--amber);border-radius:8px;padding:26px 28px;margin:32px 0}
+.floor-test-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.floor-test-label::before{content:'⬛';font-size:12px}
+.floor-test h4{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--heading);margin-bottom:8px;margin-top:0}
+.floor-test p{font-size:14px;color:var(--text);margin-bottom:10px}
+.floor-test ul{margin-bottom:0}
+.floor-test li{font-size:13px}
+.floor-test .pass-criteria{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.floor-test .pass-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;margin:22px 0;font-size:13px}
+.tbl th{padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--border);color:var(--text-dim)}
+.tbl td{padding:11px 14px;border-bottom:1px solid rgba(42,52,80,.5);vertical-align:top;line-height:1.6;color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{color:var(--heading);font-weight:500}
+
+/* ── CHECKLIST ── */
+.checklist{list-style:none;margin:18px 0}
+.checklist li{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid rgba(42,52,80,.4);font-size:14px;color:var(--text)}
+.checklist li:last-child{border-bottom:none}
+.chk{width:17px;height:17px;min-width:17px;border:1px solid var(--border);border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:3px}
+.chk:hover{border-color:var(--amber)}
+.chk.on{background:var(--green);border-color:var(--green)}
+.chk.on::after{content:'✓';font-size:10px;color:var(--bg);font-weight:700}
+
+/* ── QUIZ ── */
+.quiz{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:26px;margin:28px 0}
+.quiz-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px}
+.quiz-q{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--heading);margin-bottom:18px;line-height:1.35}
+.quiz-opts{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:12px 16px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:13.5px;color:var(--text);transition:all .15s;line-height:1.5}
+.quiz-opt:hover{border-color:var(--blue);background:rgba(91,143,249,.06)}
+.quiz-opt.correct{border-color:var(--green);background:rgba(82,201,122,.08);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(224,92,92,.08);color:var(--red)}
+.quiz-opt.disabled{pointer-events:none}
+.quiz-feedback{display:none;margin-top:14px;padding:12px 16px;border-radius:5px;font-size:13px;line-height:1.6}
+.quiz-feedback.show{display:block}
+.quiz-feedback.c{background:rgba(82,201,122,.08);color:var(--green)}
+.quiz-feedback.w{background:rgba(224,92,92,.08);color:#e08080}
+
+/* ── PHASE INTRO CARD ── */
+.phase-intro{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:32px;margin-bottom:36px;position:relative;overflow:hidden}
+.phase-intro::before{content:attr(data-num);position:absolute;right:24px;top:12px;font-family:'Space Grotesk',sans-serif;font-size:80px;font-weight:700;color:rgba(232,197,71,.05);line-height:1;pointer-events:none}
+.phase-intro-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px}
+.phase-intro h3{font-size:20px;margin-top:0;margin-bottom:10px}
+.phase-intro p{font-size:14px;color:var(--text-dim);margin-bottom:0}
+
+/* ── NAV BUTTONS ── */
+.mod-footer{margin-top:44px;padding-top:28px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:center}
+.btn{padding:10px 22px;border-radius:5px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.05em;transition:all .15s}
+.btn-primary{background:var(--amber);color:var(--bg)}
+.btn-primary:hover{background:#f0d060}
+.btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+.btn-complete{margin-left:auto;background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.btn-complete:hover{border-color:var(--green);color:var(--green)}
+.btn-complete.done{background:rgba(82,201,122,.08);color:var(--green);border-color:var(--green)}
+
+/* ── INLINE TAG ── */
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;margin:0 2px}
+.tag-a{background:rgba(232,197,71,.12);color:var(--amber)}
+.tag-b{background:rgba(91,143,249,.12);color:var(--blue)}
+.tag-g{background:rgba(82,201,122,.12);color:var(--green)}
+.tag-r{background:rgba(224,92,92,.12);color:var(--red)}
+
+.divider{height:1px;background:var(--border);margin:28px 0}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--panel);padding:2px 6px;border-radius:3px;color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="brand">
+    <div class="brand-tag">// course</div>
+    <div class="brand-name">AI Dev Foundations</div>
+    <div class="brand-sub">Claude Code → Team Developer</div>
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-label" id="progLabel">0 / 20 complete</div>
+    </div>
+  </div>
+  <div class="nav-section" id="sidebarNav"></div>
+</nav>
+
+<!-- MAIN -->
+<main class="main" id="mainContent">
+
+  <!-- HERO -->
+  <div id="heroView">
+    <div class="hero">
+      <div class="hero-eyebrow">// your honest starting point</div>
+      <h1>You've used Claude Code.<br>Now learn to <em>own</em> what it builds.</h1>
+      <p class="hero-sub">This course is for developers who have shipped things with Claude Code but can't yet fully read, defend, or debug what it produces. That gap is fixable — but it requires honesty about where you actually are.</p>
+
+      <div class="honest-box">
+        <div class="honest-box-label">⚠ The real problem</div>
+        <p>Using Claude Code without coding literacy is like navigating with GPS without knowing how to read a map. It works — until it doesn't. Then you're lost with no fallback. On a team, "I asked Claude and it looked right" is not an answer anyone can trust.</p>
+        <p>This course doesn't shame you for where you started. It builds the foundation you skipped, using the tool you already know as the bridge.</p>
+      </div>
+
+      <div class="assessment" id="assessWrap">
+        <h3>Before you start: a calibration check</h3>
+        <p class="sub">Answer honestly. These questions determine which modules need your full attention. No one is grading this except you.</p>
+
+        <div class="assess-q">
+          <div class="assess-q-text">1. If Claude Code refactors a function, can you read the diff and confidently say whether the logic is correct?</div>
+          <div class="assess-opts">
+            <div class="assess-opt" onclick="selectAssess(this,0,0)"><div class="assess-dot"></div>Yes — I can read code well enough to verify logic</div>
+            <div class="assess-opt" onclick="selectAssess(this,0,1)"><div class="assess-dot"></div>I can tell if it looks reasonable but I'm not certain</div>
+            <div class="assess-opt" onclick="selectAssess(this,0,2)"><div class="assess-dot"></div>Honestly no — I trust it if the app doesn't break</div>
+          </div>
+        </div>
+
+        <div class="assess-q">
+          <div class="assess-q-text">2. If a teammate asks "why did you change the error handling in this route?" — can you explain it?</div>
+          <div class="assess-opts">
+            <div class="assess-opt" onclick="selectAssess(this,1,0)"><div class="assess-dot"></div>Yes — I understand the change and can justify it</div>
+            <div class="assess-opt" onclick="selectAssess(this,1,1)"><div class="assess-dot"></div>I could describe what it does but not why it's the right approach</div>
+            <div class="assess-opt" onclick="selectAssess(this,1,2)"><div class="assess-dot"></div>I'd have to re-read the code and still might not be sure</div>
+          </div>
+        </div>
+
+        <div class="assess-q">
+          <div class="assess-q-text">3. Have you written JavaScript, Node.js, or React code from scratch without AI assistance?</div>
+          <div class="assess-opts">
+            <div class="assess-opt" onclick="selectAssess(this,2,0)"><div class="assess-dot"></div>Yes — I'm comfortable writing it independently</div>
+            <div class="assess-opt" onclick="selectAssess(this,2,1)"><div class="assess-dot"></div>Small things, but I rely on Claude for anything non-trivial</div>
+            <div class="assess-opt" onclick="selectAssess(this,2,2)"><div class="assess-dot"></div>No — I have always used AI to generate the code</div>
+          </div>
+        </div>
+
+        <button class="assess-btn" onclick="scoreAssessment()">Show my starting point →</button>
+
+        <div class="assess-result" id="assessResult"></div>
+      </div>
+
+      <div class="path-cards">
+        <div class="path-card"><div class="num">6</div><div class="lbl">Phases</div></div>
+        <div class="path-card"><div class="num">20</div><div class="lbl">Modules</div></div>
+        <div class="path-card"><div class="num">~18h</div><div class="lbl">Est. time</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="moduleSections"></div>
+</main>
+</div>
+
+<script>
+const MODULES = [
+
+// ══════════════════════════════════════════
+// PHASE 1 — THE HONEST RECKONING
+// ══════════════════════════════════════════
+{
+  id:'p1m1', phase:1, phaseName:'The Honest Reckoning', dot:'dot-amber', badge:'badge-amber',
+  num:'1.1', title:'What You Actually Know (And What You Don\'t)',
+  lead:'Before any learning happens, you need an accurate map of your current position. Most people in your situation overestimate their understanding.',
+  content:`
+<div class="phase-intro" data-num="1">
+  <div class="phase-intro-label">Phase 1 — The Honest Reckoning</div>
+  <h3>Naming the gap so you can close it</h3>
+  <p>Three modules. One goal: build an accurate, honest picture of what Claude Code has been hiding from you — and what that means for your work on a real team.</p>
+</div>
+
+<p>You have shipped things. That's real and it counts. But there's a difference between <strong>shipping with Claude Code</strong> and <strong>understanding what you shipped</strong>. On a solo side project that difference doesn't matter much. On a team, it's the difference between a trusted contributor and a liability.</p>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 The False Confidence Trap</div>
+  <p>Every time Claude Code produced working output you couldn't fully read, you got rewarded anyway — the app worked. Your brain logged that as a success. It wasn't. It was a success with an invisible risk. This course corrects that feedback loop.</p>
+</div>
+
+<h3>The Three Things You Need on a Team</h3>
+<table class="tbl">
+  <tr><th>Skill</th><th>What it means in practice</th></tr>
+  <tr><td>Read code</td><td>Look at a diff and know if the logic is correct, not just if it compiles</td></tr>
+  <tr><td>Explain code</td><td>Stand in a PR review and justify every line you're merging</td></tr>
+  <tr><td>Debug code</td><td>When something breaks in production, trace the failure without AI assistance</td></tr>
+</table>
+
+<p>Claude Code makes writing code faster. It does not make reading, explaining, or debugging easier — those are still entirely on you. This course builds all three.</p>
+
+<div class="callout truth">
+  <div class="callout-label">✓ The Reframe</div>
+  <p>You're not "learning to code." You're learning to be the engineer in the loop — the human whose judgment makes Claude Code output trustworthy. That's a higher bar than traditional coding, because you need to understand what the code does AND how to direct a powerful tool that can get it wrong at scale.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 1.1 — Baseline Audit</div>
+  <h4>Read your own code</h4>
+  <p>Find something you built with Claude Code in the last month. Open the main file. Without running it or asking AI to explain it, write down answers to these:</p>
+  <ul>
+    <li>What does each function do?</li>
+    <li>What happens if the data coming in is null or undefined?</li>
+    <li>Where could this fail silently without throwing an error?</li>
+  </ul>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can answer all three questions for at least one function without assistance. Struggling here is expected and useful — it shows you exactly where to focus.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p1m2', phase:1, phaseName:'The Honest Reckoning', dot:'dot-amber', badge:'badge-amber',
+  num:'1.2', title:'How Claude Code Actually Works (No More Illusions)',
+  lead:'Understanding the mechanism removes the magic — and the magical thinking that gets you into trouble.',
+  content:`
+<p>Claude Code is a large language model connected to your filesystem and a shell. It has no understanding of your codebase. It has no memory between sessions. It predicts what code should come next based on patterns in its training data and the context you give it. That's it.</p>
+
+<h3>The Contractor Mental Model</h3>
+<p>Imagine a supremely skilled contractor who:</p>
+<ul>
+  <li>Has read millions of codebases but has never worked in yours specifically</li>
+  <li>Forgets everything at the end of each session</li>
+  <li>Will do <em>exactly</em> what you say, including things that are wrong</li>
+  <li>Will <em>also</em> helpfully do things you didn't ask for, because they seem related</li>
+  <li>Cannot know your business rules, your team standards, or your production constraints unless you tell them explicitly</li>
+</ul>
+
+<div class="callout warn">
+  <div class="callout-label">⚠ What this means for you specifically</div>
+  <p>Every time you've gotten output you couldn't evaluate, you were accepting work from a contractor you couldn't inspect. The work might be perfect. It might have a subtle flaw that only surfaces under a specific condition three months from now. You had no way to know which.</p>
+</div>
+
+<h3>The Context Window — Why Sessions Drift</h3>
+<p>Claude Code works within a fixed "context window" — a limited amount of text it can hold in working memory at once. In a long session:</p>
+<ul>
+  <li><strong>Early:</strong> Full fidelity. Every instruction is fresh and weighted.</li>
+  <li><strong>Mid:</strong> Subtle drift. Earlier constraints get less weight.</li>
+  <li><strong>Late:</strong> Real risk. The model may contradict its own earlier output or revert to generic patterns from training.</li>
+</ul>
+
+<p>This is why "just keep prompting until it works" is a dangerous habit. You may be in a degraded session without knowing it, producing output that quietly violates earlier decisions.</p>
+
+<div class="callout info">
+  <div class="callout-label">📋 Rule</div>
+  <p>One logical unit of work per session. Commit it. Start fresh. Context integrity is more valuable than session momentum.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 1.2 — Context Audit</div>
+  <h4>Find evidence of drift in your own history</h4>
+  <p>Look at a multi-session Claude Code project. Find one place where output from a later session quietly contradicts or ignores a decision from an earlier session. It might be a naming convention, an error handling pattern, or an architectural choice.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can identify at least one example of drift and explain what context was missing in the session that produced it.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p1m3', phase:1, phaseName:'The Honest Reckoning', dot:'dot-amber', badge:'badge-amber',
+  num:'1.3', title:'What "Working on a Team" Actually Requires',
+  lead:'Teams have standards, reviews, and accountability. This module makes those expectations concrete so you know exactly what you\'re building toward.',
+  content:`
+<p>Solo projects are forgiving. If the code is messy, only you pay the price. On a team, every line you merge is debt or dividend for everyone. Understanding the team contract before you join one is how you avoid the most common failure mode: the developer who ships fast but leaves messes others have to clean up.</p>
+
+<h3>What You'll Be Expected to Do</h3>
+<table class="tbl">
+  <tr><th>Activity</th><th>What it requires from you</th></tr>
+  <tr><td>Submit a PR</td><td>Code that's tested, documented at the diff level, and explainable line by line</td></tr>
+  <tr><td>Receive a review</td><td>Understand every piece of feedback — no "Claude wrote it" as a response</td></tr>
+  <tr><td>Review someone else's PR</td><td>Evaluate logic correctness, not just whether it looks clean</td></tr>
+  <tr><td>Debug a bug in your code</td><td>Trace the failure path in the code itself, not re-prompt Claude</td></tr>
+  <tr><td>Discuss approach in standup</td><td>Explain what you built and why — in your own words</td></tr>
+  <tr><td>On-call / incident response</td><td>Read logs, trace errors, fix production issues often without AI scaffolding</td></tr>
+</table>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 The Accountability Test</div>
+  <p>"Claude Code wrote it" is not a valid answer in any of these situations. The moment you merge code into a shared repository, you are its author. Full stop. Your name is on the commit. You own it.</p>
+</div>
+
+<h3>The Good News</h3>
+<p>You don't need to be able to write all of this from scratch. You need to be able to <strong>read, verify, explain, and debug it</strong>. That's a different — and achievable — bar. The rest of this course builds exactly that literacy.</p>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 1.3 — The Standup Simulation</div>
+  <h4>Explain your code out loud</h4>
+  <p>Pick something you built recently with Claude Code. Record a 2-minute voice memo or video explaining: what it does, why you structured it the way you did, and what would break if the input data changed unexpectedly.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can complete the explanation without referencing "Claude suggested" or "I'm not sure why but it works." If you can't, those exact gaps are your curriculum for Phase 2 and 3.</p>
+  </div>
+</div>
+`,
+  quiz:{
+    q:'A senior dev reviews your PR and asks "why did you use async/await here instead of promise chaining?" What\'s the right response?',
+    opts:[
+      '"Claude Code generated it that way — it seemed cleaner"',
+      '"async/await makes the sequential flow easier to read and error handling more explicit with try/catch"',
+      '"I can look into it and get back to you"',
+      '"They\'re equivalent, it doesn\'t really matter"'
+    ],
+    correct:1,
+    fb:{c:'Exactly. You should be able to justify every structural choice in your code — not because you wrote it by hand, but because you reviewed it, understood it, and made the call to keep it.',
+        w:'This is the gap this course closes. "Claude did it" is not an answer on a team. By the end of Phase 2, you\'ll understand async/await well enough to give that answer confidently.'}
+  }
+},
+
+// ══════════════════════════════════════════
+// PHASE 2 — JAVASCRIPT YOU MUST KNOW
+// ══════════════════════════════════════════
+{
+  id:'p2m1', phase:2, phaseName:'JavaScript You Must Know', dot:'dot-blue', badge:'badge-blue',
+  num:'2.1', title:'Reading JavaScript: The Minimum Viable Literacy',
+  lead:'You don\'t need to write JS fluently. You need to read it accurately. These are the patterns that appear constantly in Node.js and React code.',
+  content:`
+<div class="phase-intro" data-num="2">
+  <div class="phase-intro-label">Phase 2 — JavaScript You Must Know</div>
+  <h3>The reading literacy that makes everything else possible</h3>
+  <p>Four modules. Not a complete JS course — a targeted set of patterns you will see in every Node/React codebase and need to evaluate in Claude Code output.</p>
+</div>
+
+<h3>Variables and Scope — Why This Matters for Code Review</h3>
+<p>When Claude Code refactors code, it often changes how variables are scoped. Getting this wrong causes bugs that only appear under certain conditions — the hardest kind to catch.</p>
+
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">scope-patterns.js</div></div>
+  <pre><span class="c">// const — value set once, cannot be reassigned</span>
+<span class="kw">const</span> <span class="v">userId</span> = <span class="s">'abc123'</span>;   <span class="c">// this will never change</span>
+
+<span class="c">// let — value can change, scoped to the block { }</span>
+<span class="kw">let</span> <span class="v">isLoading</span> = <span class="kw">false</span>;
+<span class="kw">if</span> (condition) {
+  <span class="v">isLoading</span> = <span class="kw">true</span>;       <span class="c">// fine — changing let</span>
+}
+
+<span class="c">// WHY THIS MATTERS: if Claude changes const to let or vice versa
+// without reason, that's a signal to ask why</span></pre>
+</div>
+
+<h3>Functions — The Three Forms You'll See</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">function-forms.js</div></div>
+  <pre><span class="c">// Form 1: Named function declaration</span>
+<span class="kw">function</span> <span class="fn">getUser</span>(id) {
+  <span class="kw">return</span> db.find(id);
+}
+
+<span class="c">// Form 2: Arrow function (most common in modern code)</span>
+<span class="kw">const</span> <span class="v">getUser</span> = (id) => {
+  <span class="kw">return</span> db.find(id);
+};
+
+<span class="c">// Form 3: Shorthand arrow (implicit return, one line)</span>
+<span class="kw">const</span> <span class="v">getUser</span> = (id) => db.find(id);
+
+<span class="c">// All three do the same thing here.
+// Claude Code may change between them. That's usually fine.
+// Ask why if it changes a function that uses 'this' keyword.</span></pre>
+</div>
+
+<h3>Destructuring — What Claude Code Does All The Time</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">destructuring.js</div></div>
+  <pre><span class="c">// Old way — Claude Code will often refactor this:</span>
+<span class="kw">const</span> <span class="v">name</span> = user.name;
+<span class="kw">const</span> <span class="v">email</span> = user.email;
+
+<span class="c">// New way — destructuring (pulls values out of an object)</span>
+<span class="kw">const</span> { <span class="v">name</span>, <span class="v">email</span> } = user;
+
+<span class="c">// With a default value if the property doesn't exist:</span>
+<span class="kw">const</span> { <span class="v">name</span>, <span class="v">role</span> = <span class="s">'user'</span> } = user;
+
+<span class="c">// These are equivalent. Both are fine.
+// Risk: if 'user' could be null/undefined, both will throw.</span></pre>
+</div>
+
+<div class="callout warn">
+  <div class="callout-label">⚠ The Null Check Pattern</div>
+  <p>Whenever you see destructuring in a diff, ask: <em>what happens if the object is null?</em> This is one of the most common sources of silent bugs in Claude Code output. Look for optional chaining (<code>user?.name</code>) or a guard clause before destructuring.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 2.1 — Read 20 Lines</div>
+  <h4>No running, no AI help</h4>
+  <p>Open a JS file Claude Code produced. Find a function of 15–25 lines. Without running it, answer: What does it take in? What does it return? What happens if the first argument is undefined? Write your answers before checking.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can answer all three for any function in the file. If you can't, re-read this module and spend 30 minutes reading through more JS examples before moving on.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p2m2', phase:2, phaseName:'JavaScript You Must Know', dot:'dot-blue', badge:'badge-blue',
+  num:'2.2', title:'Async/Await — The Pattern You See Everywhere',
+  lead:'The majority of Node.js and React bugs involving Claude Code output come from async misuse. You need to understand this cold.',
+  content:`
+<p>Almost everything in a web application is asynchronous — database calls, API requests, file reads. JavaScript handles this with Promises and async/await syntax. Claude Code uses these constantly. Misunderstanding them is how silent bugs get into production.</p>
+
+<h3>The Core Concept in Plain English</h3>
+<p>Normally, code runs line by line and waits for each line to finish. Async code says: "start this, but don't block everything while you wait for it." <code>await</code> says: "wait here until this specific async thing is done before continuing."</p>
+
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">async-basics.js</div></div>
+  <pre><span class="c">// This function goes to a database and waits for the result</span>
+<span class="kw">async function</span> <span class="fn">getUser</span>(id) {
+  <span class="kw">const</span> <span class="v">user</span> = <span class="kw">await</span> db.findById(id);  <span class="c">// wait here</span>
+  <span class="kw">return</span> user;
+}
+
+<span class="c">// COMMON BUG — forgetting await:</span>
+<span class="kw">async function</span> <span class="fn">getUser</span>(id) {
+  <span class="kw">const</span> <span class="v">user</span> = db.findById(id);  <span class="c">// ❌ user is a Promise, not a user!</span>
+  <span class="kw">return</span> user.name;               <span class="c">// ❌ this will be undefined</span>
+}</pre>
+</div>
+
+<h3>Error Handling in Async Code</h3>
+<div class="pair">
+  <div class="pair-box wrong">
+    <div class="pair-label">❌ No error handling</div>
+    <pre><span class="kw">async function</span> <span class="fn">deleteUser</span>(id) {
+  <span class="kw">await</span> db.delete(id);
+  <span class="kw">return</span> { success: <span class="kw">true</span> };
+}
+<span class="c">// If db.delete throws, the error
+// propagates unhandled. Bad.</span></pre>
+  </div>
+  <div class="pair-box right">
+    <div class="pair-label">✓ With error handling</div>
+    <pre><span class="kw">async function</span> <span class="fn">deleteUser</span>(id) {
+  <span class="kw">try</span> {
+    <span class="kw">await</span> db.delete(id);
+    <span class="kw">return</span> { success: <span class="kw">true</span> };
+  } <span class="kw">catch</span> (err) {
+    <span class="kw">throw new</span> <span class="fn">AppError</span>(<span class="s">'Delete failed'</span>, err);
+  }
+}</pre>
+  </div>
+</div>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 The Pattern to Catch in Every Claude Code Diff</div>
+  <p>When Claude Code adds or changes async functions, check: is every <code>await</code> inside a try/catch? Is the error being handled or just re-thrown? Is the error logging useful? These three checks catch 80% of the async bugs that make it to production.</p>
+</div>
+
+<h3>Parallel vs Sequential — A Common Claude Code "Improvement"</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">parallel.js</div></div>
+  <pre><span class="c">// Sequential — each awaits the previous (slower but ordered)</span>
+<span class="kw">const</span> <span class="v">user</span> = <span class="kw">await</span> getUser(id);
+<span class="kw">const</span> <span class="v">orders</span> = <span class="kw">await</span> getOrders(id);
+
+<span class="c">// Parallel — both start at the same time (faster)</span>
+<span class="kw">const</span> [<span class="v">user</span>, <span class="v">orders</span>] = <span class="kw">await</span> Promise.all([
+  getUser(id),
+  getOrders(id)
+]);
+
+<span class="c">// Claude often "improves" sequential to parallel.
+// This is usually fine. BUT: if orders depends on user data,
+// parallel is wrong. Always check the dependency.</span></pre>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 2.2 — Async Audit</div>
+  <h4>Find every async function in a file</h4>
+  <p>In a Claude Code-generated Node.js file, find every <code>async</code> function. For each one: does it have a try/catch? If not, what happens when it fails? Write this down. This is the kind of review your team expects from you.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can identify async functions on sight and explain what happens on failure — before running anything.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p2m3', phase:2, phaseName:'JavaScript You Must Know', dot:'dot-blue', badge:'badge-blue',
+  num:'2.3', title:'Modules, Imports, and Why Dependencies Matter',
+  lead:'Every import is a dependency. Every dependency is a risk. Reading import statements tells you about the architecture — and what Claude Code might be quietly changing.',
+  content:`
+<p>In modern JavaScript, code is split into modules that import from each other. How files depend on each other is the architecture. Claude Code routinely reorganizes imports — and sometimes introduces import patterns that violate your project's structure without you noticing.</p>
+
+<h3>Reading Import Statements</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">imports.js</div></div>
+  <pre><span class="c">// External package — from node_modules</span>
+<span class="kw">import</span> express <span class="kw">from</span> <span class="s">'express'</span>;
+<span class="kw">const</span> express = <span class="fn">require</span>(<span class="s">'express'</span>);   <span class="c">// older CommonJS style</span>
+
+<span class="c">// Internal file — relative path starting with ./ or ../</span>
+<span class="kw">import</span> { getUser } <span class="kw">from</span> <span class="s">'./userService'</span>;
+
+<span class="c">// Named import — pull one specific thing from a module</span>
+<span class="kw">import</span> { useState, useEffect } <span class="kw">from</span> <span class="s">'react'</span>;
+
+<span class="c">// Default import — take whatever the module exports as default</span>
+<span class="kw">import</span> UserCard <span class="kw">from</span> <span class="s">'./UserCard'</span>;</pre>
+</div>
+
+<h3>The Architecture Violation Pattern</h3>
+<p>Well-structured projects have rules about what can import from what. A UI component shouldn't directly import from a database layer. A route handler shouldn't contain business logic imports. Claude Code regularly violates these boundaries because it doesn't know your rules unless you tell it.</p>
+
+<div class="callout warn">
+  <div class="callout-label">⚠ What to Check in Every Diff</div>
+  <p>When you review a Claude Code diff, check the import section first. Any new import is a new dependency. Ask: does this file have permission to depend on that module? Does this introduce a circular dependency? Does adding this package to package.json fit the project's philosophy?</p>
+</div>
+
+<h3>package.json — What's Actually Installed</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">package.json (excerpt)</div></div>
+  <pre>{
+  <span class="k">"dependencies"</span>: {
+    <span class="k">"express"</span>: <span class="s">"^4.18.0"</span>,      <span class="c">// runs in production</span>
+    <span class="k">"react"</span>: <span class="s">"^18.0.0"</span>
+  },
+  <span class="k">"devDependencies"</span>: {
+    <span class="k">"vitest"</span>: <span class="s">"^1.0.0"</span>,         <span class="c">// test tools, not shipped to prod</span>
+    <span class="k">"typescript"</span>: <span class="s">"^5.0.0"</span>
+  }
+}
+<span class="c">// If Claude Code adds to dependencies: ask if it should be devDependencies.
+// If it adds a package you've never heard of: look it up before merging.</span></pre>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 2.3 — Dependency Map</div>
+  <h4>Draw your project's import graph</h4>
+  <p>Pick three related files in a Claude Code project. For each, list what they import and what imports them. Sketch the dependency direction on paper. Now answer: does anything import in a direction that seems wrong? (e.g., a pure utility file importing a UI component?)</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can trace import relationships in a file and identify at least one potential architectural concern — or confirm everything looks correctly layered.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p2m4', phase:2, phaseName:'JavaScript You Must Know', dot:'dot-blue', badge:'badge-blue',
+  num:'2.4', title:'TypeScript: Reading Types Without Being a TypeScript Expert',
+  lead:'You don\'t need to write TypeScript fluently. You need to read type annotations and understand what they\'re protecting against.',
+  content:`
+<p>Most production Node/React codebases use TypeScript. It adds type annotations to JavaScript that describe what shape data should be. Claude Code generates TypeScript. You need to read it well enough to catch when it's wrong or when types are being bypassed.</p>
+
+<h3>Reading Type Annotations</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">types-basics.ts</div></div>
+  <pre><span class="c">// A type definition — describes the shape of an object</span>
+<span class="kw">type</span> <span class="fn">User</span> = {
+  id: <span class="v">string</span>;
+  name: <span class="v">string</span>;
+  email: <span class="v">string</span>;
+  role: <span class="s">'admin'</span> | <span class="s">'user'</span>;   <span class="c">// only these two values allowed</span>
+};
+
+<span class="c">// Function with typed parameters and return type</span>
+<span class="kw">async function</span> <span class="fn">getUser</span>(id: <span class="v">string</span>): <span class="fn">Promise</span>&lt;<span class="fn">User</span> | <span class="kw">null</span>&gt; {
+  <span class="c">// returns a User object OR null, wrapped in a Promise</span>
+}
+
+<span class="c">// Optional property — might or might not exist</span>
+<span class="kw">type</span> <span class="fn">Order</span> = {
+  id: <span class="v">string</span>;
+  notes?: <span class="v">string</span>;   <span class="c">// the ? means this can be undefined</span>
+};</pre>
+</div>
+
+<h3>The Two Red Flags to Spot in Every Diff</h3>
+<div class="pair">
+  <div class="pair-box wrong">
+    <div class="pair-label">❌ Red flag: using "any"</div>
+    <pre><span class="c">// 'any' disables type checking entirely
+// Claude often uses this as a shortcut</span>
+<span class="kw">function</span> <span class="fn">process</span>(data: <span class="kw">any</span>) {
+  <span class="kw">return</span> data.user.name;
+}
+<span class="c">// If data has no .user, this throws at
+// runtime — TypeScript won't catch it</span></pre>
+  </div>
+  <div class="pair-box right">
+    <div class="pair-label">✓ Properly typed</div>
+    <pre><span class="kw">type</span> <span class="fn">Input</span> = { user: { name: <span class="v">string</span> } };
+
+<span class="kw">function</span> <span class="fn">process</span>(data: <span class="fn">Input</span>) {
+  <span class="kw">return</span> data.user.name;
+}
+<span class="c">// TypeScript will now catch callers
+// that pass the wrong shape</span></pre>
+  </div>
+</div>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 Type Assertions — Claude's Other Shortcut</div>
+  <p>Watch for <code>as SomeType</code> in Claude Code output — this is a type assertion that overrides TypeScript's judgment. It says "trust me, I know what this is." Sometimes it's valid. Often it's Claude bypassing a type error instead of fixing it. Every <code>as</code> assertion in a diff deserves a second look.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 2.4 — Type Red Flag Hunt</div>
+  <h4>Audit a TypeScript file for type bypasses</h4>
+  <p>In a Claude Code TypeScript file, search for: <code>any</code>, <code>as </code>, and <code>// @ts-ignore</code>. For each one you find, understand why it's there. Is it a legitimate shortcut or is it hiding a type error that should be fixed?</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can explain what each type annotation in a function signature means and identify any type bypasses in the file.</p>
+  </div>
+</div>
+`,
+  quiz:{
+    q:'Claude Code produces this TypeScript: `const user = response.data as User`. Should you be concerned?',
+    opts:[
+      'No — TypeScript type assertions are standard practice',
+      'Yes — this tells TypeScript to trust us that data is a User, but if the API returns something unexpected, TypeScript won\'t catch it at runtime',
+      'No — the "as" keyword validates the type before assigning',
+      'Only if the User type uses "any" somewhere'
+    ],
+    correct:1,
+    fb:{c:'Exactly right. Type assertions skip runtime validation — they only satisfy the compiler. If the API returns a different shape than User, this silently fails at runtime. A safer pattern is runtime validation with a library like zod, or an explicit check before the assertion.',
+        w:'Type assertions don\'t validate anything at runtime — they only satisfy the TypeScript compiler during build. The danger is that production data doesn\'t always match the types we expect. This is a pattern worth questioning in any diff.'}
+  }
+},
+
+// ══════════════════════════════════════════
+// PHASE 3 — NODE.JS ENOUGH TO EVALUATE IT
+// ══════════════════════════════════════════
+{
+  id:'p3m1', phase:3, phaseName:'Node.js — Evaluate It', dot:'dot-green', badge:'badge-green',
+  num:'3.1', title:'Express Route Structure — Read Any Route Handler',
+  lead:'Most Node.js backend work involves Express routes. You need to read them accurately, spot what\'s missing, and understand the flow.',
+  content:`
+<div class="phase-intro" data-num="3">
+  <div class="phase-intro-label">Phase 3 — Node.js: Evaluate It</div>
+  <h3>Enough Node.js to catch what Claude Code gets wrong</h3>
+  <p>Three modules. Target: you can read any Express route, identify its risks, and verify that a Claude Code refactor preserved the original behavior.</p>
+</div>
+
+<h3>The Anatomy of an Express Route</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">users.route.ts</div></div>
+  <pre><span class="c">// Route handler: GET /users/:id</span>
+router.<span class="fn">get</span>(<span class="s">'/users/:id'</span>,
+  authMiddleware,          <span class="c">// runs first — checks auth</span>
+  <span class="kw">async</span> (req, res, next) => {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> { <span class="v">id</span> } = req.params;         <span class="c">// from the URL</span>
+      <span class="kw">const</span> { <span class="v">includeOrders</span> } = req.query; <span class="c">// from ?includeOrders=true</span>
+
+      <span class="kw">const</span> <span class="v">user</span> = <span class="kw">await</span> userService.<span class="fn">getUser</span>(id);
+
+      <span class="kw">if</span> (!user) {
+        <span class="kw">return</span> res.<span class="fn">status</span>(404).<span class="fn">json</span>({ error: <span class="s">'Not found'</span> });
+      }
+
+      res.<span class="fn">json</span>(user);
+
+    } <span class="kw">catch</span> (err) {
+      <span class="fn">next</span>(err);   <span class="c">// passes error to error handling middleware</span>
+    }
+  }
+);</pre>
+</div>
+
+<h3>The Four Questions for Every Route</h3>
+<ul>
+  <li><strong>Authentication:</strong> Is there auth middleware? If not, is this route meant to be public?</li>
+  <li><strong>Input validation:</strong> Is <code>req.params</code>, <code>req.query</code>, and <code>req.body</code> being validated before use?</li>
+  <li><strong>Error handling:</strong> Does every async path have a try/catch that calls <code>next(err)</code>?</li>
+  <li><strong>Response completeness:</strong> Are all code paths sending a response? (A path with no <code>res.json()</code> hangs forever.)</li>
+</ul>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 The Missing Auth Check</div>
+  <p>When Claude Code refactors a route, it may move middleware around or accidentally drop it. The most dangerous change is removing an <code>authMiddleware</code> call that was protecting a route. Always verify middleware order is preserved in any route diff.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 3.1 — Route Audit</div>
+  <h4>Answer the four questions for every route in a file</h4>
+  <p>Open a routes file from a Claude Code project. For each route: answer all four questions above. Identify any route where the answer to any question is "I'm not sure" — those are your investigation targets.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can answer all four questions for any route handler, and you can describe what would happen in each error and edge case.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p3m2', phase:3, phaseName:'Node.js — Evaluate It', dot:'dot-green', badge:'badge-green',
+  num:'3.2', title:'Services, Repositories, and Why the Layer Structure Exists',
+  lead:'Real applications separate concerns into layers. Claude Code regularly violates this. You need to know what a violation looks like.',
+  content:`
+<p>Well-structured Node.js applications separate code into layers with specific jobs. This isn't bureaucracy — it's what makes code testable, debuggable, and maintainable by a team. When Claude Code collapses layers together, it's creating technical debt you'll pay for later.</p>
+
+<h3>The Layer Model</h3>
+<table class="tbl">
+  <tr><th>Layer</th><th>Job</th><th>What it should NOT do</th></tr>
+  <tr><td>Routes (<code>/api</code>)</td><td>Handle HTTP: parse request, call service, format response</td><td>Contain business logic or database queries</td></tr>
+  <tr><td>Services (<code>/services</code>)</td><td>Business logic: rules, calculations, orchestration</td><td>Import from Express, format HTTP responses</td></tr>
+  <tr><td>Repositories (<code>/db</code> or <code>/repos</code>)</td><td>Data access: read/write the database</td><td>Contain business logic or HTTP concerns</td></tr>
+</table>
+
+<div class="pair">
+  <div class="pair-box wrong">
+    <div class="pair-label">❌ Collapsed layers (Claude does this)</div>
+    <pre><span class="c">// Route handler doing everything</span>
+router.<span class="fn">post</span>(<span class="s">'/orders'</span>, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> <span class="v">user</span> = <span class="kw">await</span> db.<span class="fn">query</span>(
+    <span class="s">'SELECT * FROM users WHERE id = $1'</span>,
+    [req.body.userId]
+  );
+  <span class="kw">if</span> (user.balance &lt; req.body.amount) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(400).<span class="fn">json</span>({error:<span class="s">'Insufficient'</span>});
+  }
+  <span class="c">// ... more business logic here</span>
+});</pre>
+  </div>
+  <div class="pair-box right">
+    <div class="pair-label">✓ Correct layer separation</div>
+    <pre><span class="c">// Route: only HTTP concerns</span>
+router.<span class="fn">post</span>(<span class="s">'/orders'</span>, <span class="kw">async</span> (req, res, next) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="v">order</span> = <span class="kw">await</span> orderService.<span class="fn">create</span>(req.body);
+    res.<span class="fn">status</span>(201).<span class="fn">json</span>(order);
+  } <span class="kw">catch</span> (err) { <span class="fn">next</span>(err); }
+});
+
+<span class="c">// Service: business logic</span>
+<span class="kw">async function</span> <span class="fn">create</span>(data) {
+  <span class="kw">const</span> <span class="v">user</span> = <span class="kw">await</span> userRepo.<span class="fn">findById</span>(data.userId);
+  <span class="kw">if</span> (user.balance &lt; data.amount) <span class="kw">throw new</span> <span class="fn">InsufficientFundsError</span>();
+  <span class="kw">return</span> orderRepo.<span class="fn">create</span>(data);
+}</pre>
+  </div>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 3.2 — Layer Violation Hunt</div>
+  <h4>Find the architecture violations</h4>
+  <p>In a Claude Code Node.js project, find at least one example of: a route handler doing database queries directly, or a service importing from Express. Document what refactor would fix it and what the prompt would need to say.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can identify layer violations in any file and describe the correct structure — without needing to write the corrected code from scratch.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p3m3', phase:3, phaseName:'Node.js — Evaluate It', dot:'dot-green', badge:'badge-green',
+  num:'3.3', title:'Environment Variables, Secrets, and What Claude Code Doesn\'t Know',
+  lead:'Claude Code doesn\'t know what\'s secret. It will hardcode things, log things, and expose things if you don\'t watch for it.',
+  content:`
+<p>One of the highest-risk areas of any Claude Code session involving backend code is how it handles sensitive values. API keys, database passwords, JWT secrets — Claude Code has no way to know the difference between a regular string and a secret unless you tell it explicitly. And sometimes it gets it wrong even then.</p>
+
+<h3>Environment Variables — The Correct Pattern</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">config.ts</div></div>
+  <pre><span class="c">// Secrets come from environment variables, NEVER hardcoded</span>
+<span class="kw">const</span> config = {
+  jwtSecret: process.env.<span class="v">JWT_SECRET</span>,       <span class="c">// ✓ from environment</span>
+  dbUrl:     process.env.<span class="v">DATABASE_URL</span>,      <span class="c">// ✓ from environment</span>
+  apiKey:    <span class="s">'sk-abc123definitelyreal'</span>      <span class="c">// ❌ NEVER do this</span>
+};
+
+<span class="c">// Good practice: fail loudly if a required secret is missing</span>
+<span class="kw">if</span> (!process.env.<span class="v">JWT_SECRET</span>) {
+  <span class="kw">throw new</span> Error(<span class="s">'JWT_SECRET environment variable is required'</span>);
+}</pre>
+</div>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 What Claude Code Might Do</div>
+  <p>Claude Code may generate example values, placeholder secrets, or log statements that include sensitive data. It may also write error messages that expose internal paths, database schemas, or user data. Scan every diff for: string literals that look like credentials, <code>console.log</code> statements with request/response data, and error messages that include raw error objects.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 3.3 — Security Scan</div>
+  <h4>Audit for exposed secrets and over-logging</h4>
+  <p>In a Claude Code backend project: search for any hardcoded strings that could be secrets, any <code>console.log</code> that includes user data or full error objects, and any error response that leaks internal information (stack traces, database errors, file paths).</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can identify all three categories of security concern in any backend file — and you understand why each one is a problem.</p>
+  </div>
+</div>
+`,
+  quiz:{
+    q:'Claude Code adds this to a route: `console.log("Login attempt:", req.body)`. What\'s wrong with it?',
+    opts:[
+      'Nothing — logging is good practice for debugging',
+      'req.body likely contains a password, which would now be written to your logs in plaintext',
+      'console.log should be replaced with a logger library',
+      'Both B and C are issues, but B is the critical one'
+    ],
+    correct:3,
+    fb:{c:'Exactly. B is the critical issue — plaintext passwords in logs is a serious security vulnerability. C is also a real concern (structured logging, log levels, etc.) but it\'s an operational concern, not a security emergency. Both matter. B matters more.',
+        w:'Think about what req.body contains on a login route. It almost certainly has a password field. Writing that to logs in plaintext means anyone with log access — developers, ops tools, log aggregators — can read user passwords. That\'s a critical security issue.'}
+  }
+},
+
+// ══════════════════════════════════════════
+// PHASE 4 — REACT ENOUGH TO EVALUATE IT
+// ══════════════════════════════════════════
+{
+  id:'p4m1', phase:4, phaseName:'React — Evaluate It', dot:'dot-red', badge:'badge-red',
+  num:'4.1', title:'Components and Props — The Mental Model for React Code',
+  lead:'React has one core idea. Once you genuinely understand it, reading any component becomes tractable.',
+  content:`
+<div class="phase-intro" data-num="4">
+  <div class="phase-intro-label">Phase 4 — React: Evaluate It</div>
+  <h3>Enough React to evaluate component-level Claude Code work</h3>
+  <p>Three modules. Target: you can read any React component, identify its data flow, spot common bugs, and evaluate whether a Claude Code refactor preserved component behavior.</p>
+</div>
+
+<p>React's core idea: <strong>UI is a function of data</strong>. You give a component data (props), it returns what to display. When the data changes, it re-renders. That's the entire model. Everything else is variations on this.</p>
+
+<h3>Reading a Component</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">UserCard.tsx</div></div>
+  <pre><span class="c">// Props type — defines what data this component accepts</span>
+<span class="kw">type</span> <span class="fn">UserCardProps</span> = {
+  user: { name: <span class="v">string</span>; email: <span class="v">string</span>; role: <span class="v">string</span> };
+  onEdit: () => <span class="kw">void</span>;   <span class="c">// a function the parent passes in</span>
+  isLoading?: <span class="v">boolean</span>;  <span class="c">// optional prop</span>
+};
+
+<span class="c">// The component — takes props, returns JSX</span>
+<span class="kw">function</span> <span class="fn">UserCard</span>({ user, onEdit, isLoading = <span class="kw">false</span> }: <span class="fn">UserCardProps</span>) {
+  <span class="kw">if</span> (isLoading) <span class="kw">return</span> &lt;<span class="fn">Spinner</span> /&gt;;
+
+  <span class="kw">return</span> (
+    &lt;<span class="fn">div</span>&gt;
+      &lt;<span class="fn">h2</span>&gt;{user.name}&lt;/<span class="fn">h2</span>&gt;
+      &lt;<span class="fn">p</span>&gt;{user.email}&lt;/<span class="fn">p</span>&gt;
+      &lt;<span class="fn">button</span> onClick={onEdit}&gt;Edit&lt;/<span class="fn">button</span>&gt;
+    &lt;/<span class="fn">div</span>&gt;
+  );
+}</pre>
+</div>
+
+<h3>The Four Questions for Every Component</h3>
+<ul>
+  <li><strong>What data does it need?</strong> (the props type)</li>
+  <li><strong>What can go wrong with that data?</strong> (null, undefined, empty arrays)</li>
+  <li><strong>What events does it fire?</strong> (onClick, onSubmit functions passed as props)</li>
+  <li><strong>What does it render in each state?</strong> (loading, error, empty, populated)</li>
+</ul>
+
+<div class="callout warn">
+  <div class="callout-label">⚠ The Missing State Case</div>
+  <p>Claude Code often writes the happy path — the component with good data. It frequently omits: the loading state, the error state, the empty state, and the case where a required prop is undefined. In a code review, ask: what does this render when the API is slow? When it fails? When the list is empty?</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 4.1 — Component Audit</div>
+  <h4>Answer the four questions for a real component</h4>
+  <p>Pick a React component from a Claude Code project. Without running the app, answer all four questions. Then check: what happens if <code>user</code> is <code>null</code>? If <code>onEdit</code> is not passed? Write your answers before verifying.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can answer all four questions for any component and predict what it renders in at least 3 different states.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p4m2', phase:4, phaseName:'React — Evaluate It', dot:'dot-red', badge:'badge-red',
+  num:'4.2', title:'useState and useEffect — Where Claude Code Makes Mistakes',
+  lead:'These two hooks are in nearly every component. They\'re also where the most subtle bugs live.',
+  content:`
+<h3>useState — Reading State Variables</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">state-patterns.tsx</div></div>
+  <pre><span class="c">// useState returns [currentValue, setterFunction]</span>
+<span class="kw">const</span> [<span class="v">count</span>, <span class="fn">setCount</span>] = <span class="fn">useState</span>(0);
+<span class="c">//     ↑ value    ↑ how to change it   ↑ initial value</span>
+
+<span class="c">// Setting new state triggers a re-render</span>
+<span class="fn">setCount</span>(count + 1);    <span class="c">// increment</span>
+<span class="fn">setCount</span>(prev => prev + 1);  <span class="c">// safer pattern using previous value</span>
+
+<span class="c">// Common Claude Code mistake: mutating state directly</span>
+user.name = <span class="s">'New Name'</span>;     <span class="c">// ❌ Does NOT trigger re-render</span>
+<span class="fn">setUser</span>({...user, name: <span class="s">'New Name'</span>}); <span class="c">// ✓ creates new object</span></pre>
+</div>
+
+<h3>useEffect — The Source of Most React Bugs</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">effect-patterns.tsx</div></div>
+  <pre><span class="c">// Runs after every render — usually NOT what you want</span>
+<span class="fn">useEffect</span>(() => { fetchUser(); });
+
+<span class="c">// Runs once on mount — common for initial data fetch</span>
+<span class="fn">useEffect</span>(() => { fetchUser(); }, []);  <span class="c">// empty deps array</span>
+
+<span class="c">// Runs when userId changes</span>
+<span class="fn">useEffect</span>(() => { <span class="fn">fetchUser</span>(userId); }, [userId]);
+<span class="c">//                                            ↑ dependency array</span></pre>
+</div>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 The Dependency Array — Claude's Most Common React Mistake</div>
+  <p>When Claude Code writes a <code>useEffect</code>, always scrutinize the dependency array. Missing a dependency causes stale data (using old values). Adding too many causes infinite loops (re-runs trigger state changes that trigger re-runs). Ask Claude to <strong>explain its reasoning</strong> for every dep array it writes — if the explanation isn't clear, the deps are probably wrong.</p>
+</div>
+
+<div class="pair">
+  <div class="pair-box wrong">
+    <div class="pair-label">❌ Infinite loop (Claude produces this)</div>
+    <pre><span class="kw">const</span> [<span class="v">data</span>, <span class="fn">setData</span>] = <span class="fn">useState</span>({});
+
+<span class="fn">useEffect</span>(() => {
+  <span class="fn">fetchData</span>(data.id);
+}, [data]);   <span class="c">// ❌ fetchData calls setData,
+              // which changes data,
+              // which triggers this effect again</span></pre>
+  </div>
+  <div class="pair-box right">
+    <div class="pair-label">✓ Correct dependency</div>
+    <pre><span class="kw">const</span> [<span class="v">data</span>, <span class="fn">setData</span>] = <span class="fn">useState</span>({});
+
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">if</span> (data.id) <span class="fn">fetchData</span>(data.id);
+}, [data.id]);  <span class="c">// ✓ only the specific
+                // property we depend on</span></pre>
+  </div>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 4.2 — Hook Audit</div>
+  <h4>Review every useEffect in a component file</h4>
+  <p>For each <code>useEffect</code>: describe in plain English when it runs, what it does, and whether the dependency array looks correct. Flag any that could cause an infinite loop or stale data issue.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can describe the behavior of any useEffect from reading it — when it runs, when it doesn't, and what could go wrong.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p4m3', phase:4, phaseName:'React — Evaluate It', dot:'dot-red', badge:'badge-red',
+  num:'4.3', title:'Component Decomposition — Reading and Evaluating a Refactor',
+  lead:'When Claude Code breaks a large component into smaller ones, here\'s how to evaluate whether it did it well or just moved the mess.',
+  content:`
+<p>Component decomposition is one of the most common Claude Code refactoring tasks. "Break this 800-line component into smaller pieces." Claude Code will do it. Whether it does it <em>correctly</em> — in a way that improves maintainability without breaking behavior — requires you to understand what makes a good component split.</p>
+
+<h3>What Good Decomposition Looks Like</h3>
+<ul>
+  <li><strong>Single responsibility:</strong> Each component does one thing and the name says exactly what</li>
+  <li><strong>Clear prop interfaces:</strong> The props a component accepts are the minimum needed — not a kitchen sink</li>
+  <li><strong>No prop drilling:</strong> Data isn't passed through 3 levels of components that don't need it</li>
+  <li><strong>Behavior preserved:</strong> Every state, every event handler, every edge case from the original still works</li>
+</ul>
+
+<h3>What Bad Decomposition Looks Like (Claude Does This)</h3>
+<div class="callout danger">
+  <div class="callout-label">🚨 The Cosmetic Split</div>
+  <p>Claude Code sometimes splits components by visual sections rather than logical concerns — a "TopSection" and "BottomSection" component. This is cosmetic, not architectural. You've added components without reducing complexity. The test: can you explain what each new component's single responsibility is, independent of where it appears on screen?</p>
+</div>
+
+<table class="tbl">
+  <tr><th>Symptom</th><th>What it means</th></tr>
+  <tr><td>Component names describe location ("TopBar", "RightPanel")</td><td>Split by position, not responsibility</td></tr>
+  <tr><td>New component has 15+ props</td><td>Probably doing too many things, or should be restructured differently</td></tr>
+  <tr><td>Parent passes same prop to 3+ children</td><td>Consider context or lifting the state differently</td></tr>
+  <tr><td>Component file is 400 lines after "decomposition"</td><td>The problem wasn't addressed, just moved</td></tr>
+</table>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 4.3 — Evaluate a Decomposition</div>
+  <h4>Judge a Claude Code component split</h4>
+  <p>Find a component in a Claude Code project that was split from a larger one. For each child component: state its single responsibility in one sentence. Count its props. Check whether it could exist independently or only makes sense in context of its parent. Rate the decomposition: was it an improvement or a cosmetic shuffle?</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You can evaluate a component decomposition and articulate specific reasons it is or isn't an improvement — not just whether it "looks cleaner."</p>
+  </div>
+</div>
+`,
+  quiz:{
+    q:'Claude Code breaks a 600-line UserDashboard into: UserDashboardHeader, UserDashboardBody, UserDashboardSidebar, UserDashboardFooter. Is this good decomposition?',
+    opts:[
+      'Yes — smaller files are always better',
+      'Maybe — it reduces file size, but splitting by position doesn\'t reduce complexity or clarify responsibility',
+      'No — components should never be split from a parent like this',
+      'Yes — as long as each component has well-defined props'
+    ],
+    correct:1,
+    fb:{c:'Correct. Position-based naming is a code smell. What is the single responsibility of "UserDashboardBody"? It\'s whatever the dashboard body does — which is probably still a lot of things. Better splits would be UserProfileSummary, RecentActivityFeed, QuickActionsPanel — names that describe what the component *does*, not where it *is*.',
+        w:'Smaller files feel better, but if the complexity just moved without being organized by responsibility, you\'ve added indirection without adding clarity. A team member reading these files for the first time still has no idea what each component\'s job is from the name alone.'}
+  }
+},
+
+// ══════════════════════════════════════════
+// PHASE 5 — STRUCTURED CLAUDE CODE WORKFLOW
+// ══════════════════════════════════════════
+{
+  id:'p5m1', phase:5, phaseName:'Structured Workflow', dot:'dot-purple', badge:'badge-purple',
+  num:'5.1', title:'CLAUDE.md and Session Discipline',
+  lead:'Now that you can read what Claude produces, you can write instructions that actually constrain it correctly.',
+  content:`
+<div class="phase-intro" data-num="5">
+  <div class="phase-intro-label">Phase 5 — Structured Claude Code Workflow</div>
+  <h3>Using the tool with the literacy to use it right</h3>
+  <p>Three modules. This is where your new code literacy combines with structured workflow discipline. The difference between Phase 5 now vs. before this course: you'll understand why every rule exists.</p>
+</div>
+
+<h3>CLAUDE.md — Your Persistent Engineering Contract</h3>
+<p>CLAUDE.md sits in your project root. Claude Code reads it at the start of every session. It is the document that prevents you from having to re-explain your architecture, your rules, and your constraints every single time you start.</p>
+
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">CLAUDE.md</div></div>
+  <pre><span class="c"># Project: [Name] | Updated: [date]</span>
+
+<span class="k">## Stack</span>
+Express 4 + TypeScript strict + React 18 + React Query
+
+<span class="k">## Layer Rules (enforce these without exception)</span>
+- Routes: HTTP only — no DB imports, no business logic
+- Services: Business logic — no Express imports
+- Repos: DB access only — return plain objects, not HTTP responses
+
+<span class="k">## Coding Rules</span>
+- No 'any' type without a comment explaining why
+- No 'as Type' assertions without a guard before it
+- All async functions: try/catch with our AppError class
+- No console.log — use logger.ts
+
+<span class="k">## Security Rules</span>
+- No secrets in code — environment variables only
+- Auth middleware must remain on all /api/admin/* routes
+- Never log req.body on auth routes
+
+<span class="k">## NEVER touch without explicit instruction</span>
+- /migrations
+- /middleware/auth.ts
+- package.json dependencies
+
+<span class="k">## Current session goal</span>
+<span class="v">← UPDATE THIS EVERY SESSION. One sentence. One task.</span></pre>
+</div>
+
+<div class="callout truth">
+  <div class="callout-label">✓ Why this works now (but didn't before)</div>
+  <p>Before this course, you could have written "no 'any' type" but you wouldn't have known what it meant to enforce. Now you do. The rule is only useful if the person writing it understands why it matters — and the person reviewing Claude's output can catch when it's violated.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 5.1 — Write Your CLAUDE.md</div>
+  <h4>From scratch, no templates</h4>
+  <p>Write a CLAUDE.md for a real project. Every rule in it should be one you can explain: why does this rule exist, what bug does it prevent, how would you know if Claude violated it? If you can't answer those three questions for a rule — cut the rule.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>Every rule in your CLAUDE.md has a reason you can state in one sentence, and a violation you can identify by reading a diff.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p5m2', phase:5, phaseName:'Structured Workflow', dot:'dot-purple', badge:'badge-purple',
+  num:'5.2', title:'Surgical Prompts: Writing Instructions That Get Correct Output',
+  lead:'You now understand the code. That means you can write prompts that define exactly what correct looks like.',
+  content:`
+<p>The gap between "vague prompt" and "surgical prompt" is not about vocabulary. It's about the prompter's understanding of the domain. You couldn't write a truly constrained prompt for a React hook refactor before because you didn't understand what a React hook does. Now you do.</p>
+
+<h3>The Surgical Prompt Structure</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">prompt-template.md</div></div>
+  <pre><span class="k">[1. TASK — one sentence, verb-first]</span>
+Extract the database query from getUser() in userService.ts
+into a new getUserById() function in userRepository.ts.
+
+<span class="k">[2. CONSTRAINTS — what must not change]</span>
+- getUser() public signature must stay identical
+- Return type User | null must be preserved
+- Do not add error handling beyond what exists
+- Do not touch any other function in userService.ts
+
+<span class="k">[3. DEFINITION OF DONE — how you'll know it worked]</span>
+- userService.ts no longer imports from /lib/db.ts
+- userRepository.ts exports getUserById(id: string): Promise&lt;User | null&gt;
+- All existing tests pass
+
+<span class="k">[4. EXPLICIT SCOPE]</span>
+Only modify: userService.ts, create: userRepository.ts
+Do not touch: any other file</pre>
+</div>
+
+<h3>The Before/After Test</h3>
+<p>After any Claude Code session on a refactor task, run this mental check:</p>
+<ul>
+  <li>Does the public interface look identical to what I specified?</li>
+  <li>Did it touch any file I didn't list in scope?</li>
+  <li>Can I trace a request from entry point to response and understand every step?</li>
+</ul>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 5.2 — Write and Execute a Surgical Prompt</div>
+  <h4>One real refactor, fully constrained</h4>
+  <p>Pick one refactor task from a real project. Write the full 4-part prompt before running Claude Code. Execute it. Review the diff against your prompt. Document: what did Claude do that you didn't ask for? What did it miss? Revise your prompt and run it again on a fresh session.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>Your second prompt produces output that matches your definition of done with no unexpected file changes.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p5m3', phase:5, phaseName:'Structured Workflow', dot:'dot-purple', badge:'badge-purple',
+  num:'5.3', title:'Git Discipline and the Verification Stack',
+  lead:'The workflow that makes AI-assisted work trustworthy enough to merge into a shared codebase.',
+  content:`
+<h3>Git Strategy for AI-Assisted Work</h3>
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">terminal</div></div>
+  <pre><span class="c"># Always branch before a Claude Code session</span>
+git checkout -b ai/extract-user-repository
+
+<span class="c"># Stage interactively — review every hunk before it's committed</span>
+git add -p        <span class="c"># never: git add .</span>
+
+<span class="c"># Write a commit message that explains why, not just what</span>
+git commit -m "refactor(users): extract DB query to repository layer [ai-assisted]"
+
+<span class="c"># If the session goes wrong — clean rollback</span>
+git checkout main && git branch -D ai/extract-user-repository</pre>
+</div>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 git add -p is non-negotiable</div>
+  <p>Interactive staging forces you to read every changed line before it enters the commit. <code>git add .</code> lets AI-generated code bypass your eyes entirely. This is the single most important habit in this entire course. If you do nothing else, do this.</p>
+</div>
+
+<h3>The Verification Stack — In Order</h3>
+<ul class="checklist" id="verif-check">
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span><code>tsc --noEmit</code> — TypeScript clean, no type errors</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span><code>npm test</code> — all tests passing, including characterization tests</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span><code>git diff</code> — review the full diff, not just the files Claude mentioned</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span>Layer audit — did any DB imports appear in route files? Any Express imports in services?</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span>Auth check — is auth middleware still on every protected route?</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span>Async check — does every async function have proper error handling?</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span>Security check — any secrets, over-logging, or exposed error details?</span></li>
+  <li><div class="chk" onclick="this.classList.toggle('on')"></div><span>Manual smoke test — run the app, exercise the changed code path</span></li>
+</ul>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 5.3 — Full Workflow Run</div>
+  <h4>Branch → prompt → verify → commit</h4>
+  <p>Execute one complete Claude Code session using the full workflow: branch, surgical prompt, interactive staging, full verification stack, commit with message. Time how long it takes. This is your new baseline for "done."</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You complete the full workflow without skipping a step, and the resulting commit is something you could explain line-by-line to a senior developer.</p>
+  </div>
+</div>
+`},
+
+// ══════════════════════════════════════════
+// PHASE 6 — WORKING ON A REAL TEAM
+// ══════════════════════════════════════════
+{
+  id:'p6m1', phase:6, phaseName:'Working on a Real Team', dot:'dot-teal', badge:'badge-teal',
+  num:'6.1', title:'Pull Requests: Submitting Work You Can Defend',
+  lead:'A PR is a professional assertion that this code is correct, follows the team\'s standards, and you understand it fully.',
+  content:`
+<div class="phase-intro" data-num="6">
+  <div class="phase-intro-label">Phase 6 — Working on a Real Team</div>
+  <h3>The professional standards that turn skill into trust</h3>
+  <p>Two modules. Everything you've built leads here: the ability to participate fully in a team's engineering workflow, with AI-assisted code that earns the same trust as hand-written code.</p>
+</div>
+
+<h3>The PR Description That Earns Trust</h3>
+<p>A PR description is not a summary of what changed — the diff shows that. It's an explanation of <em>why</em> it changed and what the reviewer should focus on.</p>
+
+<div class="code-block">
+  <div class="code-top"><div class="code-dots"><div class="cd"></div><div class="cd"></div><div class="cd"></div></div><div class="code-filename">PR description template</div></div>
+  <pre><span class="k">## What this changes</span>
+Extracts the database query from userService into a new
+userRepository layer. userService now has no direct DB imports.
+
+<span class="k">## Why</span>
+Needed for unit testing the service layer in isolation.
+Follows the layer pattern established in orderService.
+
+<span class="k">## What to focus on in review</span>
+- The new getUserById signature in userRepository.ts
+- That getUser() in userService.ts still handles null correctly
+- That existing userService tests still pass (no behavior change)
+
+<span class="k">## What I tested</span>
+- All existing unit tests pass
+- Manual test: GET /users/:id returns same response as before
+- Manual test: GET /users/nonexistent still returns 404
+
+<span class="k">## Notes</span>
+Claude Code assisted with this refactor. I reviewed every
+changed line and can explain each one.</pre>
+</div>
+
+<div class="callout truth">
+  <div class="callout-label">✓ The Transparency Rule</div>
+  <p>Note that the template includes "Claude Code assisted." This is professional and appropriate. What it does NOT say is "Claude Code did this and I trust it." You reviewed every line. The AI assisted. You're the author. Own that distinction — it's what separates a trustworthy AI developer from a liability.</p>
+</div>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 6.1 — Write a Real PR Description</div>
+  <h4>For your most recent Claude Code session</h4>
+  <p>Using the template above, write a PR description for your most recent Claude Code session. Show it to someone (a teammate, a mentor, anyone with coding experience) and ask: "Would you feel confident reviewing this PR based on this description alone?" Get honest feedback.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>The person you show it to says they understand what changed, why, and what to look at — without needing to ask a clarifying question.</p>
+  </div>
+</div>
+`},
+
+{
+  id:'p6m2', phase:6, phaseName:'Working on a Real Team', dot:'dot-teal', badge:'badge-teal',
+  num:'6.2', title:'Receiving Feedback, Debugging, and the Long Game',
+  lead:'The final module. How to handle the moments that reveal whether your skills are real: reviews that push back, bugs in production, and the discipline to keep growing.',
+  content:`
+<h3>When a Senior Dev Pushes Back on Your Code</h3>
+<p>This will happen. The correct response to every piece of code review feedback is not "Claude produced this" and not defensive explanation. It's one of these three:</p>
+<ul>
+  <li><strong>"You're right — here's what I should have caught and why I didn't."</strong> (The right answer most of the time.)</li>
+  <li><strong>"I made that choice because [reason]. Does that not apply here?"</strong> (When you understand your decision and want to discuss it.)</li>
+  <li><strong>"I need to understand this better before I respond — can we discuss it?"</strong> (When you don't fully understand the feedback yet.)</li>
+</ul>
+
+<div class="callout danger">
+  <div class="callout-label">🚨 The One Answer That Ends Careers Early</div>
+  <p>"Claude Code generated it that way." This tells the reviewer you merged code you didn't understand. Once a senior developer hears this, they won't trust your PRs without heavy scrutiny — which is exactly what they should do. The only way to rebuild that trust is consistent evidence of understanding over time.</p>
+</div>
+
+<h3>Debugging Without AI as a Crutch</h3>
+<p>Production bugs will happen. Often at inconvenient times. You need a debugging methodology that doesn't start with "let me ask Claude Code about this."</p>
+<ul>
+  <li><strong>Read the error message carefully.</strong> Most errors tell you the file, line, and often what went wrong. Start there.</li>
+  <li><strong>Trace the data path.</strong> What came in? What went out? Where did the value change from what you expected?</li>
+  <li><strong>Isolate the condition.</strong> Does this always happen, or only for certain inputs? Narrowing this tells you where the bug lives.</li>
+  <li><strong>Form a hypothesis before changing anything.</strong> "I think X is happening because Y." Then verify it before fixing it.</li>
+</ul>
+
+<div class="callout truth">
+  <div class="callout-label">✓ AI in debugging</div>
+  <p>Claude Code is genuinely useful for debugging — but only once you've done the work above. "Here's the error, here's the relevant code, here's what I think is happening — am I right?" is a great prompt. "Here's an error, fix it" produces a patch, not understanding. You want understanding.</p>
+</div>
+
+<h3>The Long Game — How You Actually Become a Developer</h3>
+<p>This course gives you the foundation. The foundation is not the destination. The developers who grow fastest with AI tooling are the ones who:</p>
+<ul>
+  <li>Read every diff with genuine curiosity — "why did it do it that way?"</li>
+  <li>Occasionally write small pieces without AI, to keep the reading skills sharp</li>
+  <li>Post-mortem every AI session that produced wrong or unexpected output</li>
+  <li>Treat PR feedback as free education, not criticism</li>
+  <li>Build in public — the accountability of teammates is the fastest path to growth</li>
+</ul>
+
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 6.2 — The Capstone</div>
+  <h4>One complete refactor, start to finish, team-ready</h4>
+  <p>Pick a real refactor task in a real codebase. Complete the entire workflow: reconnaissance, characterization tests, branch, surgical prompts (multi-session if needed), full verification stack, git add -p, PR description written to the template. Present it for review to at least one other person. Respond to every piece of feedback with understanding, not deflection.</p>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>The reviewer says: "I'd merge this." And you can explain, without hesitation, every decision in the diff.</p>
+  </div>
+</div>
+
+<div class="callout truth">
+  <div class="callout-label">✓ You've earned the title</div>
+  <p>If you've completed every floor test in this course, you are no longer a Claude Code user. You are an AI-augmented developer with the literacy to work on a team, the discipline to produce trustworthy output, and the honesty to know exactly where your skills end and where you need to keep growing. That's a real developer. Now go prove it.</p>
+</div>
+`}
+
+]; // end MODULES
+
+// ── ASSESSMENT ──
+const assessAnswers = {};
+function selectAssess(el, qIdx, optIdx) {
+  const siblings = el.parentElement.querySelectorAll('.assess-opt');
+  siblings.forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  assessAnswers[qIdx] = optIdx;
+}
+
+function scoreAssessment() {
+  if (Object.keys(assessAnswers).length < 3) {
+    alert('Please answer all three questions first.');
+    return;
+  }
+  const score = Object.values(assessAnswers).reduce((a, b) => a + b, 0);
+  const result = document.getElementById('assessResult');
+  result.classList.add('show', 'honest');
+
+  if (score <= 2) {
+    result.innerHTML = `<h4>Your starting point: Strong base to build from</h4>
+    <p>You have real coding literacy and self-awareness about what you know. The structured workflow modules (Phase 5) are your highest-value investment. Phases 2–4 are a useful calibration check — skim them and spend serious time on the modules that surface gaps.</p>`;
+  } else if (score <= 4) {
+    result.innerHTML = `<h4>Your starting point: The target learner for this course</h4>
+    <p>You have functional experience with Claude Code but real gaps in the underlying literacy. This is exactly what this course is designed for. Don't skip Phase 2 or 3 — those gaps are actively costing you in code quality and team readiness. Work through them before Phase 5.</p>`;
+  } else {
+    result.innerHTML = `<h4>Your starting point: Honest and accurate — start at Phase 1</h4>
+    <p>You've been flying on autopilot and you know it. That self-awareness is actually an advantage — you're not going to waste time defending habits that need to change. Work through every module in order. Don't skip the floor tests. They're the only way to verify the literacy is real, not theoretical.</p>`;
+  }
+}
+
+// ── SIDEBAR BUILD ──
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  let currentPhase = 0;
+  MODULES.forEach(mod => {
+    if (mod.phase !== currentPhase) {
+      currentPhase = mod.phase;
+      const lbl = document.createElement('div');
+      lbl.className = 'phase-label';
+      lbl.innerHTML = `<div class="phase-dot ${mod.dot}"></div>Phase ${mod.phase}: ${mod.phaseName}`;
+      nav.appendChild(lbl);
+    }
+    const item = document.createElement('div');
+    item.className = 'nav-item' + (completedSet.has(mod.id) ? ' done' : '');
+    item.dataset.id = mod.id;
+    item.innerHTML = `<span class="mod-num">${mod.num}</span>${mod.title}`;
+    item.onclick = () => showModule(mod.id);
+    nav.appendChild(item);
+  });
+}
+
+// ── SECTIONS BUILD ──
+function buildSections() {
+  const container = document.getElementById('moduleSections');
+  MODULES.forEach((mod, idx) => {
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.id = `sec-${mod.id}`;
+
+    const quizHtml = mod.quiz ? `
+      <div class="quiz">
+        <div class="quiz-label">// knowledge check</div>
+        <div class="quiz-q">${mod.quiz.q}</div>
+        <div class="quiz-opts" id="qopts-${mod.id}">
+          ${mod.quiz.opts.map((o,i) => `<div class="quiz-opt" onclick="answerQ('${mod.id}',${i})">${o}</div>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfb-${mod.id}"></div>
+      </div>` : '';
+
+    const prevBtn = idx > 0 ? `<button class="btn btn-ghost" onclick="showModule('${MODULES[idx-1].id}')">← Previous</button>` : '';
+    const nextBtn = idx < MODULES.length-1 ? `<button class="btn btn-primary" onclick="showModule('${MODULES[idx+1].id}')">Next Module →</button>` : `<button class="btn btn-primary" onclick="showHero()">↩ Back to Start</button>`;
+
+    sec.innerHTML = `
+      <div class="mod-header">
+        <div class="mod-eyebrow">
+          <span class="phase-badge ${mod.badge}">Phase ${mod.phase} · ${mod.phaseName}</span>
+          <span class="mod-num">${mod.num}</span>
+        </div>
+        <h2>${mod.title}</h2>
+        <p class="section-lead">${mod.lead}</p>
+      </div>
+      ${mod.content}
+      ${quizHtml}
+      <div class="mod-footer">
+        ${prevBtn}
+        ${nextBtn}
+        <button class="btn btn-complete ${completedSet.has(mod.id)?'done':''}" id="cbtn-${mod.id}" onclick="toggleDone('${mod.id}')">
+          ${completedSet.has(mod.id)? '✓ Complete' : 'Mark Complete'}
+        </button>
+      </div>`;
+    container.appendChild(sec);
+  });
+}
+
+// ── STATE ──
+let completedSet = new Set(JSON.parse(localStorage.getItem('adf_done')||'[]'));
+
+function showModule(id) {
+  document.getElementById('heroView').style.display = 'none';
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const sec = document.getElementById(`sec-${id}`);
+  if (sec) { sec.classList.add('visible'); document.getElementById('mainContent').scrollTop = 0; }
+  const nav = document.querySelector(`.nav-item[data-id="${id}"]`);
+  if (nav) nav.classList.add('active');
+}
+
+function showHero() {
+  document.getElementById('heroView').style.display = 'block';
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('mainContent').scrollTop = 0;
+}
+
+function toggleDone(id) {
+  completedSet.has(id) ? completedSet.delete(id) : completedSet.add(id);
+  localStorage.setItem('adf_done', JSON.stringify([...completedSet]));
+  updateProgress();
+  const btn = document.getElementById(`cbtn-${id}`);
+  const nav = document.querySelector(`.nav-item[data-id="${id}"]`);
+  if (btn) { btn.textContent = completedSet.has(id)?'✓ Complete':'Mark Complete'; btn.classList.toggle('done',completedSet.has(id)); }
+  if (nav) nav.classList.toggle('done', completedSet.has(id));
+}
+
+function updateProgress() {
+  const pct = Math.round((completedSet.size / MODULES.length) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `${completedSet.size} / ${MODULES.length} complete`;
+}
+
+function answerQ(modId, chosen) {
+  const q = MODULES.find(m => m.id === modId).quiz;
+  document.querySelectorAll(`#qopts-${modId} .quiz-opt`).forEach((o,i) => {
+    o.classList.add('disabled');
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === chosen) o.classList.add('wrong');
+  });
+  const fb = document.getElementById(`qfb-${modId}`);
+  const ok = chosen === q.correct;
+  fb.textContent = (ok ? '✓ ' : '✗ ') + (ok ? q.fb.c : q.fb.w);
+  fb.className = `quiz-feedback show ${ok?'c':'w'}`;
+}
+
+buildSidebar();
+buildSections();
+updateProgress();
+</script>
+</body>
+</html>
