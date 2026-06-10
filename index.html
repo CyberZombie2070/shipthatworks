@@ -1714,7 +1714,7 @@ function buildPhaseCards() {
       '</div>' +
       '<div class="phase-card-body">' +
         mods.map(m =>
-          '<div class="module-row'+(completedModules.has(m.id)?' done':'')+'" onclick="showModuleView(\''+m.id+'\')">'+
+          '<div class="module-row'+(completedModules.has(m.id)?' done':'')+'" onclick="showModuleView(&#39;'+m.id+'&#39;)">'+
             '<span class="module-row-num">'+m.num+'</span>'+
             '<span class="module-row-title">'+m.title+'</span>'+
             '<span class="module-row-time">'+(TIME_MAP[m.id]||'30 min')+'</span>'+
@@ -1880,7 +1880,7 @@ function buildQuizHtml(modId) {
   return '<div class="quiz-wrap" id="qw-'+modId+'">' +
     '<div class="quiz-q">\ud83e\udde9 '+q.q+'</div>' +
     '<div class="quiz-options" id="qopts-'+modId+'">' +
-      q.opts.map(function(opt,i){ return '<div class="quiz-opt" onclick="answerQuiz(\''+modId+'\','+i+')">'+opt+'</div>'; }).join('') +
+      q.opts.map(function(opt,i){ return '<div class="quiz-opt" onclick="answerQuiz(&#39;'+modId+'&#39;,'+i+')">'+opt+'</div>'; }).join('') +
     '</div>' +
     '<div class="quiz-feedback" id="quiz-fb-'+modId+'"></div>' +
   '</div>';
