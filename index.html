@@ -3,1949 +3,390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Code Developer — From Vibe Prompter to Disciplined Engineer</title>
+<title>Ship That Works — Professional AI Developer Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-
 :root {
-  --bg:         #f8fafc;
-  --surface:    #ffffff;
-  --surface2:   #f1f5f9;
-  --border:     #e2e8f0;
-  --border2:    #cbd5e1;
-  --accent:     #2563eb;
-  --accent-bg:  #eff6ff;
-  --accent-dim: #93c5fd;
-  --success:    #16a34a;
-  --success-bg: #f0fdf4;
-  --warn:       #d97706;
-  --warn-bg:    #fffbeb;
-  --danger:     #dc2626;
-  --danger-bg:  #fef2f2;
-  --text:       #1e293b;
-  --text-muted: #64748b;
-  --text-dim:   #94a3b8;
-  --heading:    #0f172a;
-  --code-bg:    #0f172a;
-  --code-text:  #e2e8f0;
+  --bg: #0f1117; --surface: #161b22; --surface2: #1c2128;
+  --border: #30363d; --border2: #484f58;
+  --accent: #e8c547; --accent-bg: rgba(232,197,71,.08);
+  --success: #3fb950; --danger: #f85149; --warn: #d29922;
+  --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58;
+  --heading: #f0f6fc;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  line-height: 1.65;
-  padding-top: 56px;
-}
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.65; min-height: 100vh; }
 
-/* ── TOPNAV ── */
-.topnav {
+/* NAV */
+.nav {
   position: fixed; top: 0; left: 0; right: 0; height: 56px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  z-index: 200;
-  display: flex; align-items: center; gap: 0;
-  padding: 0 20px;
+  background: rgba(15,17,23,.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border); z-index: 100;
+  display: flex; align-items: center; padding: 0 32px; justify-content: space-between;
 }
-.tn-brand {
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none; color: inherit; flex-shrink: 0;
-  cursor: pointer;
-}
-.tn-logo {
-  width: 28px; height: 28px; background: var(--accent);
-  border-radius: 6px; display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
-  font-family: 'JetBrains Mono', monospace;
-}
-.tn-title {
-  font-size: 13px; font-weight: 600; color: var(--heading);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;
-}
-.tn-divider { width: 1px; height: 28px; background: var(--border); margin: 0 16px; flex-shrink: 0; }
-.tn-progress { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
-.tn-prog-bar {
-  flex: 1; height: 6px; background: var(--surface2);
-  border-radius: 3px; overflow: hidden; min-width: 0;
-}
-.tn-prog-fill {
-  height: 100%; background: var(--accent);
-  border-radius: 3px; transition: width 0.4s ease; width: 0%;
-}
-.tn-stats {
-  display: flex; gap: 6px; align-items: center;
-  font-size: 12px; color: var(--text-muted); flex-shrink: 0; margin-left: 16px;
-  font-variant-numeric: tabular-nums;
-}
-.tn-stat-sep { color: var(--border2); }
-.tn-hamburger {
-  display: none; margin-left: 12px; background: none; border: 1px solid var(--border);
-  border-radius: 6px; padding: 5px 8px; cursor: pointer; color: var(--text-muted);
-  font-size: 16px; line-height: 1;
-}
-
-/* ── MOBILE NAV OVERLAY ── */
-.mobile-overlay {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300;
-}
-.mobile-overlay.show { display: block; }
-.mobile-nav {
-  position: fixed; top: 0; right: 0; bottom: 0; width: 300px;
-  background: var(--surface); border-left: 1px solid var(--border);
-  z-index: 400; transform: translateX(100%); transition: transform .25s ease;
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.mobile-nav.open { transform: translateX(0); }
-.mobile-nav-hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-}
-.mobile-nav-hdr-title { font-weight: 600; font-size: 14px; }
-.mobile-nav-close {
-  background: none; border: none; cursor: pointer; font-size: 20px;
-  color: var(--text-muted); padding: 2px 6px;
-}
-.mobile-nav-body { flex: 1; overflow-y: auto; padding: 8px 0; }
-.mobile-nav-phase {
-  padding: 10px 20px 4px;
-  font-size: 10px; font-weight: 600; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace;
-}
-.mobile-nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 20px; cursor: pointer; font-size: 13px; color: var(--text-muted);
-  border-left: 2px solid transparent; transition: all .12s;
-}
-.mobile-nav-item:hover { background: var(--accent-bg); color: var(--accent); }
-.mobile-nav-item.active { border-left-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
-.mobile-nav-item.done { color: var(--success); }
-.mn-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); min-width: 26px; }
-.mn-check { margin-left: auto; font-size: 11px; color: var(--success); }
-
-/* ── HOME VIEW ── */
-.home-view { min-height: calc(100vh - 56px); }
-.home-container { max-width: 820px; margin: 0 auto; padding: 48px 24px 64px; }
-
-.home-hero { margin-bottom: 48px; }
-.home-eyebrow {
-  font-size: 11px; font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
-  font-family: 'JetBrains Mono', monospace;
-}
-.home-title {
-  font-size: 36px; font-weight: 700; color: var(--heading);
-  line-height: 1.15; margin-bottom: 8px;
-}
-.home-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 20px; }
-.home-meta {
-  display: flex; gap: 8px; align-items: center;
-  font-size: 13px; color: var(--text-dim);
-}
-.home-meta span { display: flex; align-items: center; }
-
-.home-prog-summary {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 16px 20px; margin-bottom: 32px;
-  display: flex; align-items: center; gap: 16px;
-}
-.hps-bar { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
-.hps-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .4s; }
-.hps-label { font-size: 13px; color: var(--text-muted); flex-shrink: 0; }
-
-/* Phase cards */
-.phase-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; margin-bottom: 12px; overflow: hidden;
-  transition: box-shadow .15s;
-}
-.phase-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.07); }
-.phase-card-header {
-  display: flex; align-items: center; gap: 14px;
-  padding: 18px 20px; cursor: pointer; user-select: none;
-}
-.phase-num-badge {
-  width: 36px; height: 36px; border-radius: 8px;
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-mark {
+  width: 32px; height: 32px; background: var(--accent); border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
-  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #0f1117;
 }
-.phase-card-info { flex: 1; min-width: 0; }
-.phase-card-name { font-size: 15px; font-weight: 600; color: var(--heading); }
-.phase-card-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-.phase-status {
-  font-size: 11px; font-weight: 600; padding: 3px 10px;
-  border-radius: 20px; flex-shrink: 0; font-family: 'JetBrains Mono', monospace;
-}
-.phase-status.complete { background: var(--success-bg); color: var(--success); }
-.phase-status.in-progress { background: var(--accent-bg); color: var(--accent); }
-.phase-status.not-started { background: var(--surface2); color: var(--text-dim); }
-.phase-chevron {
-  font-size: 18px; color: var(--text-dim); transition: transform .2s;
-  flex-shrink: 0; line-height: 1;
-}
-.phase-card.open .phase-chevron { transform: rotate(90deg); }
-.phase-card-body { display: none; border-top: 1px solid var(--border); }
-.phase-card.open .phase-card-body { display: block; }
-.module-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 20px 12px 26px; cursor: pointer;
-  border-bottom: 1px solid var(--border);
-  transition: background .1s; font-size: 13px;
-}
-.module-row:last-child { border-bottom: none; }
-.module-row:hover { background: var(--accent-bg); }
-.module-row.done { color: var(--text-dim); }
-.module-row-num {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  color: var(--text-dim); min-width: 28px; flex-shrink: 0;
-}
-.module-row-title { flex: 1; color: var(--heading); }
-.module-row.done .module-row-title { color: var(--text-dim); text-decoration: line-through; text-decoration-color: var(--border2); }
-.module-row-time { font-size: 11px; color: var(--text-dim); flex-shrink: 0; }
-.module-row-check { font-size: 12px; color: var(--success); margin-left: 4px; flex-shrink: 0; }
+.nav-logo-text { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--heading); }
+.nav-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color .15s; }
+.nav-link:hover { color: var(--accent); }
 
-/* ── MODULE VIEW ── */
-.module-view {
-  height: calc(100vh - 56px);
-  display: flex; flex-direction: column; overflow: hidden;
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 100px 24px 80px; position: relative; overflow: hidden;
 }
-.module-hdr-bar {
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: 10px 32px; display: flex; align-items: center;
-  justify-content: space-between; flex-shrink: 0;
+.hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(232,197,71,.06) 0%, transparent 60%);
+  pointer-events: none;
 }
-.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); flex-wrap: wrap; }
-.breadcrumb a { color: var(--accent); text-decoration: none; }
-.breadcrumb a:hover { text-decoration: underline; }
-.breadcrumb-sep { color: var(--border2); }
-.module-time-badge {
-  font-size: 11px; color: var(--text-muted); background: var(--surface2);
-  padding: 3px 10px; border-radius: 20px; flex-shrink: 0;
-  font-family: 'JetBrains Mono', monospace;
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
 }
-
-.module-body-wrap { flex: 1; display: flex; overflow: hidden; min-height: 0; }
-.module-content-col {
-  flex: 65; min-width: 0; overflow-y: auto;
-  padding: 48px 56px 80px 48px;
+.hero-title {
+  font-family: 'Space Grotesk', sans-serif; font-size: clamp(36px, 7vw, 68px);
+  font-weight: 700; color: var(--heading); line-height: 1.1; margin-bottom: 20px; max-width: 800px;
 }
-.module-outline-col {
-  flex: 35; max-width: 300px; min-width: 220px;
-  overflow-y: auto; height: 100%;
-  border-left: 1px solid var(--border); padding: 28px 20px;
-  background: var(--surface); flex-shrink: 0;
+.hero-title em { color: var(--accent); font-style: normal; }
+.hero-sub { font-size: clamp(14px, 2vw, 17px); color: var(--text-muted); max-width: 500px; line-height: 1.7; margin-bottom: 40px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn-primary {
+  padding: 12px 28px; background: var(--accent); color: #0f1117; border: none; border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
+  text-decoration: none; transition: all .15s; display: inline-block;
 }
-
-.mod-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.phase-tag {
-  font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 4px;
-  border: 1px solid; letter-spacing: .06em;
-  font-family: 'JetBrains Mono', monospace;
-}
-.mod-num-tag { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
-.mod-h1 {
-  font-size: 28px; font-weight: 700; color: var(--heading);
-  line-height: 1.2; margin-bottom: 10px;
-}
-.mod-lead {
-  font-size: 15px; color: var(--text-muted); max-width: 600px;
-  line-height: 1.7; margin-bottom: 36px;
-  padding-bottom: 28px; border-bottom: 1px solid var(--border);
-}
-
-/* Module content typography */
-.mod-body h3 {
-  font-size: 17px; font-weight: 600; color: var(--heading);
-  margin: 32px 0 12px; padding-top: 4px;
-}
-.mod-body h4 { font-size: 14px; font-weight: 600; color: var(--heading); margin: 20px 0 8px; }
-.mod-body p { margin-bottom: 14px; font-size: 14px; line-height: 1.75; color: var(--text); }
-.mod-body ul, .mod-body ol { padding-left: 20px; margin-bottom: 16px; }
-.mod-body li { font-size: 14px; line-height: 1.7; margin-bottom: 5px; color: var(--text); }
-.mod-body strong { color: var(--heading); font-weight: 600; }
-.mod-body em { font-style: italic; }
-.mod-body code {
-  font-family: 'JetBrains Mono', monospace; font-size: 12px;
-  background: var(--surface2); padding: 2px 6px; border-radius: 4px;
-  color: var(--accent); border: 1px solid var(--border);
-}
-
-/* Callouts */
-.callout {
-  border-radius: 8px; padding: 16px 20px; margin: 24px 0; border-left: 3px solid;
-}
-.callout-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-  letter-spacing: .15em; text-transform: uppercase; margin-bottom: 7px;
-}
-.callout p { font-size: 14px; margin-bottom: 0; line-height: 1.65; }
-.callout.truth, .callout.callout-truth { background: var(--success-bg); border-color: var(--success); }
-.callout.truth .callout-label { color: var(--success); }
-.callout.warning, .callout.callout-warn, .callout.warn { background: var(--warn-bg); border-color: var(--warn); }
-.callout.warning .callout-label, .callout.warn .callout-label { color: var(--warn); }
-.callout.danger { background: var(--danger-bg); border-color: var(--danger); }
-.callout.danger .callout-label { color: var(--danger); }
-.callout.info { background: var(--accent-bg); border-color: var(--accent); }
-.callout.info .callout-label { color: var(--accent); }
-
-/* Code blocks */
-.code-block {
-  background: var(--code-bg); border: 1px solid #1e293b;
-  border-radius: 8px; margin: 22px 0; overflow: hidden;
-}
-.code-header, .code-top {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 9px 16px; border-bottom: 1px solid #1e293b;
-  background: rgba(255,255,255,.04);
-}
-.code-label, .code-filename {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #64748b;
-}
-.code-dots { display: flex; gap: 5px; }
-.code-dot, .cd { width: 9px; height: 9px; border-radius: 50%; }
-.code-dot:nth-child(1), .cd:nth-child(1) { background: #ef4444; opacity: .7; }
-.code-dot:nth-child(2), .cd:nth-child(2) { background: #f59e0b; opacity: .7; }
-.code-dot:nth-child(3), .cd:nth-child(3) { background: #22c55e; opacity: .7; }
-pre {
-  padding: 18px 20px;
-  font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
-  line-height: 1.75; color: var(--code-text); overflow-x: auto; white-space: pre;
-  background: var(--code-bg);
-}
-/* index.html syntax classes */
-pre .comment { color: #475569; }
-pre .key     { color: #93c5fd; }
-pre .val     { color: #86efac; }
-pre .str     { color: #fcd34d; }
-pre .cmd     { color: #f87171; }
-/* foundations.html syntax classes */
-pre .c  { color: #475569; }
-pre .k  { color: #93c5fd; }
-pre .v  { color: #86efac; }
-pre .s  { color: #fcd34d; }
-pre .fn { color: #c4b5fd; }
-pre .kw { color: #f87171; }
-
-/* Comparison table */
-.compare-table {
-  width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 13px;
-}
-.compare-table th {
-  padding: 10px 14px; text-align: left;
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  letter-spacing: .1em; text-transform: uppercase; border-bottom: 2px solid var(--border);
-}
-.compare-table th:first-child { color: var(--danger); }
-.compare-table th:last-child  { color: var(--success); }
-.compare-table th:nth-child(2){ color: var(--text-dim); width: 18%; }
-.compare-table td {
-  padding: 10px 14px; border-bottom: 1px solid var(--border);
-  vertical-align: top; line-height: 1.5; color: var(--text); font-size: 13px;
-}
-.compare-table tr:last-child td { border-bottom: none; }
-.compare-table td:first-child { color: var(--text-muted); }
-.compare-table td:nth-child(2) { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; text-align: center; }
-
-/* tbl (foundations) */
-.tbl { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
-.tbl th {
-  padding: 10px 14px; text-align: left; font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  border-bottom: 2px solid var(--border); color: var(--text-muted);
-}
-.tbl td {
-  padding: 10px 14px; border-bottom: 1px solid var(--border);
-  vertical-align: top; line-height: 1.6; color: var(--text); font-size: 13px;
-}
-.tbl tr:last-child td { border-bottom: none; }
-.tbl td:first-child { color: var(--heading); font-weight: 500; }
-
-/* Pair (foundations) */
-.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-.pair-box { border-radius: 6px; overflow: hidden; }
-.pair-label { padding: 7px 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
-.pair-box.wrong .pair-label { background: #fef2f2; color: var(--danger); }
-.pair-box.right .pair-label { background: var(--success-bg); color: var(--success); }
-.pair-box pre { border-radius: 0; margin: 0; border-top: 1px solid #1e293b; }
-
-/* Exercise */
-.exercise {
-  background: var(--accent-bg); border: 1px solid var(--accent-dim);
-  border-radius: 8px; padding: 18px 22px; margin: 20px 0;
-}
-.exercise-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-  color: var(--accent); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px;
-}
-.exercise h4 { font-size: 14px; font-weight: 600; color: var(--heading); margin-bottom: 8px; }
-.exercise p, .exercise li { font-size: 13px; color: var(--text); line-height: 1.65; }
-.exercise ul, .exercise ol { padding-left: 18px; margin-top: 8px; }
-.exercise li { margin-bottom: 4px; }
-
-/* Floor test (foundations) */
-.floor-test {
-  background: var(--surface); border: 1px solid var(--warn);
-  border-radius: 8px; padding: 22px 24px; margin: 28px 0;
-}
-.floor-test-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-  color: var(--warn); letter-spacing: .15em; text-transform: uppercase;
-  margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
-}
-.floor-test-label::before { content: '⬛'; font-size: 10px; }
-.floor-test h4 { font-size: 15px; font-weight: 600; color: var(--heading); margin-bottom: 8px; }
-.floor-test p { font-size: 14px; color: var(--text); margin-bottom: 10px; }
-.floor-test ul { margin-bottom: 0; }
-.floor-test li { font-size: 13px; }
-.floor-test .pass-criteria { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
-.floor-test .pass-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--success);
-  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px;
-}
-
-/* Phase intro card (foundations) */
-.phase-intro {
-  background: linear-gradient(135deg, var(--accent-bg), var(--surface));
-  border: 1px solid var(--accent-dim); border-radius: 10px;
-  padding: 28px 32px; margin-bottom: 32px; position: relative; overflow: hidden;
-}
-.phase-intro::before {
-  content: attr(data-num); position: absolute; right: 20px; top: 8px;
-  font-size: 80px; font-weight: 700; color: rgba(37,99,235,.06);
-  line-height: 1; pointer-events: none; font-family: 'Inter', sans-serif;
-}
-.phase-intro-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent);
-  letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px;
-}
-.phase-intro h3 { font-size: 18px; margin-top: 0; margin-bottom: 10px; color: var(--heading); }
-.phase-intro p { font-size: 14px; color: var(--text-muted); margin-bottom: 0; }
-
-/* Lesson cards (index) */
-.lesson-grid { display: grid; gap: 12px; margin: 24px 0; }
-.lesson-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 18px 20px; cursor: pointer; transition: all .15s;
-}
-.lesson-card:hover { border-color: var(--accent); background: var(--accent-bg); }
-.lesson-card.expanded { border-color: var(--accent); }
-.lesson-card-header { display: flex; align-items: flex-start; gap: 14px; }
-.lesson-icon { font-size: 18px; min-width: 26px; margin-top: 1px; }
-.lesson-title { font-size: 14px; font-weight: 600; color: var(--heading); margin-bottom: 3px; }
-.lesson-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-.lesson-expand {
-  margin-left: auto; min-width: 18px; font-size: 16px; color: var(--text-dim);
-  transition: transform .2s;
-}
-.lesson-card.expanded .lesson-expand { transform: rotate(45deg); color: var(--accent); }
-.lesson-body { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-.lesson-card.expanded .lesson-body { display: block; }
-.lesson-body p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 12px; }
-
-/* Checklist - index.html (.check-box) */
-.checklist { list-style: none; margin: 18px 0; }
-.checklist li {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 10px 0; border-bottom: 1px solid var(--border);
-  font-size: 14px; color: var(--text);
-}
-.checklist li:last-child { border-bottom: none; }
-.check-box {
-  width: 18px; height: 18px; min-width: 18px; border: 1.5px solid var(--border2);
-  border-radius: 4px; margin-top: 2px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; transition: all .15s;
-  flex-shrink: 0;
-}
-.check-box:hover { border-color: var(--accent); }
-.check-box.checked { background: var(--accent); border-color: var(--accent); }
-.check-box.checked::after { content: '✓'; font-size: 11px; color: #fff; font-weight: 700; }
-
-/* Checklist - foundations.html (.chk) */
-.chk {
-  width: 17px; height: 17px; min-width: 17px; border: 1.5px solid var(--border2);
-  border-radius: 3px; cursor: pointer; display: flex; align-items: center;
-  justify-content: center; transition: all .15s; margin-top: 3px; flex-shrink: 0;
-}
-.chk:hover { border-color: var(--accent); }
-.chk.on { background: var(--success); border-color: var(--success); }
-.chk.on::after { content: '✓'; font-size: 10px; color: #fff; font-weight: 700; }
-
-/* Quiz - index.html */
-.quiz-wrap {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 24px; margin: 28px 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,.05);
-}
-.quiz-q { font-size: 15px; font-weight: 600; color: var(--heading); margin-bottom: 18px; line-height: 1.45; }
-.quiz-options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px; }
-.quiz-opt {
-  padding: 11px 16px; border: 1px solid var(--border);
-  border-radius: 6px; cursor: pointer; font-size: 13.5px;
-  color: var(--text); transition: all .12s; line-height: 1.5;
-}
-.quiz-opt:hover { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
-.quiz-opt.correct { border-color: var(--success); background: var(--success-bg); color: var(--success); }
-.quiz-opt.wrong   { border-color: var(--danger);  background: var(--danger-bg);  color: var(--danger); }
-.quiz-feedback {
-  display: none; font-size: 13px; line-height: 1.6;
-  padding: 12px 16px; border-radius: 6px; margin-top: 4px;
-}
-.quiz-feedback.show { display: block; }
-.quiz-feedback.correct { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; }
-.quiz-feedback.wrong   { background: var(--danger-bg);  color: var(--danger);  border: 1px solid #fecaca; }
-
-/* Quiz - foundations.html (different class names) */
-.quiz {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 24px; margin: 28px 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,.05);
-}
-.quiz-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent);
-  letter-spacing: .15em; text-transform: uppercase; margin-bottom: 12px;
-}
-.quiz .quiz-q { font-size: 15px; font-weight: 600; color: var(--heading); margin-bottom: 18px; line-height: 1.45; }
-.quiz-opts { display: flex; flex-direction: column; gap: 9px; }
-.quiz-opts .quiz-opt {
-  padding: 11px 16px; border: 1px solid var(--border);
-  border-radius: 6px; cursor: pointer; font-size: 13.5px;
-  color: var(--text); transition: all .12s; line-height: 1.5;
-}
-.quiz-opts .quiz-opt:hover { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
-.quiz-opts .quiz-opt.correct { border-color: var(--success); background: var(--success-bg); color: var(--success); }
-.quiz-opts .quiz-opt.wrong   { border-color: var(--danger);  background: var(--danger-bg);  color: var(--danger); }
-.quiz-opts .quiz-opt.disabled { pointer-events: none; }
-.quiz-feedback.c { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; padding: 12px 16px; border-radius: 6px; margin-top: 12px; font-size: 13px; line-height: 1.6; }
-.quiz-feedback.w { background: var(--danger-bg);  color: var(--danger);  border: 1px solid #fecaca; padding: 12px 16px; border-radius: 6px; margin-top: 12px; font-size: 13px; line-height: 1.6; }
-
-/* Tags */
-.tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 3px; margin: 0 2px; }
-.tag.green, .tag-g { background: #dcfce7; color: #15803d; }
-.tag.blue,  .tag-b { background: var(--accent-bg); color: var(--accent); }
-.tag.red,   .tag-r { background: #fee2e2; color: #b91c1c; }
-.tag.yellow,.tag-a { background: #fef9c3; color: #a16207; }
-.divider { height: 1px; background: var(--border); margin: 24px 0; }
-
-/* Assessment (foundations hero) */
-.honest-box {
-  background: var(--warn-bg); border: 1px solid #fde68a;
-  border-left: 3px solid var(--warn); border-radius: 8px;
-  padding: 20px 24px; margin-bottom: 28px;
-}
-.honest-box-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--warn); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
-.honest-box p { font-size: 14px; line-height: 1.7; margin-bottom: 8px; color: var(--text); }
-.honest-box p:last-child { margin-bottom: 0; }
-.assessment {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 24px; margin-bottom: 24px;
-}
-.assessment h3 { font-size: 17px; font-weight: 600; color: var(--heading); margin-bottom: 6px; }
-.assessment p.sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-.assess-q { margin-bottom: 16px; }
-.assess-q-text { font-size: 14px; color: var(--heading); margin-bottom: 10px; font-weight: 500; }
-.assess-opts { display: flex; flex-direction: column; gap: 7px; }
-.assess-opt {
-  display: flex; align-items: center; gap: 10px; padding: 9px 14px;
-  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
-  font-size: 13px; color: var(--text-muted); transition: all .12s;
-}
-.assess-opt:hover { border-color: var(--accent); color: var(--text); }
-.assess-opt.selected { border-color: var(--accent); background: var(--accent-bg); color: var(--heading); }
-.assess-dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--border2); flex-shrink: 0; transition: all .12s; }
-.assess-opt.selected .assess-dot { background: var(--accent); border-color: var(--accent); }
-.assess-btn {
-  margin-top: 20px; padding: 11px 28px; background: var(--accent); color: #fff;
-  border: none; border-radius: 6px; font-family: 'Inter', sans-serif;
-  font-size: 13px; font-weight: 600; cursor: pointer; transition: background .12s;
-}
-.assess-btn:hover { background: #1d4ed8; }
-.assess-result { display: none; margin-top: 20px; padding: 16px 20px; border-radius: 8px; border-left: 3px solid; }
-.assess-result.show { display: block; }
-.assess-result.honest { background: var(--warn-bg); border-color: var(--warn); }
-.assess-result h4 { font-size: 15px; font-weight: 600; color: var(--heading); margin-bottom: 8px; }
-.assess-result p { font-size: 13px; color: var(--text); line-height: 1.65; }
-.path-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 24px; }
-.path-card { padding: 16px; border: 1px solid var(--border); border-radius: 8px; text-align: center; background: var(--surface); }
-.path-card .num { font-size: 26px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
-.path-card .lbl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; }
-
-/* Module outline */
-.outline-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
-  letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim);
-  margin-bottom: 14px;
-}
-.outline-item {
-  font-size: 12px; color: var(--text-muted); padding: 6px 10px;
-  border-left: 2px solid var(--border); margin-bottom: 2px;
-  cursor: pointer; line-height: 1.4; transition: all .12s; border-radius: 0 4px 4px 0;
-}
-.outline-item:hover { color: var(--accent); border-left-color: var(--accent-dim); }
-.outline-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-bg); }
-
-/* Footer nav */
-.module-footer {
-  position: sticky; bottom: 0; background: var(--surface);
-  border-top: 1px solid var(--border); padding: 12px 48px;
-  display: flex; gap: 10px; align-items: center; z-index: 10;
-}
-.btn {
-  padding: 9px 20px; border-radius: 6px; border: none; cursor: pointer;
-  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
-  transition: all .12s; line-height: 1;
-}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
 .btn-ghost {
-  background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+  padding: 12px 28px; background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+  border-radius: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; text-decoration: none; transition: all .15s; display: inline-block;
 }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: #1d4ed8; }
-.btn-complete {
-  margin-left: auto; background: transparent; color: var(--text-muted);
-  border: 1px solid var(--border);
+
+/* QUIZ SECTION */
+.quiz-section { max-width: 620px; margin: 0 auto; padding: 80px 24px 40px; }
+.quiz-section-title {
+  font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700;
+  color: var(--heading); text-align: center; margin-bottom: 8px;
 }
-.btn-complete:hover { border-color: var(--success); color: var(--success); }
-.btn-complete.done { background: var(--success-bg); color: var(--success); border-color: #86efac; }
-.btn-complete.locked { opacity: .6; cursor: not-allowed; }
-.btn-complete.locked:hover { border-color: var(--border); color: var(--text-muted); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .tn-title { display: none; }
-  .tn-divider { display: none; }
-  .tn-stats { display: none; }
-  .tn-hamburger { display: block; }
-  .tn-progress { padding: 0; margin: 0 12px; }
-
-  .home-container { padding: 28px 16px 48px; }
-  .home-title { font-size: 26px; }
-  .phase-card-header { padding: 14px 16px; }
-  .module-row { padding: 10px 16px 10px 20px; }
-
-  .module-hdr-bar { padding: 10px 16px; }
-  .breadcrumb { font-size: 11px; }
-  .module-body-wrap { flex-direction: column; }
-  .module-content-col { padding: 28px 20px 60px; }
-  .module-outline-col { display: none; }
-  .module-footer { padding: 10px 16px; }
-
-  .pair { grid-template-columns: 1fr; }
-  .path-cards { grid-template-columns: 1fr 1fr; }
+.quiz-section-sub { font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 32px; }
+.qbox {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px;
 }
+.q-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent);
+  letter-spacing: .15em; text-transform: uppercase; margin-bottom: 16px;
+}
+.q-prog { height: 2px; background: var(--border); border-radius: 1px; margin-bottom: 20px; overflow: hidden; }
+.q-prog-fill { height: 100%; background: var(--accent); border-radius: 1px; transition: width .3s; }
+.q-step { font-size: 11px; color: var(--text-dim); margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; }
+.q-text { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; color: var(--heading); line-height: 1.4; margin-bottom: 20px; }
+.q-opts { display: flex; flex-direction: column; gap: 8px; }
+.q-opt {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+  border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+  transition: all .12s; font-size: 14px; color: var(--text);
+}
+.q-opt:hover { border-color: var(--accent); background: var(--accent-bg); }
+.q-opt.sel { border-color: var(--accent); background: var(--accent-bg); color: var(--heading); }
+.q-opt-mark {
+  width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim); transition: all .12s;
+}
+.q-opt.sel .q-opt-mark { background: var(--accent); border-color: var(--accent); color: #0f1117; font-weight: 700; }
+.q-nav { display: flex; justify-content: flex-end; margin-top: 20px; }
+.q-btn {
+  padding: 10px 24px; background: var(--accent); color: #0f1117; border: none; border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.q-btn:disabled { opacity: .35; cursor: not-allowed; }
+.q-btn:not(:disabled):hover { filter: brightness(1.1); }
 
+/* RESULT */
+.rbox {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 28px; text-align: center;
+}
+.rbox h2 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--heading); margin-bottom: 10px; }
+.rbox p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+.r-course {
+  display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+  border: 1px solid var(--border); border-radius: 10px; text-decoration: none;
+  transition: all .15s; margin-bottom: 10px; background: var(--surface2);
+}
+.r-course:hover { border-color: var(--accent); }
+.r-course.primary { border-color: var(--accent); background: var(--accent-bg); }
+.r-course-icon { font-size: 26px; flex-shrink: 0; }
+.r-course-info { text-align: left; flex: 1; }
+.r-course-name { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: var(--heading); margin-bottom: 2px; }
+.r-course-desc { font-size: 12px; color: var(--text-muted); }
+.r-arrow { font-size: 18px; color: var(--accent); flex-shrink: 0; }
+.r-retry {
+  margin-top: 14px; font-size: 12px; color: var(--text-dim); cursor: pointer;
+  background: none; border: none; font-family: 'Inter', sans-serif; text-decoration: underline;
+}
+.r-retry:hover { color: var(--text-muted); }
+
+/* COURSES SECTION */
+.courses-section { max-width: 860px; margin: 0 auto; padding: 80px 24px 60px; }
+.sec-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .15em; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+.sec-title { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: var(--heading); text-align: center; margin-bottom: 8px; }
+.sec-sub { font-size: 15px; color: var(--text-muted); text-align: center; margin-bottom: 40px; }
+.courses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.c-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 28px; text-decoration: none; transition: all .2s; display: block; position: relative; overflow: hidden;
+}
+.c-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent); opacity: 0; transition: opacity .2s;
+}
+.c-card:hover { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(232,197,71,.2), 0 8px 24px rgba(0,0,0,.3); }
+.c-card:hover::after { opacity: 1; }
+.c-tag {
+  display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px; margin-bottom: 14px;
+}
+.c-tag.beginner { background: rgba(63,185,80,.12); color: #3fb950; border: 1px solid rgba(63,185,80,.2); }
+.c-tag.advanced { background: rgba(232,197,71,.12); color: var(--accent); border: 1px solid rgba(232,197,71,.2); }
+.c-title { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--heading); line-height: 1.2; margin-bottom: 10px; }
+.c-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 18px; }
+.c-meta { display: flex; gap: 14px; font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; margin-bottom: 18px; }
+.c-cta { font-size: 13px; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+
+/* HOW IT WORKS */
+.how-section { max-width: 700px; margin: 0 auto; padding: 0 24px 80px; }
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+.how-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px; text-align: center; }
+.how-num { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+.how-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: var(--heading); margin-bottom: 6px; }
+.how-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+/* FOOTER */
+.footer {
+  border-top: 1px solid var(--border); padding: 28px 24px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-logo { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--heading); }
+.footer-logo span { color: var(--accent); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+.footer-links a:hover { color: var(--accent); }
+.footer-copy { font-size: 12px; color: var(--text-dim); }
+
+@media (max-width: 640px) {
+  .courses-grid { grid-template-columns: 1fr; }
+  .how-grid { grid-template-columns: 1fr; }
+  .nav { padding: 0 16px; }
+  .qbox { padding: 20px; }
+  .footer { flex-direction: column; text-align: center; }
+}
 </style>
 </head>
 <body>
 
-<!-- TOP NAV -->
-<header class="topnav">
-  <div class="tn-brand" onclick="showHome()" style="cursor:pointer">
-    <div class="tn-logo">cc</div>
-    <span class="tn-title">AI Code Developer</span>
-  </div>
-  <div class="tn-divider"></div>
-  <div class="tn-progress">
-    <div class="tn-prog-bar"><div class="tn-prog-fill" id="tnProgFill"></div></div>
-  </div>
-  <div class="tn-stats">
-    <span id="tnProgText">0 / 18</span>
-    <span class="tn-stat-sep">·</span>
-    <span id="tnPercent">0%</span>
-  </div>
-  <button class="tn-hamburger" onclick="toggleMobileNav()">&#9776;</button>
-</header>
+<nav class="nav">
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-mark">S</div>
+    <span class="nav-logo-text">Ship That Works</span>
+  </a>
+  <a class="nav-link" href="#courses">Courses</a>
+</nav>
 
-<!-- MOBILE NAV -->
-<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileNav()"></div>
-<div class="mobile-nav" id="mobileNav">
-  <div class="mobile-nav-hdr">
-    <span class="mobile-nav-hdr-title">Course Navigation</span>
-    <button class="mobile-nav-close" onclick="closeMobileNav()">&#x2715;</button>
+<section class="hero">
+  <div class="hero-eyebrow">// professional ai developer training</div>
+  <h1 class="hero-title">From vibe coder<br>to <em>disciplined engineer</em></h1>
+  <p class="hero-sub">Two structured courses that build the skills to own what you ship — not just make it run.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="#quiz">Find My Course →</a>
+    <a class="btn-ghost" href="#courses">Browse Courses</a>
   </div>
-  <div class="mobile-nav-body" id="mobileNavBody"></div>
-</div>
+</section>
 
-<!-- HOME VIEW -->
-<div class="home-view" id="homeView">
-  <div class="home-container">
-    <div class="home-hero">
-      <div class="home-eyebrow">Course Overview</div>
-      <h1 class="home-title">AI Code Developer</h1>
-      <p class="home-sub">From Vibe Prompter to Disciplined Engineer — a complete curriculum for Node.js and React developers.</p>
-      <div class="home-meta">
-        <span>5 Phases</span><span>·</span><span>18 Modules</span><span>·</span><span>~12 hours</span>
-      </div>
-    </div>
-    <div class="home-prog-summary">
-      <div class="hps-bar"><div class="hps-fill" id="hpsProgFill"></div></div>
-      <span class="hps-label" id="hpsLabel">0 / 18 complete</span>
-    </div>
-    <div id="phaseCards"></div>
-  </div>
-</div>
+<section class="quiz-section" id="quiz">
+  <h2 class="quiz-section-title">Which course is right for you?</h2>
+  <p class="quiz-section-sub">3 questions. 30 seconds. Honest recommendation.</p>
+  <div id="quizContainer"></div>
+</section>
 
-<!-- MODULE VIEW -->
-<div class="module-view" id="moduleView" style="display:none">
-  <div class="module-hdr-bar">
-    <div class="breadcrumb" id="breadcrumb"></div>
-    <span class="module-time-badge" id="moduleTimeBadge"></span>
+<section class="courses-section" id="courses">
+  <div class="sec-eyebrow">// the curriculum</div>
+  <h2 class="sec-title">Two paths. One destination.</h2>
+  <p class="sec-sub">Both courses teach you to own what you ship. Start where you are.</p>
+  <div class="courses-grid">
+    <a class="c-card" href="/foundations.html">
+      <div class="c-tag beginner">Beginner · Foundations</div>
+      <div class="c-title">AI Dev Foundations</div>
+      <p class="c-desc">From Claude Code user to team developer. Build the JavaScript, Node.js, and React literacy to read, explain, and debug the code you ship.</p>
+      <div class="c-meta"><span>6 Phases</span><span>20 Modules</span><span>~18 hours</span></div>
+      <div class="c-cta">Start Course <span>→</span></div>
+    </a>
+    <a class="c-card" href="/engineer.html">
+      <div class="c-tag advanced">Advanced · Engineering</div>
+      <div class="c-title">AI Code Engineer</div>
+      <p class="c-desc">From vibe prompter to disciplined engineer. Master workflow, prompt engineering, and production review practices for Node.js and React codebases.</p>
+      <div class="c-meta"><span>5 Phases</span><span>18 Modules</span><span>~12 hours</span></div>
+      <div class="c-cta">Start Course <span>→</span></div>
+    </a>
   </div>
-  <div class="module-body-wrap">
-    <div class="module-content-col" id="moduleContentCol">
+</section>
+
+<section class="how-section">
+  <div class="sec-eyebrow">// how it works</div>
+  <h2 class="sec-title">Structured. Practical. Verifiable.</h2>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">01</div>
+      <div class="how-title">Read the module</div>
+      <p class="how-desc">Deep content built from real codebases. No fluff, no filler. Every pattern you'll encounter in production.</p>
     </div>
-    <aside class="module-outline-col" id="moduleOutlineCol">
-      <div class="outline-label">In this module</div>
-      <div id="outlineItems"></div>
-    </aside>
+    <div class="how-card">
+      <div class="how-num">02</div>
+      <div class="how-title">Pass the quiz</div>
+      <p class="how-desc">Randomized knowledge checks gate completion. 3 of 4 correct to advance. Review explanations on every answer.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">03</div>
+      <div class="how-title">Apply it immediately</div>
+      <p class="how-desc">Every module ends with a floor test or exercise. Skill comes from doing, not reading about doing.</p>
+    </div>
   </div>
-  <div class="module-footer">
-    <button class="btn btn-ghost" id="prevBtn" style="display:none">&#8592; Previous</button>
-    <button class="btn btn-primary" id="nextBtn">Next &#8594;</button>
-    <button class="btn btn-complete" id="completeBtn">Mark Complete</button>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">Ship<span>That</span>Works</div>
+  <div class="footer-links">
+    <a href="/foundations.html">AI Dev Foundations</a>
+    <a href="/engineer.html">AI Code Engineer</a>
   </div>
-</div>
+  <div class="footer-copy">shipthatworks.dev</div>
+</footer>
 
 <script>
-const MODULES = [
-  // ──────────────────────────────────────────
-  // PHASE 1: MENTAL MODEL
-  // ──────────────────────────────────────────
+const QUIZ_QUESTIONS = [
   {
-    id: 'p1m1', phase: 1, phaseName: 'Mental Model', phaseColor: '',
-    num: '1.1', title: 'The Magic Chatbox Problem',
-    icon: '🧠',
-    lead: 'Before you touch a single prompt, you need to understand exactly what Claude Code is — and isn\'t.',
-    content: `
-      <p>Most developers approach Claude Code the same way they approach Google: type something vague, hope for something useful, and paste whatever comes back. This is the fastest path to an unmaintainable codebase and a false sense of productivity.</p>
-
-      <div class="callout danger">
-        <div class="callout-label">⚠ The Core Illusion</div>
-        <p>Claude Code doesn't understand your codebase. It builds a model of it from what you show it. The quality of that model is entirely determined by you. Bad input, bad output — at the speed of light.</p>
-      </div>
-
-      <h3>What Claude Code Actually Is</h3>
-      <p>Think of it as a highly capable, amnesiac contractor. Brilliant execution. Zero long-term memory. Every session, you are re-onboarding them from scratch. Your job is to be the best technical lead they've ever had.</p>
-
-      <table class="compare-table">
-        <tr><th>What People Think</th><th>→</th><th>Reality</th></tr>
-        <tr><td>"It understands my project"</td><td>→</td><td>It understands only what's in its context window right now</td></tr>
-        <tr><td>"It won't break things"</td><td>→</td><td>It will confidently break exactly what you didn't mention</td></tr>
-        <tr><td>"I can trust its output"</td><td>→</td><td>You can trust its syntax; you must verify its logic</td></tr>
-        <tr><td>"More detail = better results"</td><td>→</td><td>Precise constraints = better results. Rambling = noise</td></tr>
-        <tr><td>"It's doing the work"</td><td>→</td><td>You're directing. It's executing. The decision-making stays with you.</td></tr>
-      </table>
-
-      <h3>The Correct Mental Model</h3>
-      <p>You are the <strong>engineering lead</strong>. Claude Code is a <strong>senior IC who executes</strong> exactly what you specify, no more. The moment you abdicate that lead role — hoping it figures out intent from vague instructions — you've lost control of your codebase.</p>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ The Rule</div>
-        <p>If you wouldn't be able to review Claude Code's output and verify it's correct, you don't understand the task well enough to delegate it yet. Understand first. Delegate second.</p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 1.1</div>
-        <h4>The Constraint Inventory</h4>
-        <p>Pick a component or module in your current project. Before opening Claude Code, write down:</p>
-        <ol>
-          <li>What this code is supposed to do (one sentence)</li>
-          <li>What it must never do (at least 3 constraints)</li>
-          <li>What other code depends on it (interfaces)</li>
-          <li>How you would know if it's broken</li>
-        </ol>
-        <p>If you can't complete this in 10 minutes, you're not ready to let Claude Code touch it.</p>
-      </div>
-    `
+    q: 'How long have you been using Claude Code or similar AI coding tools?',
+    opts: [
+      { text: 'Just getting started — less than 3 months', score: 0 },
+      { text: '3 to 12 months — have some experience', score: 1 },
+      { text: 'Over a year — I use it as part of my regular workflow', score: 2 }
+    ]
   },
-
   {
-    id: 'p1m2', phase: 1, phaseName: 'Mental Model', phaseColor: '',
-    num: '1.2', title: 'Context Window Fundamentals',
-    icon: '📐',
-    lead: 'The context window is your working memory budget. Burn it wrong and your session becomes unreliable.',
-    content: `
-      <p>Claude Code operates within a finite context window. Every file you reference, every instruction you give, every previous exchange — it all competes for the same limited space. As the window fills, older context gets deprioritized. This is the root cause of most "Claude drifted halfway through" complaints.</p>
-
-      <h3>How Context Degrades</h3>
-      <ul>
-        <li><strong>Early session:</strong> Full fidelity. Claude has sharp recall of all instructions.</li>
-        <li><strong>Mid session:</strong> Subtle drift begins. Original constraints may be under-weighted.</li>
-        <li><strong>Late session:</strong> Real risk of contradicting earlier decisions, ignoring edge cases you specified, or reverting to generic patterns.</li>
-      </ul>
-
-      <div class="callout warning">
-        <div class="callout-label">⚠ Warning Pattern</div>
-        <p>If you notice Claude Code producing output that feels "generic" or contradicts an earlier instruction — your context window is degraded. Start a new session, not a corrective prompt.</p>
-      </div>
-
-      <h3>Practical Session Management</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-          <div class="code-label">session-discipline.md</div>
-        </div>
-        <pre><span class="comment"># Rules for long refactors</span>
-
-<span class="key">Session size:</span>  <span class="val">One logical unit of work per session</span>
-<span class="key">Commit cadence:</span>  <span class="val">Commit before ending each session — anchors state</span>
-<span class="key">Session start:</span>  <span class="val">Always re-state your CLAUDE.md goals + current task</span>
-<span class="key">Warning sign:</span>  <span class="val">Any output that ignores a constraint you specified = new session</span>
-<span class="key">Never:</span>  <span class="val">Continue a session after noticing drift hoping it self-corrects</span></pre>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 1.2</div>
-        <h4>Session Boundary Practice</h4>
-        <p>Take a medium-sized refactor task (e.g., "extract data fetching from 3 React components into a shared hook"). Break it into discrete session-sized chunks where each chunk:</p>
-        <ol>
-          <li>Has one clear deliverable</li>
-          <li>Can be committed independently</li>
-          <li>Can be verified correct without the other chunks being done</li>
-        </ol>
-        <p>If you can't break it down this way, the task scope is too large. Break it down further.</p>
-      </div>
-    `
+    q: 'When you review code Claude Code generates, you typically...',
+    opts: [
+      { text: 'Accept it if it seems to work — I trust it gets it right', score: 0 },
+      { text: 'Skim it but might miss subtle bugs or bad patterns', score: 1 },
+      { text: 'Read it carefully and can catch when the logic or patterns are wrong', score: 2 }
+    ]
   },
-
   {
-    id: 'p1m3', phase: 1, phaseName: 'Mental Model', phaseColor: '',
-    num: '1.3', title: 'Ownership vs. Delegation',
-    icon: '⚖️',
-    lead: 'The hardest skill: knowing exactly which decisions you must own and which you can safely delegate.',
-    content: `
-      <p>New AI developers make one of two mistakes: they either delegate nothing (making Claude Code a fancy autocomplete) or they delegate everything (including decisions that require engineering judgment). Both are wrong.</p>
-
-      <h3>The Delegation Matrix</h3>
-
-      <table class="compare-table">
-        <tr><th>Safe to Delegate</th><th></th><th>You Must Own</th></tr>
-        <tr><td>Boilerplate generation</td><td>→</td><td>Architectural decisions</td></tr>
-        <tr><td>Syntax transformation (class → hooks)</td><td>→</td><td>Data flow and state ownership</td></tr>
-        <tr><td>Type annotation</td><td>→</td><td>Security-sensitive logic</td></tr>
-        <tr><td>Test scaffolding</td><td>→</td><td>Edge case identification</td></tr>
-        <tr><td>Import reorganization</td><td>→</td><td>Performance tradeoffs</td></tr>
-        <tr><td>Formatting and style consistency</td><td>→</td><td>Race conditions and async behavior</td></tr>
-        <tr><td>Repetitive pattern application</td><td>→</td><td>Business logic correctness</td></tr>
-      </table>
-
-      <div class="callout danger">
-        <div class="callout-label">🚨 Hard Rule</div>
-        <p>If getting it wrong would be a security issue, a data loss issue, or a production incident — you write it yourself or you review it line-by-line with the same scrutiny you'd apply to an untrusted PR. No exceptions.</p>
-      </div>
-
-      <h3>The "Can I Review This?" Test</h3>
-      <p>Before delegating any task, ask yourself: <em>If Claude Code produces output for this, can I review it and confidently say it's correct?</em> If the answer is no — you need to either learn the domain first or break the task into smaller pieces you can actually evaluate.</p>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 1.3</div>
-        <h4>Build Your Delegation Map</h4>
-        <p>List 10 specific tasks from your current project. Categorize each as: <span class="tag green">DELEGATE</span> <span class="tag yellow">DELEGATE + REVIEW</span> <span class="tag red">OWN</span>. For every "DELEGATE + REVIEW" item, define what "reviewed correctly" means before you start.</p>
-      </div>
-    `
-  },
-
-  // ──────────────────────────────────────────
-  // PHASE 2: ENVIRONMENT SETUP
-  // ──────────────────────────────────────────
-  {
-    id: 'p2m1', phase: 2, phaseName: 'Environment Setup', phaseColor: 'blue',
-    num: '2.1', title: 'CLAUDE.md — Your Engineering Contract',
-    icon: '📄',
-    lead: 'CLAUDE.md is the most important file in an AI-augmented project. Most people don\'t write one. The ones who do write bad ones.',
-    content: `
-      <p>CLAUDE.md is a file in your project root that Claude Code reads at the start of every session. It is your persistent instruction set — the thing that stops Claude Code from reinventing your architecture every session because you forgot to mention your conventions again.</p>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ What CLAUDE.md Actually Does</div>
-        <p>It is a contract between you and the model. Every decision you've already made that Claude should never question or override. The more specific and enforceable, the more value it provides.</p>
-      </div>
-
-      <h3>A Production-Grade CLAUDE.md</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-          <div class="code-label">CLAUDE.md — complete template</div>
-        </div>
-        <pre><span class="comment"># Project: [Name]
-# Last updated: [date] — keep this current</span>
-
-<span class="key">## Architecture</span>
-- Express API (Node 20+) + React 18 SPA
-- State: React Query for server state, Zustand for UI state
-- Styling: Tailwind only — no CSS-in-JS, no inline styles
-- Auth: JWT via httpOnly cookie — never localStorage
-
-<span class="key">## Folder Structure (do not change)</span>
-- /api — Express routes and middleware only
-- /services — business logic, no Express imports allowed
-- /hooks — React hooks, no direct API calls (use services/)
-- /components — presentational only, no data fetching
-
-<span class="key">## Coding Rules</span>
-- TypeScript strict mode — no 'any', no type assertions without comment
-- All async functions must have explicit error handling
-- No console.log in production paths — use logger.ts
-- Tests must exist before refactoring a function
-
-<span class="key">## NEVER</span>
-- Touch /migrations without explicit instruction
-- Change the auth middleware
-- Add dependencies without listing them for approval
-- Remove error boundaries
-
-<span class="key">## Test Conventions</span>
-- Vitest for unit, Playwright for E2E
-- Test file lives next to the file it tests: foo.ts → foo.test.ts
-- Test names: "should [behavior] when [condition]"
-
-<span class="key">## Current Session Goal</span>
-<span class="val">[UPDATE THIS EACH SESSION — most important line]</span></pre>
-      </div>
-
-      <h3>The Single Most Important Line</h3>
-      <p>The "Current Session Goal" at the bottom. Update it every time you open a new session. This is what prevents Claude from helpfully solving problems you didn't ask it to solve.</p>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 2.1</div>
-        <h4>Write Your CLAUDE.md</h4>
-        <p>For your current project, write a CLAUDE.md that includes: architecture overview, folder structure contract, at least 5 hard coding rules, and a NEVER section. Show it to a teammate and ask them: "Would you know exactly what Claude is and isn't allowed to do?" If they hesitate, rewrite it.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p2m2', phase: 2, phaseName: 'Environment Setup', phaseColor: 'blue',
-    num: '2.2', title: 'Git as Your Safety Net',
-    icon: '🔀',
-    lead: 'Your git strategy determines how badly an AI session can hurt you. Set this up wrong and you lose the ability to recover.',
-    content: `
-      <p>AI-assisted development is high-velocity. You can generate changes across 50 files in 10 minutes. Without a deliberate git strategy, a single session can leave you unable to safely rollback, review, or explain what changed.</p>
-
-      <h3>The AI-Dev Branch Strategy</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-          <div class="code-label">terminal</div>
-        </div>
-        <pre><span class="comment"># Before every Claude Code session</span>
-<span class="cmd">git checkout -b</span> <span class="val">ai/refactor-auth-middleware</span>
-
-<span class="comment"># Checkpoint commits — after each logical unit</span>
-<span class="cmd">git add -p</span>  <span class="comment"># interactive staging — review every hunk</span>
-<span class="cmd">git commit -m</span> <span class="str">"refactor(auth): extract token validation [ai-assisted]"</span>
-
-<span class="comment"># If session goes wrong — full rollback</span>
-<span class="cmd">git checkout</span> main
-<span class="cmd">git branch -D</span> ai/refactor-auth-middleware
-
-<span class="comment"># If session is good — squash before merging</span>
-<span class="cmd">git rebase -i</span> main  <span class="comment"># clean up the commit history</span></pre>
-      </div>
-
-      <div class="callout warning">
-        <div class="callout-label">⚠ Non-Negotiable Rule</div>
-        <p>Always use <code>git add -p</code> (patch mode) — never <code>git add .</code> — when committing AI-assisted changes. This forces you to read every diff hunk before it enters your commit history. This is not optional.</p>
-      </div>
-
-      <h3>Commit Message Convention</h3>
-      <p>Tag AI-assisted commits. Your team deserves to know what to scrutinize more carefully in review. Use a consistent marker like <span class="tag blue">[ai]</span> or <span class="tag blue">[ai-assisted]</span> in commit messages.</p>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 2.2</div>
-        <h4>Refactor One Function with Full Git Discipline</h4>
-        <p>Pick a single utility function. Create a branch. Use Claude Code to refactor it. Use <code>git add -p</code> to stage. Write a proper commit message. Then do a self-review of the diff as if you were a senior dev reviewing an untrusted contributor's PR. Document what you would have caught.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p2m3', phase: 2, phaseName: 'Environment Setup', phaseColor: 'blue',
-    num: '2.3', title: 'The Test Harness First Principle',
-    icon: '🧪',
-    lead: 'Refactoring without tests is not refactoring. It\'s rewriting while pretending you have a safety net.',
-    content: `
-      <p>This principle is not new. What is new is that AI-assisted refactoring at scale makes violating it catastrophic. Claude Code will happily restructure your entire Express API without tests. It'll look correct. It might not be.</p>
-
-      <h3>Characterization Tests: Your First Move on Legacy Code</h3>
-      <p>Before touching a single line of legacy code, write tests that document current behavior — including behavior that might be bugs. These are called characterization tests. Their job is not to verify correctness. Their job is to tell you when anything changes.</p>
-
-      <div class="code-block">
-        <div class="code-header">
-          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-          <div class="code-label">legacy/userService.test.ts — characterization approach</div>
-        </div>
-        <pre><span class="comment">// We're not saying this behavior is CORRECT.
-// We're saying: tell us if it CHANGES.</span>
-describe(<span class="str">'userService.getUser — current behavior'</span>, () => {
-  it(<span class="str">'should return null for unknown id (not throw)'</span>, async () => {
-    <span class="comment">// This might be a bug. Document it anyway.</span>
-    const result = await userService.getUser(<span class="str">'nonexistent'</span>);
-    expect(result).toBeNull();
-  });
-
-  it(<span class="str">'should return user without password field'</span>, async () => {
-    const user = await userService.getUser(testUserId);
-    expect(user).not.toHaveProperty(<span class="str">'password'</span>);
-  });
-});</pre>
-      </div>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ The Rule for AI Refactors</div>
-        <p>Characterization tests before the refactor. All green after the refactor. Any red test = the refactor changed observable behavior. Investigate before merging.</p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 2.3</div>
-        <h4>Characterize Before You Refactor</h4>
-        <p>Pick an untested Express route handler or React component. Use Claude Code to help you write characterization tests for its current behavior. Then run them. Fix any tests that don't actually reflect real behavior. Now you have your safety net. Don't touch the source code until this is done.</p>
-      </div>
-    `
-  },
-
-  // ──────────────────────────────────────────
-  // PHASE 3: PROMPT ENGINEERING FOR CODE
-  // ──────────────────────────────────────────
-  {
-    id: 'p3m1', phase: 3, phaseName: 'Prompt Engineering for Code', phaseColor: 'warn',
-    num: '3.1', title: 'Anatomy of a Surgical Prompt',
-    icon: '✂️',
-    lead: 'Vague prompts produce vague code. The structure of your prompt determines the quality of your output before Claude writes a single character.',
-    content: `
-      <p>Most developers treat prompts like search queries. They're not. They're engineering specifications. The prompt <em>is</em> the design document for the output you'll receive. Treat it accordingly.</p>
-
-      <h3>The 5-Part Prompt Structure</h3>
-
-      <div class="code-block">
-        <div class="code-header">
-          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-          <div class="code-label">prompt-anatomy.md</div>
-        </div>
-        <pre><span class="key">[1. ROLE / CONTEXT]</span>
-You are working in an Express + React app with TypeScript strict mode.
-The auth layer uses httpOnly JWT cookies (see /middleware/auth.ts).
-
-<span class="key">[2. THE EXACT TASK]</span>
-Refactor the getUserById function in /services/userService.ts.
-Extract the database query into a separate repository function.
-The service function should not import from the database layer directly.
-
-<span class="key">[3. CONSTRAINTS]</span>
-- Keep the public function signature identical (return type must not change)
-- Do not modify the calling code in /api/users.ts
-- Use the existing db utility in /lib/db.ts — do not introduce a new ORM
-
-<span class="key">[4. DEFINITION OF DONE]</span>
-- All existing tests in userService.test.ts still pass
-- A new userRepository.ts file exists with the query function
-- userService.ts no longer imports from /lib/db.ts directly
-
-<span class="key">[5. WHAT NOT TO DO]</span>
-- Do not add error handling beyond what already exists
-- Do not refactor any other functions in userService.ts
-- Do not add TypeScript generics — keep it simple</pre>
-      </div>
-
-      <h3>Before vs. After</h3>
-      <table class="compare-table">
-        <tr><th>Vibe Prompt</th><th></th><th>Surgical Prompt</th></tr>
-        <tr><td>"Clean up the user service"</td><td>→</td><td>Specific function, specific extraction, exact constraints</td></tr>
-        <tr><td>"Add error handling"</td><td>→</td><td>Which function, which error types, what the handler should do</td></tr>
-        <tr><td>"Refactor to use hooks"</td><td>→</td><td>Which component, which state, what the hook interface should look like</td></tr>
-        <tr><td>"Make it more maintainable"</td><td>→</td><td>Not a valid prompt. Define what maintainable means first.</td></tr>
-      </table>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 3.1</div>
-        <h4>Rewrite 3 Bad Prompts</h4>
-        <p>Take 3 prompts you've actually used with Claude Code or a similar tool. Rewrite each using the 5-part structure. Run them both and compare the output. Document the delta. You will never go back.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p3m2', phase: 3, phaseName: 'Prompt Engineering for Code', phaseColor: 'warn',
-    num: '3.2', title: 'Scope Control: The Single Most Important Skill',
-    icon: '🎯',
-    lead: 'Claude Code will helpfully solve problems you didn\'t ask it to solve. This is a bug, not a feature.',
-    content: `
-      <p>Claude Code has a bias toward being comprehensive. Ask it to refactor a function and it will refactor functions near it. Ask it to fix a bug and it will "improve" surrounding code. Without explicit scope control, you lose the ability to track what actually changed and why.</p>
-
-      <div class="callout danger">
-        <div class="callout-label">🚨 The Scope Creep Problem</div>
-        <p>Every line Claude changes outside your specified scope is a line you didn't review with intent. Multiply this across a large refactor and you have an unmaintainable diff that no one can safely approve.</p>
-      </div>
-
-      <h3>Hard Scope Boundaries</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-          <div class="code-label">scope-control phrases to always include</div>
-        </div>
-        <pre><span class="comment"># Explicit file locks</span>
-<span class="str">"Only modify /services/userService.ts. Do not touch any other file."</span>
-
-<span class="comment"># Function-level lock</span>
-<span class="str">"Only modify the getUserById function. 
-Leave all other functions in the file unchanged."</span>
-
-<span class="comment"># Interface preservation</span>
-<span class="str">"The public API of this module must not change. 
-All existing exports must remain with identical signatures."</span>
-
-<span class="comment"># Dependency lock</span>
-<span class="str">"Do not add or remove any npm dependencies. 
-Use only what is already imported in this file."</span>
-
-<span class="comment"># Explicit end state</span>
-<span class="str">"When you are done, list every file you modified 
-and every line you changed, with the reason."</span></pre>
-      </div>
-
-      <h3>The Audit Prompt</h3>
-      <p>After any Claude Code session, run this as your final prompt before reviewing the diff:</p>
-      <div class="callout info">
-        <div class="callout-label">📋 Audit Prompt Template</div>
-        <p><em>"List every file you modified in this session. For each file, list every function or component you changed. For each change, state the reason. Flag anything you changed that I did not explicitly ask you to change."</em></p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 3.2</div>
-        <h4>The Scope Test</h4>
-        <p>Give Claude Code a task with zero scope constraints. Review the diff. Then repeat the same task with explicit scope boundaries. Compare the diffs. Measure how many extra files were touched in the first run. This number is your scope debt.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p3m3', phase: 3, phaseName: 'Prompt Engineering for Code', phaseColor: 'warn',
-    num: '3.3', title: 'Prompt Patterns for Node.js',
-    icon: '⚙️',
-    lead: 'Six high-value prompt patterns specifically for Express/Node.js refactoring work.',
-    content: `
-      <h3>Pattern 1: Route Handler Extraction</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>Extract the business logic from the POST /users route in /api/users.ts 
-into a createUser function in /services/userService.ts. 
-
-The route handler should only: validate input, call the service, 
-and format the HTTP response. No business logic should remain in the route.
-Keep the HTTP status codes identical. Do not change error response shapes.</pre>
-      </div>
-
-      <h3>Pattern 2: Middleware Audit</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>Review /middleware/auth.ts. Do not modify it.
-List every assumption it makes about the request object.
-List every edge case it does not handle.
-List every security concern you identify.
-Output as a structured list only — no code changes.</pre>
-      </div>
-
-      <h3>Pattern 3: Async Error Hardening</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>Add explicit async error handling to every async function 
-in /services/orderService.ts that currently has none. 
-
-Rules: use try/catch, rethrow with our AppError class from /lib/errors.ts, 
-preserve the original error as the cause. 
-Do not change function signatures. Do not add logging (we handle that at the middleware level).</pre>
-      </div>
-
-      <h3>Pattern 4: Dependency Injection Refactor</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>Refactor /services/emailService.ts to accept its dependencies 
-(the mailer and logger) as constructor parameters instead of importing them directly.
-
-Output only the modified emailService.ts. 
-Also output the changes needed in the ONE place that instantiates this service. 
-Do not change the calling interface — functions should have identical signatures.</pre>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 3.3</div>
-        <h4>Apply Two Patterns</h4>
-        <p>Pick two patterns above. Apply them to real files in your project. For each, compare the prompt structure you used vs. a vague equivalent. Document what the constraint language bought you in output quality.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p3m4', phase: 3, phaseName: 'Prompt Engineering for Code', phaseColor: 'warn',
-    num: '3.4', title: 'Prompt Patterns for React',
-    icon: '⚛️',
-    lead: 'React-specific patterns for component decomposition, hook extraction, and state migration.',
-    content: `
-      <h3>Pattern 1: Large Component Decomposition</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>Break UserProfilePage.tsx (currently 650 lines) into smaller components.
-
-Rules:
-- Keep all existing props interfaces — do not change what parents pass in
-- Each new component must be in its own file in /components/UserProfile/
-- No component should fetch data — lift that to UserProfilePage
-- Use the existing design system components from /components/ui/ 
-- Output a migration plan first, then implement one component at a time
-- Stop after each component and wait for my approval before continuing</pre>
-      </div>
-
-      <h3>Pattern 2: Class to Hook Migration</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>Convert LegacyForm.tsx from a class component to a functional component with hooks.
-
-Non-negotiable constraints:
-- All existing ref behavior must be preserved exactly
-- componentDidMount logic goes into useEffect with correct dependency array — 
-  explain your reasoning for the deps
-- All error boundary logic must move to a parent ErrorBoundary wrapper (provide it)
-- The rendered JSX output must be byte-for-byte identical (do not reformat)</pre>
-      </div>
-
-      <h3>Pattern 3: Data Fetching Centralization</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">prompt</div></div>
-        <pre>These 4 components all contain duplicate fetch logic for /api/users:
-- UserList.tsx, UserSearch.tsx, AdminPanel.tsx, UserDropdown.tsx
-
-Extract into a single useUsers hook in /hooks/useUsers.ts using React Query.
-The hook must support: filtering, pagination, and a refresh trigger.
-Each component should be updated to use the hook — show me the diff for each.
-Do not change any component's rendered output.</pre>
-      </div>
-
-      <div class="callout warning">
-        <div class="callout-label">⚠ React-Specific Trap</div>
-        <p>When migrating to hooks, always ask Claude Code to explicitly justify every useEffect dependency array. This is the single highest-risk area for AI-generated React code — incorrect deps cause infinite loops and stale closures that are hard to debug.</p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 3.4</div>
-        <h4>Extract a Custom Hook</h4>
-        <p>Find a React component in your project that contains fetch logic. Use the Pattern 3 template to extract it into a custom hook. Before running the refactor, write down every behavioral guarantee the component currently provides. After the refactor, verify each one still holds.</p>
-      </div>
-    `
-  },
-
-  // ──────────────────────────────────────────
-  // PHASE 4: THE REFACTOR WORKFLOW
-  // ──────────────────────────────────────────
-  {
-    id: 'p4m1', phase: 4, phaseName: 'The Refactor Workflow', phaseColor: 'danger',
-    num: '4.1', title: 'Pre-Refactor: The Reconnaissance Protocol',
-    icon: '🔍',
-    lead: 'The work you do before the first prompt determines 80% of the outcome. Skip this and you\'re guessing.',
-    content: `
-      <p>Most developers open a new session and start prompting immediately. This is backwards. Your first session on any refactor should be <strong>read-only reconnaissance</strong> — understanding the codebase, not changing it.</p>
-
-      <h3>The Reconnaissance Protocol</h3>
-
-      <ul class="checklist" id="recon-checklist">
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Map dependencies:</strong> Ask Claude Code to read the target file and list every external dependency and every file that imports from it.</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Identify interfaces:</strong> What are the public contracts? What would break if you changed a signature?</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Find hidden coupling:</strong> Ask "what assumptions does this code make about its environment?" Often reveals implicit dependencies.</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Document current behavior:</strong> For each function, what does it do, what does it return, what does it throw?</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Identify risk zones:</strong> Auth, payment, data mutation, external API calls — mark these before you start.</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Write characterization tests:</strong> From Module 2.3. Do not skip this.</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span><strong>Write the refactor plan:</strong> Before any code changes, get Claude Code to output a step-by-step plan. Review it yourself. Then execute it.</span></li>
-      </ul>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ The Reconnaissance Prompt</div>
-        <p><em>"Do not make any changes. Read [file]. Tell me: every function it exports, every dependency it imports, every function in the codebase that calls into it (search the codebase), and every assumption it makes about its inputs. Output as structured lists only."</em></p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 4.1</div>
-        <h4>Full Reconnaissance Run</h4>
-        <p>Pick a service or utility file in your project. Run the full reconnaissance protocol on it. The output should be a document you could hand to a new developer and they'd understand the file's role, contracts, and risks without reading a line of code.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p4m2', phase: 4, phaseName: 'The Refactor Workflow', phaseColor: 'danger',
-    num: '4.2', title: 'Executing the Refactor: Incremental Commits',
-    icon: '🔧',
-    lead: 'The safest refactors are boring. One small change, verified, committed, repeated.',
-    content: `
-      <p>The temptation of AI-assisted refactoring is to do everything in one session. It feels fast. It feels productive. And when it breaks, you have a 2,000-line diff with no logical commit points and no idea what broke what.</p>
-
-      <h3>The Incremental Refactor Protocol</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">session workflow</div></div>
-        <pre><span class="comment">## Each micro-session follows this loop:</span>
-
-<span class="key">1. STATE THE GOAL</span>
-   Update CLAUDE.md "Current Session Goal" field.
-   State it again in your opening prompt.
-
-<span class="key">2. ONE CHANGE ONLY</span>
-   One logical transformation per session.
-   "Extract the query" is one change. 
-   "Extract the query and add error handling and rename things" is three.
-
-<span class="key">3. VERIFY IMMEDIATELY</span>
-   Run tests. All characterization tests must pass.
-   Run the app. Manually test the changed behavior.
-   Review the diff with git add -p.
-
-<span class="key">4. COMMIT</span>
-   Write a commit message that explains the WHY, not the what.
-   Tag as [ai-assisted].
-
-<span class="key">5. REPEAT or STOP</span>
-   If tests fail — do not proceed. Fix or rollback.
-   If you're losing confidence in what changed — stop. New session.
-   If it's working — move to the next micro-session.</pre>
-      </div>
-
-      <div class="callout warning">
-        <div class="callout-label">⚠ The Sunk Cost Trap</div>
-        <p>A session that produces working code after 10 corrective prompts is a bad session. The 10 back-and-forth exchanges eroded context integrity. Start fresh. The second attempt will be faster and cleaner.</p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 4.2</div>
-        <h4>Break Down a Real Refactor</h4>
-        <p>Take a refactor you've been putting off. Break it into micro-sessions of max 1-2 logical changes each. Map them on paper. Identify dependencies between them (session B requires session A's output). Execute one session today. Commit it. Stop.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p4m3', phase: 4, phaseName: 'The Refactor Workflow', phaseColor: 'danger',
-    num: '4.3', title: 'Verification: How to Know It\'s Actually Correct',
-    icon: '✅',
-    lead: '"It looks right" is not a verification strategy. Here\'s one that is.',
-    content: `
-      <p>This is where most AI-assisted development collapses. The code looks clean. The tests that existed still pass. But new failure modes were introduced that your existing tests didn't cover — and Claude Code had no way to know about them because you didn't tell it.</p>
-
-      <h3>The Verification Stack</h3>
-
-      <table class="compare-table">
-        <tr><th>Layer</th><th>Tool</th><th>What It Catches</th></tr>
-        <tr><td>Characterization tests</td><td>Vitest</td><td>Any behavior that changed from the original</td></tr>
-        <tr><td>Type checking</td><td>tsc --noEmit</td><td>Interface violations, type drift</td></tr>
-        <tr><td>Lint</td><td>ESLint</td><td>Pattern violations, obvious bad practices</td></tr>
-        <tr><td>Integration tests</td><td>Supertest</td><td>API contract breakage</td></tr>
-        <tr><td>Manual smoke test</td><td>You</td><td>Anything automated didn't cover</td></tr>
-        <tr><td>Diff review</td><td>git diff</td><td>Scope creep, unexpected changes</td></tr>
-        <tr><td>Peer review</td><td>Teammate</td><td>Logic errors, maintainability regression</td></tr>
-      </table>
-
-      <div class="callout danger">
-        <div class="callout-label">🚨 The Confidence Trap</div>
-        <p>TypeScript passing and tests green does not mean the refactor is correct. It means it's type-safe and matches documented behavior. Business logic correctness requires human review. Especially for async behavior, race conditions, and authorization checks.</p>
-      </div>
-
-      <h3>High-Risk Patterns to Manually Verify</h3>
-      <ul>
-        <li>Any <strong>auth check</strong> that was moved, extracted, or reordered</li>
-        <li>Any <strong>async operation</strong> where Claude changed the await pattern</li>
-        <li>Any <strong>useEffect</strong> with a modified dependency array</li>
-        <li>Any <strong>error handler</strong> that was restructured</li>
-        <li>Any <strong>conditional logic</strong> involving user permissions</li>
-      </ul>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 4.3</div>
-        <h4>The Adversarial Review</h4>
-        <p>After your next AI-assisted refactor, review the diff as if you are trying to find a security vulnerability or a data corruption bug that was introduced. Specifically target: error handling paths, authorization checks, and any logic that runs conditionally. Document what you find.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p4m4', phase: 4, phaseName: 'The Refactor Workflow', phaseColor: 'danger',
-    num: '4.4', title: 'When Claude Code Gets It Wrong',
-    icon: '🔥',
-    lead: 'It will happen. How you respond determines whether you recover fast or spiral.',
-    content: `
-      <p>Claude Code produces confident, plausible, wrong code. Not sometimes. Regularly. The question is never "will it happen" — it's "will I catch it, and will I know how to respond?"</p>
-
-      <h3>Common Failure Patterns</h3>
-
-      <div class="callout danger">
-        <div class="callout-label">Pattern 1: The Confident Wrong Answer</div>
-        <p>Claude Code produces code that is syntactically correct, passes your stated tests, but has subtly wrong business logic. Usually happens when the task involves domain knowledge you didn't fully specify. Caught by: domain expert review, integration testing, adversarial code review.</p>
-      </div>
-
-      <div class="callout warning">
-        <div class="callout-label">Pattern 2: The Helpful Scope Expansion</div>
-        <p>Claude "improves" code you didn't ask it to touch. Caught by: git diff review, audit prompt. Fix: rollback to checkpoint, add explicit scope constraints, re-run.</p>
-      </div>
-
-      <div class="callout warning">
-        <div class="callout-label">Pattern 3: Context Drift</div>
-        <p>Mid-session output contradicts earlier output or ignores a constraint you set. Caught by: noticing inconsistencies in the diff. Fix: do not try to correct with more prompts. Start a new session. Past assistance in the same session is not reliable after drift.</p>
-      </div>
-
-      <div class="callout info">
-        <div class="callout-label">Pattern 4: Hallucinates an API</div>
-        <p>Uses a function from a library that doesn't exist, or uses it with wrong arguments. Caught by: TypeScript, tests, or reading the output carefully. Always verify library API usage against the actual docs — not Claude's memory of them.</p>
-      </div>
-
-      <h3>The Recovery Protocol</h3>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">recovery steps</div></div>
-        <pre><span class="key">1.</span> <span class="val">Stop prompting immediately.</span> More prompts don't fix a broken session.
-<span class="key">2.</span> <span class="val">git diff</span> to understand the full damage.
-<span class="key">3.</span> <span class="val">git checkout .</span> to rollback if you haven't committed checkpoints.
-<span class="key">4.</span> Or <span class="val">git checkout [last-good-commit]</span> if you have checkpoints.
-<span class="key">5.</span> Diagnose: what was missing from your prompt/context?
-<span class="key">6.</span> Update CLAUDE.md with the missing constraint.
-<span class="key">7.</span> New session. Better prompt.</pre>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 4.4</div>
-        <h4>Post-Mortem Practice</h4>
-        <p>Think of a time Claude Code (or any AI tool) produced wrong output you used. Write a post-mortem: What did the prompt miss? What constraint would have prevented it? What test would have caught it? This analysis is the only way you get better at prompting.</p>
-      </div>
-    `
-  },
-
-  // ──────────────────────────────────────────
-  // PHASE 5: PRODUCTION GRADE
-  // ──────────────────────────────────────────
-  {
-    id: 'p5m1', phase: 5, phaseName: 'Production Grade', phaseColor: '',
-    num: '5.1', title: 'Code Review for AI-Assisted Work',
-    icon: '👁️',
-    lead: 'AI-generated code demands a different review posture than human-generated code. Here\'s why and how.',
-    content: `
-      <p>Human developers have taste, context, and continuity. They remember the conversation from last sprint. Claude Code has none of that. AI-generated code passes review at a higher rate than it should because reviewers assume the same intentionality behind it. That's a mistake.</p>
-
-      <h3>The Reviewer's Adapted Mindset</h3>
-      <p>When reviewing AI-assisted code, assume:</p>
-      <ul>
-        <li>Every pattern that looks right might be <strong>cargo-culted from training data</strong> rather than chosen for this specific context</li>
-        <li>Business logic may be <strong>statistically plausible but domain-incorrect</strong></li>
-        <li>Error handling may be <strong>structurally correct but semantically wrong</strong> — catching the wrong things</li>
-        <li>Any refactor that "cleans up" untouched code <strong>should be treated as untested</strong></li>
-      </ul>
-
-      <h3>AI Code Review Checklist</h3>
-      <ul class="checklist">
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Diff is scoped to what was requested — no unexpected files changed</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>All public interfaces unchanged (unless the task was to change them)</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Auth/permission checks are present, in the same place, and equivalent</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Error paths are handled — not just happy path</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Async/await patterns are correct — no floating promises</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>No new dependencies added without explicit intent</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Library APIs verified against current documentation</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>All tests pass — and the tests are actually testing the right thing</span></li>
-      </ul>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 5.1</div>
-        <h4>Review Someone Else's AI-Assisted PR</h4>
-        <p>Find a PR in your codebase that was AI-assisted. Review it using the checklist above with the adapted mindset. Document every item that was not caught in the original review. Share your findings with the team. This is how you build shared standards.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p5m2', phase: 5, phaseName: 'Production Grade', phaseColor: '',
-    num: '5.2', title: 'Building a Team AI Development Standard',
-    icon: '👥',
-    lead: 'Your personal discipline means nothing if teammates merge unchecked AI code into main.',
-    content: `
-      <p>Individual discipline without team standards creates a two-tier codebase: carefully crafted AI work from people who know better, and vibe-prompted garbage from people who don't, all mixed together with no way to tell them apart.</p>
-
-      <h3>The Team Standard Document</h3>
-      <p>A one-page document your team agrees to. It should cover:</p>
-
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-label">AI-DEVELOPMENT-STANDARDS.md (team version)</div></div>
-        <pre><span class="key">## What requires human authorship</span>
-- Auth and permission logic
-- Payment and billing flows
-- Data migration scripts
-- Security middleware
-
-<span class="key">## Required before any AI-assisted PR</span>
-- Characterization tests written and passing
-- CLAUDE.md reviewed and current
-- Branch created: ai/[description]
-
-<span class="key">## Commit message convention</span>
-- All AI-assisted commits tagged: [ai-assisted]
-- Commit message includes: what changed and why
-
-<span class="key">## PR requirements for AI-assisted work</span>
-- Diff must be reviewable (no 2000-line PRs)
-- Reviewer must use the AI code review checklist
-- Author must be able to explain every changed line
-
-<span class="key">## Escalation</span>
-- Any AI output touching a risk zone requires a second reviewer
-- No AI-assisted changes to [list your critical paths]</pre>
-      </div>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ The Accountability Test</div>
-        <p>Every developer who merges AI-assisted code must be able to stand in front of the team and explain every changed line. If they can't, the PR isn't ready. The AI wrote the code. The developer is responsible for it.</p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 5.2</div>
-        <h4>Draft Your Team Standard</h4>
-        <p>Write the first draft of an AI development standard for your team. Present it in a retro or team meeting. Get objections. Iterate. The goal isn't a perfect document — it's a shared vocabulary for what "good AI-assisted development" looks like on your specific team.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p5m3', phase: 5, phaseName: 'Production Grade', phaseColor: '',
-    num: '5.3', title: 'Advanced: MCP Servers and Extended Tooling',
-    icon: '🔌',
-    lead: 'When Claude Code connects to your real tools — databases, APIs, CI systems — the stakes get higher, not lower.',
-    content: `
-      <p>Claude Code can be extended with MCP (Model Context Protocol) servers to access databases, external APIs, GitHub, and more. This is powerful. It's also the point where disciplined use becomes mandatory, not optional. An undisciplined agent with database access is a liability.</p>
-
-      <h3>MCP Safety Principles</h3>
-
-      <div class="callout danger">
-        <div class="callout-label">🚨 Hard Rule: Read Before Write</div>
-        <p>Always give Claude Code read-only access to production systems. Write access — to databases, APIs, or filesystems — only in development environments with rollback capability. This is not optional.</p>
-      </div>
-
-      <ul>
-        <li><strong>Principle of least privilege:</strong> Grant the minimum permissions needed for the task. A session analyzing your database schema doesn't need write access.</li>
-        <li><strong>Scope confirmation:</strong> Before any MCP-connected session, explicitly state which systems it's allowed to touch.</li>
-        <li><strong>Dry-run first:</strong> For any MCP-enabled task that mutates data, ask Claude Code to output the operations it will perform before executing them. Review, then approve.</li>
-        <li><strong>Audit trail:</strong> Ensure every MCP operation is logged. You need to know what the agent did, when, and why.</li>
-      </ul>
-
-      <div class="callout info">
-        <div class="callout-label">📋 MCP Session Opener Template</div>
-        <p><em>"You have access to [specific MCP tools]. You may read from [X]. You may not write to anything without my explicit approval per operation. Before any write operation, output exactly what you're about to do and wait for my 'proceed' confirmation."</em></p>
-      </div>
-
-      <div class="exercise">
-        <div class="exercise-label">🔬 Exercise 5.3</div>
-        <h4>Map Your Risk Surface</h4>
-        <p>List every MCP or external tool integration you're considering for Claude Code. For each, classify: read-only safe, write with approval, or never allow AI access. Document the reasoning for "never" cases — this becomes your security policy.</p>
-      </div>
-    `
-  },
-
-  {
-    id: 'p5m4', phase: 5, phaseName: 'Production Grade', phaseColor: '',
-    num: '5.4', title: 'Capstone: The Complete Refactor Playbook',
-    icon: '🏁',
-    lead: 'Everything in one place. The repeatable process for any AI-assisted refactor from first commit to production.',
-    content: `
-      <p>You've covered every component. Now the synthesis: a complete, repeatable playbook for any refactor from investigation to merged PR.</p>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ The Complete Refactor Playbook</div>
-        <p>This is your operating procedure. Deviate from it deliberately, not accidentally.</p>
-      </div>
-
-      <h3>Phase A: Before You Start (Non-Negotiable)</h3>
-      <ul class="checklist">
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>CLAUDE.md is current and reflects this project's current state</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Created feature branch: <code>ai/[specific-description]</code></span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Reconnaissance session complete — mapped all dependencies and interfaces</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Characterization tests written and passing</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Refactor plan reviewed and approved (by you, minimum)</span></li>
-      </ul>
-
-      <h3>Phase B: Execution Loop</h3>
-      <ul class="checklist">
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Session goal stated in CLAUDE.md and in opening prompt</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>One logical change per session — hard limit</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Audit prompt run at session end (list all changed files)</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>All tests passing before commit</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Staged with <code>git add -p</code> — every hunk reviewed</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Commit message written: what, why, [ai-assisted] tag</span></li>
-      </ul>
-
-      <h3>Phase C: Before Merging</h3>
-      <ul class="checklist">
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Full test suite passing (<code>npm test</code>)</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>TypeScript clean (<code>tsc --noEmit</code>)</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>High-risk patterns manually verified (auth, async, permissions)</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>PR diff is readable and logically organized</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>You can explain every changed line without referencing "Claude did it"</span></li>
-        <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Peer review using AI code review checklist (Module 5.1)</span></li>
-      </ul>
-
-      <div class="callout truth">
-        <div class="callout-label">✓ You Are Now the Standard</div>
-        <p>If you've worked through this course and applied every exercise, you are operating at the level this role demands. The interview questions from Phase 0 are no longer threats — they're descriptions of what you already do. The only question left is: are you building this discipline into your team, or just yourself?</p>
-      </div>
-    `
-  },
+    q: 'Your experience with JavaScript, Node.js, and React is...',
+    opts: [
+      { text: 'Minimal — I can follow code but struggle to write or debug it without AI help', score: 0 },
+      { text: 'Some — I have built projects but have real gaps in my understanding', score: 1 },
+      { text: 'Solid — I work with these regularly and understand the patterns well', score: 2 }
+    ]
+  }
 ];
 
-// ── QUIZ DATA ──
-const QUIZZES = {
-  'p1m1': {
-    q: 'A senior dev asks you to "just use Claude Code to clean up the user service." What\'s your first move?',
-    opts: [
-      'Open Claude Code and describe what you want improved',
-      'Ask what "clean up" means and get specific constraints before starting',
-      'Run Claude Code with read-only mode first to see what it suggests',
-      'Check if there are existing tests before doing anything'
-    ],
-    correct: 1,
-    feedback: {
-      correct: 'Right. "Clean up" is not a specification. Before you touch a single file, you need to know what problem is actually being solved, what constraints can\'t change, and how you\'ll know it\'s done correctly.',
-      wrong: 'Close, but not quite. The tests check is important (module 2.3) but it\'s not the first move. The first move is defining what success actually looks like — otherwise you\'re running tests against undefined requirements.'
-    }
-  },
-  'p3m1': {
-    q: 'Your prompt is: "Refactor the auth middleware." Claude Code makes 23 changes across 8 files. What happened?',
-    opts: [
-      'Claude Code worked correctly — it found all the relevant files',
-      'Your prompt was too vague — no scope boundary, no constraints, no definition of done',
-      'Claude Code has a bug that causes it to over-engineer solutions',
-      'You needed to use a different Claude model for this task'
-    ],
-    correct: 1,
-    feedback: {
-      correct: 'Exactly. A vague prompt is an open mandate. Claude had no idea where to stop because you didn\'t tell it. Every one of those 8 files is now your responsibility to review — for a change you might have intended to be 3 lines.',
-      wrong: 'This is a prompting problem, not a tool problem. Claude Code did exactly what an eager contractor does when given a vague brief — it solved what it thought you meant. The fault is in the specification.'
-    }
-  },
-  'p4m4': {
-    q: 'Halfway through a session, Claude Code produces output that ignores a constraint you set at the start. What do you do?',
-    opts: [
-      'Correct it with another prompt reminding it of the constraint',
-      'Continue — it probably remembered the constraint and applied it differently',
-      'Stop the session, start a new one with better context, don\'t try to correct drift in-session',
-      'Scroll up and copy the constraint into the prompt again'
-    ],
-    correct: 2,
-    feedback: {
-      correct: 'Correct. Context drift is not fixable with corrective prompts in the same session. The window is degraded. Starting fresh with a better-structured prompt will produce cleaner output than 5 rounds of corrections.',
-      wrong: 'Corrective prompts after context drift are a trap. They extend a compromised session and produce output built on an unreliable foundation. Cut your losses, start fresh, and write the constraint into your CLAUDE.md so it survives the session boundary.'
-    }
-  }
-};
+let currentQ = 0;
+const answers = [];
+let selectedOpt = undefined;
 
-
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let completedModules = new Set(JSON.parse(localStorage.getItem('cc_completed') || '[]'));
-let passedQuizzes    = new Set(JSON.parse(localStorage.getItem('cc_quizzes')   || '[]'));
-let currentModuleId  = localStorage.getItem('cc_lastModule') || null;
-
-const TOTAL = MODULES.length;
-
-const TIME_MAP = {
-  p1m1:'25 min',p1m2:'20 min',p1m3:'25 min',
-  p2m1:'30 min',p2m2:'25 min',p2m3:'20 min',
-  p3m1:'35 min',p3m2:'30 min',p3m3:'30 min',p3m4:'30 min',
-  p4m1:'40 min',p4m2:'35 min',p4m3:'35 min',p4m4:'30 min',
-  p5m1:'30 min',p5m2:'25 min',p5m3:'25 min',p5m4:'40 min',
-};
-
-const PHASE_META = {
-  1:{name:'Mental Model',      color:'#2563eb', time:'~1.2h'},
-  2:{name:'Environment Setup', color:'#0891b2', time:'~1.3h'},
-  3:{name:'Prompt Engineering',color:'#d97706', time:'~2h'},
-  4:{name:'Refactor Workflow', color:'#dc2626', time:'~2.3h'},
-  5:{name:'Production Grade',  color:'#16a34a', time:'~2.2h'},
-};
-
-// ─── PROGRESS ─────────────────────────────────────────────────────────────────
-function updateProgress() {
-  const pct = TOTAL ? Math.round((completedModules.size / TOTAL) * 100) : 0;
-  document.getElementById('tnProgFill').style.width = pct + '%';
-  document.getElementById('tnProgText').textContent = completedModules.size + ' / ' + TOTAL;
-  document.getElementById('tnPercent').textContent  = pct + '%';
-  const hps = document.getElementById('hpsProgFill');
-  if (hps) hps.style.width = pct + '%';
-  const hpsLbl = document.getElementById('hpsLabel');
-  if (hpsLbl) hpsLbl.textContent = completedModules.size + ' / ' + TOTAL + ' complete';
-}
-
-// ─── HOME / PHASE CARDS ───────────────────────────────────────────────────────
-function buildPhaseCards() {
-  const container = document.getElementById('phaseCards');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const phases = [...new Set(MODULES.map(m => m.phase))];
-  phases.forEach(p => {
-    const mods = MODULES.filter(m => m.phase === p);
-    const done = mods.filter(m => completedModules.has(m.id)).length;
-    const meta = PHASE_META[p] || {name:'Phase '+p, color:'#2563eb', time:''};
-    const isComplete = done === mods.length;
-    const isStarted  = done > 0;
-
-    let statusHtml = '';
-    if (isComplete) statusHtml = '<span class="phase-status complete">&#10003; Complete</span>';
-    else if (isStarted) statusHtml = '<span class="phase-status in-progress">'+done+'/'+mods.length+'</span>';
-    else statusHtml = '<span class="phase-status not-started">'+mods.length+' modules</span>';
-
-    const card = document.createElement('div');
-    card.className = 'phase-card';
-    card.id = 'pc-' + p;
-    const bg = meta.color + '18';
-    card.innerHTML =
-      '<div class="phase-card-header" onclick="togglePhaseCard('+p+')">' +
-        '<div class="phase-num-badge" style="background:'+bg+';color:'+meta.color+'">P'+p+'</div>' +
-        '<div class="phase-card-info">' +
-          '<div class="phase-card-name">'+meta.name+'</div>' +
-          '<div class="phase-card-meta">'+mods.length+' modules &nbsp;·&nbsp; '+meta.time+'</div>' +
-        '</div>' +
-        statusHtml +
-        '<div class="phase-chevron">&#8250;</div>' +
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if (currentQ >= QUIZ_QUESTIONS.length) { renderResult(container); return; }
+  const q = QUIZ_QUESTIONS[currentQ];
+  const pct = Math.round((currentQ / QUIZ_QUESTIONS.length) * 100);
+  container.innerHTML =
+    '<div class="qbox">' +
+      '<div class="q-eyebrow">// find your starting point</div>' +
+      '<div class="q-prog"><div class="q-prog-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="q-step">Question ' + (currentQ + 1) + ' of ' + QUIZ_QUESTIONS.length + '</div>' +
+      '<div class="q-text">' + q.q + '</div>' +
+      '<div class="q-opts">' +
+        q.opts.map(function(o, i) {
+          return '<div class="q-opt" id="qo' + i + '" onclick="selectOpt(' + i + ')">' +
+            '<div class="q-opt-mark">' + String.fromCharCode(65 + i) + '</div>' +
+            '<span>' + o.text + '</span>' +
+          '</div>';
+        }).join('') +
       '</div>' +
-      '<div class="phase-card-body">' +
-        mods.map(m =>
-          '<div class="module-row'+(completedModules.has(m.id)?' done':'')+'" onclick="showModuleView(&#39;'+m.id+'&#39;)">'+
-            '<span class="module-row-num">'+m.num+'</span>'+
-            '<span class="module-row-title">'+m.title+'</span>'+
-            '<span class="module-row-time">'+(TIME_MAP[m.id]||'30 min')+'</span>'+
-            (completedModules.has(m.id) ? '<span class="module-row-check">&#10003;</span>' : '')+
-          '</div>'
-        ).join('') +
-      '</div>';
-    container.appendChild(card);
-  });
+      '<div class="q-nav"><button class="q-btn" id="qnext" disabled onclick="nextQ()">Continue →</button></div>' +
+    '</div>';
 }
 
-function togglePhaseCard(p) {
-  const card = document.getElementById('pc-' + p);
-  if (!card) return;
-  card.classList.toggle('open');
+function selectOpt(idx) {
+  document.querySelectorAll('.q-opt').forEach(function(el) { el.classList.remove('sel'); });
+  const el = document.getElementById('qo' + idx);
+  if (el) el.classList.add('sel');
+  selectedOpt = idx;
+  const btn = document.getElementById('qnext');
+  if (btn) btn.disabled = false;
 }
 
-function showHome() {
-  document.getElementById('homeView').style.display = '';
-  document.getElementById('moduleView').style.display = 'none';
-  closeMobileNav();
-  buildPhaseCards();
-  updateProgress();
+function nextQ() {
+  if (selectedOpt === undefined) return;
+  answers.push(QUIZ_QUESTIONS[currentQ].opts[selectedOpt].score);
+  selectedOpt = undefined;
+  currentQ++;
+  renderQuiz();
 }
 
-// ─── MODULE VIEW ──────────────────────────────────────────────────────────────
-function showModuleView(id) {
-  const mod = MODULES.find(m => m.id === id);
-  if (!mod) return;
-  currentModuleId = id;
-  localStorage.setItem('cc_lastModule', id);
-
-  document.getElementById('homeView').style.display = 'none';
-  document.getElementById('moduleView').style.display = 'flex';
-  closeMobileNav();
-
-  // Breadcrumb
-  const bc = document.getElementById('breadcrumb');
-  bc.innerHTML =
-    '<a href="#" onclick="showHome();return false;">Home</a>' +
-    '<span class="breadcrumb-sep"> &#8250; </span>' +
-    '<span>Phase '+mod.phase+': '+(PHASE_META[mod.phase]||{name:mod.phaseName}).name+'</span>' +
-    '<span class="breadcrumb-sep"> &#8250; </span>' +
-    '<span>'+mod.num+'</span>';
-
-  document.getElementById('moduleTimeBadge').textContent = TIME_MAP[id] || '30 min';
-
-  const idx = MODULES.indexOf(mod);
-  const phaseColor = (PHASE_META[mod.phase]||{color:'#2563eb'}).color;
-  const bg = phaseColor + '18';
-  const border = phaseColor + '30';
-
-  const quizHtml = QUIZZES[id] ? buildQuizHtml(id) : '';
-
-  const contentCol = document.getElementById('moduleContentCol');
-  contentCol.innerHTML =
-    '<div class="mod-eyebrow">' +
-      '<span class="phase-tag" style="background:'+bg+';color:'+phaseColor+';border-color:'+border+'">Phase '+mod.phase+' &nbsp;·&nbsp; '+(PHASE_META[mod.phase]||{name:mod.phaseName}).name+'</span>' +
-      '<span class="mod-num-tag">'+mod.num+'</span>' +
-    '</div>' +
-    '<h1 class="mod-h1">'+mod.icon+' '+mod.title+'</h1>' +
-    '<p class="mod-lead">'+mod.lead+'</p>' +
-    '<div class="mod-body">'+mod.content+'</div>' +
-    quizHtml;
-
-  // Scroll content to top
-  contentCol.scrollTop = 0;
-
-  // Build outline
-  buildOutline();
-
-  // Nav buttons
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-
-  if (idx > 0) {
-    prevBtn.style.display = '';
-    prevBtn.onclick = function(){ showModuleView(MODULES[idx-1].id); };
-    prevBtn.textContent = '\u2190 ' + MODULES[idx-1].num;
+function renderResult(container) {
+  const total = answers.reduce(function(a, b) { return a + b; }, 0);
+  let heading, desc, primary, secondary;
+  if (total <= 2) {
+    heading = 'Start with AI Dev Foundations';
+    desc = 'Based on your answers, you will get the most value building JavaScript literacy and code review skills before tackling advanced workflow discipline. Foundations is your starting point.';
+    primary = { name: 'AI Dev Foundations', href: '/foundations.html', desc: 'Your recommended starting point — builds the literacy that makes everything else possible.', icon: '🌱' };
+    secondary = { name: 'AI Code Engineer', href: '/engineer.html', desc: 'Available when you are ready to level up your workflow discipline.', icon: '⚡' };
+  } else if (total <= 4) {
+    heading = 'We Recommend Foundations';
+    desc = 'You have real experience but likely have gaps in the underlying code literacy. Foundations closes those gaps and makes the Engineer course far more valuable when you return to it.';
+    primary = { name: 'AI Dev Foundations', href: '/foundations.html', desc: 'Recommended — fills the literacy gaps that limit your output quality.', icon: '🌱' };
+    secondary = { name: 'AI Code Engineer', href: '/engineer.html', desc: 'Also viable if you are confident in your JS and React reading ability.', icon: '⚡' };
   } else {
-    prevBtn.style.display = 'none';
+    heading = 'You Are Ready for AI Code Engineer';
+    desc = 'Your experience level matches the AI Code Engineer course. Focus on workflow discipline, prompt engineering patterns, and production-grade practices.';
+    primary = { name: 'AI Code Engineer', href: '/engineer.html', desc: 'Your level — workflow, prompt engineering, production discipline.', icon: '⚡' };
+    secondary = { name: 'AI Dev Foundations', href: '/foundations.html', desc: 'If you want to verify and strengthen your JS fundamentals first.', icon: '🌱' };
   }
-  if (idx < MODULES.length - 1) {
-    nextBtn.textContent = MODULES[idx+1].num + ' \u2192';
-    nextBtn.onclick = function(){ showModuleView(MODULES[idx+1].id); };
-  } else {
-    nextBtn.textContent = '\u2190 Course Home';
-    nextBtn.onclick = showHome;
-  }
-
-  updateCompleteBtn(id);
-  updateProgress();
-
-  // Sync mobile nav
-  document.querySelectorAll('.mobile-nav-item').forEach(n => n.classList.remove('active'));
-  const mn = document.querySelector('.mobile-nav-item[data-id="'+id+'"]');
-  if (mn) mn.classList.add('active');
+  container.innerHTML =
+    '<div class="rbox">' +
+      '<div class="q-eyebrow">// your recommendation</div>' +
+      '<h2>' + heading + '</h2>' +
+      '<p>' + desc + '</p>' +
+      '<a class="r-course primary" href="' + primary.href + '">' +
+        '<div class="r-course-icon">' + primary.icon + '</div>' +
+        '<div class="r-course-info"><div class="r-course-name">' + primary.name + '</div><div class="r-course-desc">' + primary.desc + '</div></div>' +
+        '<div class="r-arrow">→</div>' +
+      '</a>' +
+      '<a class="r-course" href="' + secondary.href + '">' +
+        '<div class="r-course-icon">' + secondary.icon + '</div>' +
+        '<div class="r-course-info"><div class="r-course-name">' + secondary.name + '</div><div class="r-course-desc">' + secondary.desc + '</div></div>' +
+        '<div class="r-arrow">→</div>' +
+      '</a>' +
+      '<button class="r-retry" onclick="restartQuiz()">Retake quiz</button>' +
+    '</div>';
 }
 
-function buildOutline() {
-  const col = document.getElementById('moduleContentCol');
-  const items = document.getElementById('outlineItems');
-  const hs = col.querySelectorAll('.mod-body h3');
-  items.innerHTML = '';
-
-  const outlineCol = document.getElementById('moduleOutlineCol');
-  if (!hs.length) { outlineCol.style.display = 'none'; return; }
-  outlineCol.style.display = '';
-
-  hs.forEach(function(h, i) {
-    h.id = 'oh' + i;
-    const item = document.createElement('div');
-    item.className = 'outline-item';
-    item.dataset.target = 'oh' + i;
-    item.textContent = h.textContent;
-    item.onclick = function() { h.scrollIntoView({behavior:'smooth', block:'start'}); };
-    items.appendChild(item);
-  });
-
-  if (window._outlineObs) window._outlineObs.disconnect();
-  window._outlineObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      const el = items.querySelector('[data-target="'+e.target.id+'"]');
-      if (el) el.classList.toggle('active', e.isIntersecting);
-    });
-  }, { root: document.getElementById('moduleContentCol'), rootMargin: '-5% 0px -75% 0px' });
-  hs.forEach(function(h) { window._outlineObs.observe(h); });
+function restartQuiz() {
+  currentQ = 0; answers.length = 0; selectedOpt = undefined; renderQuiz();
 }
 
-// ─── COMPLETION ───────────────────────────────────────────────────────────────
-function updateCompleteBtn(id) {
-  const btn = document.getElementById('completeBtn');
-  const hasQuiz = !!QUIZZES[id];
-  const done = completedModules.has(id);
-
-  if (done) {
-    btn.textContent = '\u2713 Complete';
-    btn.className = 'btn btn-complete done';
-    btn.onclick = function(){ toggleComplete(id); };
-  } else if (hasQuiz && !passedQuizzes.has(id)) {
-    btn.textContent = 'Pass the quiz first';
-    btn.className = 'btn btn-complete locked';
-    btn.onclick = null;
-  } else {
-    btn.textContent = 'Mark Complete';
-    btn.className = 'btn btn-complete';
-    btn.onclick = function(){ toggleComplete(id); };
-  }
-}
-
-function toggleComplete(id) {
-  if (completedModules.has(id)) completedModules.delete(id);
-  else completedModules.add(id);
-  localStorage.setItem('cc_completed', JSON.stringify([...completedModules]));
-  updateCompleteBtn(id);
-  updateProgress();
-  buildPhaseCards();
-}
-
-// ─── QUIZ ─────────────────────────────────────────────────────────────────────
-function buildQuizHtml(modId) {
-  const q = QUIZZES[modId];
-  return '<div class="quiz-wrap" id="qw-'+modId+'">' +
-    '<div class="quiz-q">\ud83e\udde9 '+q.q+'</div>' +
-    '<div class="quiz-options" id="qopts-'+modId+'">' +
-      q.opts.map(function(opt,i){ return '<div class="quiz-opt" onclick="answerQuiz(&#39;'+modId+'&#39;,'+i+')">'+opt+'</div>'; }).join('') +
-    '</div>' +
-    '<div class="quiz-feedback" id="quiz-fb-'+modId+'"></div>' +
-  '</div>';
-}
-
-function answerQuiz(modId, chosen) {
-  const q = QUIZZES[modId];
-  const opts = document.querySelectorAll('#qopts-'+modId+' .quiz-opt');
-  const fb   = document.getElementById('quiz-fb-'+modId);
-  opts.forEach(function(o){ o.style.pointerEvents = 'none'; });
-  opts[q.correct].classList.add('correct');
-  if (chosen !== q.correct) opts[chosen].classList.add('wrong');
-  const ok = chosen === q.correct;
-  fb.textContent = (ok ? '\u2713 ' : '\u2717 ') + (ok ? q.feedback.correct : (q.feedback.wrong || q.feedback.correct));
-  fb.className = 'quiz-feedback show ' + (ok ? 'correct' : 'wrong');
-  if (ok) {
-    passedQuizzes.add(modId);
-    localStorage.setItem('cc_quizzes', JSON.stringify([...passedQuizzes]));
-    if (currentModuleId === modId) updateCompleteBtn(modId);
-  }
-}
-
-// ─── INLINE HANDLERS (called from module content HTML) ────────────────────────
-function toggleLesson(el) { el.classList.toggle('expanded'); }
-function toggleCheck(el)  { el.classList.toggle('checked'); }
-
-// ─── MOBILE NAV ───────────────────────────────────────────────────────────────
-function buildMobileNav() {
-  const body = document.getElementById('mobileNavBody');
-  let curPhase = 0;
-  MODULES.forEach(function(mod) {
-    if (mod.phase !== curPhase) {
-      curPhase = mod.phase;
-      const lbl = document.createElement('div');
-      lbl.className = 'mobile-nav-phase';
-      lbl.textContent = 'Phase ' + mod.phase + ' · ' + mod.phaseName;
-      body.appendChild(lbl);
-    }
-    const item = document.createElement('div');
-    item.className = 'mobile-nav-item' + (completedModules.has(mod.id) ? ' done' : '');
-    item.dataset.id = mod.id;
-    item.innerHTML = '<span class="mn-num">'+mod.num+'</span><span>'+mod.title+'</span>' +
-      (completedModules.has(mod.id) ? '<span class="mn-check">\u2713</span>' : '');
-    item.onclick = function(){ showModuleView(mod.id); };
-    body.appendChild(item);
-  });
-}
-
-function toggleMobileNav() {
-  document.getElementById('mobileNav').classList.toggle('open');
-  document.getElementById('mobileOverlay').classList.toggle('show');
-}
-function closeMobileNav() {
-  document.getElementById('mobileNav').classList.remove('open');
-  document.getElementById('mobileOverlay').classList.remove('show');
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-buildPhaseCards();
-buildMobileNav();
-updateProgress();
-
-if (currentModuleId && MODULES.find(function(m){ return m.id === currentModuleId; })) {
-  showModuleView(currentModuleId);
-}
+renderQuiz();
 </script>
 </body>
 </html>
