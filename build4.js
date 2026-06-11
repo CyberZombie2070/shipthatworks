@@ -433,7 +433,7 @@ function answerQ(modId, chosen) {
       var expRect = exp.getBoundingClientRect();
       var mainRect = main.getBoundingClientRect();
       if (expRect.bottom > mainRect.bottom - 16) {
-        main.scrollBy({ top: expRect.bottom - mainRect.bottom + 16, behavior: 'smooth' });
+        main.scrollTop += expRect.bottom - mainRect.bottom + 16;
       }
     }, 50);
     setTimeout(function() {
