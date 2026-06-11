@@ -6,7 +6,7 @@
 <title>Ship That Works — Professional AI Developer Training</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<script>(function(){var v=parseInt(localStorage.getItem('ui_scale'));if(!isNaN(v)&&v>=0&&v<=2){document.documentElement.style.fontSize=[15,18,21][v]+'px';}else{document.documentElement.style.fontSize='18px';}}());</script>
+<script>(function(){var o=parseInt(localStorage.getItem('ui_scale_offset')||'0');document.documentElement.style.fontSize=(18*(1+(o/100)))+'px';}());</script>
 <style>
 :root {
   --bg: #0f1117; --surface: #161b22; --surface2: #1c2128;
@@ -193,6 +193,31 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
   .qbox { padding: 20px; }
   .footer { flex-direction: column; text-align: center; }
 }
+.nav-settings-wrap { position: relative; }
+.nav-cog-btn {
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-muted); cursor: pointer; padding: 5px 10px; font-size: 15px;
+  transition: border-color .15s, color .15s;
+}
+.nav-cog-btn:hover { border-color: var(--accent); color: var(--accent); }
+.nav-settings-dd {
+  display: none; position: fixed; top: 56px; right: 32px; width: 16rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4); z-index: 200; padding: 14px;
+}
+.nav-settings-dd.open { display: block; }
+.nsd-sect { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+.nsd-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.nsd-lbl { font-size: 12px; color: var(--text); }
+.nsd-val { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); }
+.nsd-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; margin: 6px 0 4px; }
+.nsd-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; }
+.nsd-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; }
+.nsd-ticks { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text-dim); margin-bottom: 8px; }
+.nsd-reset { display: block; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); background: none; border: none; cursor: pointer; padding: 0; opacity: .6; transition: opacity .15s, color .15s; width: 100%; }
+.nsd-reset:hover { opacity: 1; color: var(--accent); }
+.nsd-divider { height: 1px; background: var(--border); margin: 10px 0; }
+.nsd-more { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); }
 </style>
 </head>
 <body>
@@ -203,6 +228,18 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
     <span class="nav-logo-text">Ship That Works</span>
   </a>
   <a class="nav-link" href="#courses">Courses</a>
+  <div class="nav-settings-wrap">
+    <button class="nav-cog-btn" id="navCogBtn" onclick="navToggleSettings()" title="Settings">&#9881;</button>
+    <div class="nav-settings-dd" id="navSettingsDd">
+      <div class="nsd-sect">DISPLAY</div>
+      <div class="nsd-row"><span class="nsd-lbl">Text scale</span><span class="nsd-val" id="navScaleLbl">0</span></div>
+      <input type="range" class="nsd-slider" id="navScaleSlider" min="-25" max="25" step="1" value="0" oninput="navApplyScale(this.value)">
+      <div class="nsd-ticks"><span>-25%</span><span>0</span><span>+25%</span></div>
+      <button class="nsd-reset" onclick="navResetScale()">Reset to default</button>
+      <div class="nsd-divider"></div>
+      <div class="nsd-more">MORE SETTINGS</div>
+    </div>
+  </div>
 </nav>
 
 <section class="hero">
@@ -389,6 +426,42 @@ function restartQuiz() {
 }
 
 renderQuiz();
+
+// ── SETTINGS (nav cog) ──
+var navSettingsOpen = false;
+function navApplyScale(offset) {
+  offset = parseInt(offset, 10);
+  if (isNaN(offset) || offset < -25 || offset > 25) offset = 0;
+  document.documentElement.style.fontSize = (18 * (1 + (offset / 100))) + 'px';
+  localStorage.setItem('ui_scale_offset', offset);
+  var lbl = document.getElementById('navScaleLbl');
+  if (lbl) lbl.textContent = offset === 0 ? '0' : (offset > 0 ? '+' + offset + '%' : offset + '%');
+  var sl = document.getElementById('navScaleSlider');
+  if (sl) sl.value = offset;
+}
+function navToggleSettings() {
+  navSettingsOpen = !navSettingsOpen;
+  var dd = document.getElementById('navSettingsDd');
+  if (dd) dd.classList.toggle('open', navSettingsOpen);
+}
+function navResetScale() { navApplyScale(0); }
+(function() {
+  var offset = parseInt(localStorage.getItem('ui_scale_offset') || '0', 10);
+  if (isNaN(offset) || offset < -25 || offset > 25) offset = 0;
+  var lbl = document.getElementById('navScaleLbl');
+  if (lbl) lbl.textContent = offset === 0 ? '0' : (offset > 0 ? '+' + offset + '%' : offset + '%');
+  var sl = document.getElementById('navScaleSlider');
+  if (sl) sl.value = offset;
+}());
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && navSettingsOpen) { navSettingsOpen = false; var dd = document.getElementById('navSettingsDd'); if (dd) dd.classList.remove('open'); }
+});
+document.addEventListener('click', function(e) {
+  if (!navSettingsOpen) return;
+  var dd = document.getElementById('navSettingsDd');
+  var btn = document.getElementById('navCogBtn');
+  if (dd && !dd.contains(e.target) && btn && !btn.contains(e.target)) { navSettingsOpen = false; dd.classList.remove('open'); }
+});
 </script>
 </body>
 </html>

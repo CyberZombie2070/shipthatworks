@@ -15,23 +15,45 @@ var quizState = {};
 var notesTimer = null;
 
 // ── SCALE ──
-var SCALE_VALS = [15, 18, 21];
-var SCALE_LABELS = ['Small', 'Default', 'Large'];
-function applyScale(v) {
-  v = parseInt(v, 10);
-  if (isNaN(v) || v < 0 || v > 2) v = 1;
-  document.documentElement.style.fontSize = SCALE_VALS[v] + 'px';
-  localStorage.setItem('ui_scale', v);
-  var lbl = document.getElementById('scaleLbl');
-  if (lbl) lbl.textContent = SCALE_LABELS[v];
-  var sl = document.getElementById('scaleSlider');
-  if (sl) sl.value = v;
+function applyScaleOffset(offset) {
+  offset = parseInt(offset, 10);
+  if (isNaN(offset) || offset < -25 || offset > 25) offset = 0;
+  document.documentElement.style.fontSize = (18 * (1 + (offset / 100))) + 'px';
+  localStorage.setItem('ui_scale_offset', offset);
+  var lbl = document.getElementById('settingsScaleLbl');
+  if (lbl) lbl.textContent = offset === 0 ? '0' : (offset > 0 ? '+' + offset + '%' : offset + '%');
+  var sl = document.getElementById('settingsScaleSlider');
+  if (sl) sl.value = offset;
 }
-function initScale() {
-  var v = parseInt(localStorage.getItem('ui_scale'), 10);
-  if (isNaN(v) || v < 0 || v > 2) v = 1;
-  document.documentElement.style.fontSize = SCALE_VALS[v] + 'px';
+function initScaleOffset() {
+  var offset = parseInt(localStorage.getItem('ui_scale_offset') || '0', 10);
+  if (isNaN(offset) || offset < -25 || offset > 25) offset = 0;
+  document.documentElement.style.fontSize = (18 * (1 + (offset / 100))) + 'px';
+  var lbl = document.getElementById('settingsScaleLbl');
+  if (lbl) lbl.textContent = offset === 0 ? '0' : (offset > 0 ? '+' + offset + '%' : offset + '%');
+  var sl = document.getElementById('settingsScaleSlider');
+  if (sl) sl.value = offset;
 }
+
+// ── SETTINGS ──
+var settingsOpen = false;
+function toggleSettings() {
+  settingsOpen = !settingsOpen;
+  var dd = document.getElementById('settingsDd');
+  if (dd) dd.classList.toggle('open', settingsOpen);
+}
+function closeSettings() {
+  settingsOpen = false;
+  var dd = document.getElementById('settingsDd');
+  if (dd) dd.classList.remove('open');
+}
+function resetScale() { applyScaleOffset(0); }
+document.addEventListener('click', function(e) {
+  if (!settingsOpen) return;
+  var wrap = document.getElementById('settingsDd');
+  var btn = document.getElementById('cogBtn');
+  if (wrap && !wrap.contains(e.target) && btn && !btn.contains(e.target)) closeSettings();
+});
 
 // ── PHASE BADGE COLORS ──
 var PH_COLORS = [null,
@@ -85,17 +107,10 @@ function updateFooter() {
   var h = Math.floor(minsLeft / 60);
   var m = minsLeft % 60;
   var timeStr = h > 0 ? '~' + h + 'h ' + (m > 0 ? m + 'm' : '') + ' remaining' : m + 'm remaining';
-  var sv = parseInt(localStorage.getItem('ui_scale'), 10);
-  if (isNaN(sv) || sv < 0 || sv > 2) sv = 1;
   el.innerHTML =
     '<div class="sb-ft-count">' + n + ' of ' + total + ' complete</div>' +
     '<div class="sb-ft-bar"><div class="sb-ft-fill" style="width:' + pct + '%"></div></div>' +
     '<div class="sb-ft-time">' + timeStr + '</div>' +
-    '<div class="scale-label-row" style="margin-top:0.625rem">' +
-      '<span class="scale-label-lft">Text size</span>' +
-      '<span class="scale-label-val" id="scaleLbl">' + SCALE_LABELS[sv] + '</span>' +
-    '</div>' +
-    '<input type="range" class="scale-slider" id="scaleSlider" min="0" max="2" step="1" value="' + sv + '" oninput="applyScale(this.value)">' +
     '<button class="sb-reset-link" onclick="resetCourse()">Reset course progress</button>';
 }
 
@@ -219,11 +234,20 @@ function buildHome() {
   html += '<div><div class="chs-val">~<span>12</span>h</div><div class="chs-lbl">Duration</div></div>';
   html += '<div><div class="chs-val">' + completed.size + '</div><div class="chs-lbl">Completed</div></div>';
   html += '</div>';
-  html += '<div class="ch-actions">';
-  if (resumeMod) {
-    html += '<button class="btn btn-primary" onclick="showModule(' + sq + resumeMod.id + sq + ')">Continue: ' + resumeMod.num + ' ' + resumeMod.title + ' \u2192</button>';
+  html += '<div class="ch-resume">';
+  var hasProgress = resumeMod || completed.size > 0;
+  if (hasProgress) {
+    var tgtMod = resumeMod || nextMod;
+    if (tgtMod) {
+      var tgtPm = PHASE_META.find(function(p) { return p.n === tgtMod.phase; });
+      var phTotal = tgtPm ? tgtPm.mods.length : 0;
+      var phDone = tgtPm ? tgtPm.mods.filter(function(id) { return completed.has(id); }).length : 0;
+      var tgtLabel = resumeMod ? 'Continue: ' + tgtMod.title + ' \u2192' : 'Start Course \u2192';
+      html += '<button class="resume-btn" onclick="showModule(' + sq + tgtMod.id + sq + ')">' + tgtLabel + '</button>';
+      html += '<div class="resume-btn-meta">Module ' + tgtMod.num + ' \u00b7 Phase ' + tgtMod.phase + ': ' + (tgtPm ? tgtPm.name : '') + ' \u00b7 ' + phDone + ' of ' + phTotal + ' complete</div>';
+    }
   } else if (nextMod) {
-    html += '<button class="btn btn-primary" onclick="showModule(' + sq + nextMod.id + sq + ')">Start Course \u2192</button>';
+    html += '<button class="resume-btn-ghost" onclick="showModule(' + sq + nextMod.id + sq + ')">Start Course \u2192</button>';
   }
   html += '</div>';
   html += '<div class="phase-cards">';
@@ -600,7 +624,7 @@ function closeMob() {
 document.addEventListener('keydown', function(e) {
   if (document.activeElement && (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT')) return;
   if (e.key === '/') { e.preventDefault(); openSearch(); return; }
-  if (e.key === 'Escape') { closeSearch(); closeCert(); if (panelOpen) togglePanel(); return; }
+  if (e.key === 'Escape') { closeSearch(); closeCert(); closeSettings(); if (panelOpen) togglePanel(); return; }
   if (!currentMod) return;
   var idx = MODULES.findIndex(function(m) { return m.id === currentMod; });
   if (e.key === 'ArrowRight' && idx < MODULES.length - 1) showModule(MODULES[idx + 1].id);
@@ -608,7 +632,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── INIT ──
-initScale();
+initScaleOffset();
 updateProgress();
 buildSidebar();
 buildHome();

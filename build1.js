@@ -285,14 +285,31 @@ pre .comment{color:#8b949e;}pre .key{color:#79c0ff;}pre .val{color:var(--accent)
 ::-webkit-scrollbar{width:0.3125rem;height:0.3125rem;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:0.1875rem;}
-.logo-link{text-decoration:none;transition:opacity .15s ease;}
-.logo-link:hover{opacity:.75;}
-.scale-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;}
-.scale-label-lft{font-family:'Inter',sans-serif;font-size:0.625rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);}
-.scale-label-val{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--accent);}
-.scale-slider{-webkit-appearance:none;appearance:none;width:100%;height:0.25rem;background:var(--border);border-radius:0.25rem;outline:none;cursor:pointer;margin-bottom:0.5rem;}
-.scale-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
-.scale-slider::-moz-range-thumb{width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.fixed-logo{position:fixed;top:0;left:0;z-index:9999;background:var(--bg);padding:0.75rem 1rem;display:flex;align-items:center;gap:0.5rem;text-decoration:none;opacity:1;transition:opacity .15s;}
+.fixed-logo:hover{opacity:.85;}
+.fixed-logo-mark{width:2rem;height:2rem;min-width:2rem;background:#e8c547;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:#0f1117;}
+.fixed-logo-text{font-family:'Space Grotesk',sans-serif;font-size:0.875rem;font-weight:600;color:var(--heading);white-space:nowrap;}
+@media(max-width:767px){.fixed-logo{display:none;}}
+.settings-wrap{position:relative;flex-shrink:0;}
+.settings-dd{display:none;position:fixed;top:3.125rem;right:1.375rem;width:16rem;background:var(--surface);border:1px solid var(--border);border-radius:0.5rem;box-shadow:0 0.5rem 1.5rem rgba(0,0,0,.4);z-index:200;padding:0.875rem;}
+.settings-dd.open{display:block;}
+.settings-sect-lbl{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.625rem;}
+.settings-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.375rem;}
+.settings-row-lbl{font-size:0.75rem;color:var(--text);}
+.settings-row-val{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--accent);}
+.settings-slider{-webkit-appearance:none;appearance:none;width:100%;height:0.25rem;background:var(--border);border-radius:0.25rem;outline:none;cursor:pointer;margin:0.375rem 0 0.25rem;}
+.settings-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.settings-slider::-moz-range-thumb{width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.settings-ticks{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-dim);margin-bottom:0.5rem;}
+.settings-reset{display:block;text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);background:none;border:none;cursor:pointer;padding:0;opacity:.6;transition:opacity .15s,color .15s;width:100%;}
+.settings-reset:hover{opacity:1;color:var(--accent);}
+.settings-divider{height:1px;background:var(--border);margin:0.625rem 0;}
+.settings-more-lbl{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
+.resume-btn{display:block;width:100%;background:var(--accent);color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:0.8125rem;font-weight:500;padding:0.875rem 1.5rem;border-radius:0.375rem;border:none;cursor:pointer;text-align:left;transition:background .15s;}
+.resume-btn:hover{background:#f0d060;}
+.resume-btn-meta{font-family:'Inter',sans-serif;font-size:0.75rem;color:var(--text-dim);margin-top:0.375rem;}
+.resume-btn-ghost{display:block;width:100%;background:transparent;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.8125rem;font-weight:500;padding:0.875rem 1.5rem;border-radius:0.375rem;border:1px solid var(--accent);cursor:pointer;text-align:left;transition:background .15s;}
+.resume-btn-ghost:hover{background:rgba(232,197,71,.1);}
 .sb-reset-link{background:none;border:none;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.625rem;cursor:pointer;padding:0;opacity:.5;transition:opacity .15s,color .15s;display:block;text-align:left;width:100%;margin-top:0.25rem;}
 .sb-reset-link:hover{opacity:1;color:#e05c5c;}
 .sb-reset-confirm{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);padding:0.5rem 0 0;margin-top:0.25rem;border-top:1px solid var(--border);}
@@ -312,7 +329,7 @@ const htmlTop = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Code Engineer \u2014 Ship That Works</title>
-<script>(function(){var v=parseInt(localStorage.getItem('ui_scale'));if(!isNaN(v)&&v>=0&&v<=2){document.documentElement.style.fontSize=[15,18,21][v]+'px';}else{document.documentElement.style.fontSize='18px';}}());</script>
+<script>(function(){var o=parseInt(localStorage.getItem('ui_scale_offset')||'0');document.documentElement.style.fontSize=(18*(1+(o/100)))+'px';}());</script>
 ${css}
 </head>
 <body>
@@ -370,6 +387,10 @@ ${css}
 </div>
 <div class="mob-ov" id="mobOv" onclick="closeMob()"></div>
 <div class="mob-drawer" id="mobDraw"></div>
+<a class="fixed-logo" href="index.html" title="Ship That Works \u2014 All Courses">
+  <div class="fixed-logo-mark">S</div>
+  <span class="fixed-logo-text">Ship That Works</span>
+</a>
 <div class="shell">
   <nav class="sidebar" id="sidebar">
     <div class="sb-top">
@@ -383,8 +404,6 @@ ${css}
   </nav>
   <div class="content-area" id="contentArea">
     <header class="topbar">
-      <a class="tb-logo logo-link" href="index.html" title="Back to all courses">STW</a>
-      <div class="tb-div"></div>
       <span class="tb-course">AI Code Engineer</span>
       <div class="tb-prog">
         <div class="tb-bar"><div class="tb-fill" id="tbFill"></div></div>
@@ -392,6 +411,18 @@ ${css}
       </div>
       <button class="tb-btn" onclick="openSearch()" title="Search (/)">&#128269;</button>
       <button class="tb-btn" onclick="showCert()" title="Certificate" id="certBtn" style="display:none">&#127881;</button>
+      <div class="settings-wrap">
+        <button class="tb-btn" id="cogBtn" onclick="toggleSettings()" title="Settings">&#9881;</button>
+        <div class="settings-dd" id="settingsDd">
+          <div class="settings-sect-lbl">DISPLAY</div>
+          <div class="settings-row"><span class="settings-row-lbl">Text scale</span><span class="settings-row-val" id="settingsScaleLbl">0</span></div>
+          <input type="range" class="settings-slider" id="settingsScaleSlider" min="-25" max="25" step="1" value="0" oninput="applyScaleOffset(this.value)">
+          <div class="settings-ticks"><span>-25%</span><span>0</span><span>+25%</span></div>
+          <button class="settings-reset" onclick="resetScale()">Reset to default</button>
+          <div class="settings-divider"></div>
+          <div class="settings-more-lbl">MORE SETTINGS</div>
+        </div>
+      </div>
       <button class="tb-ham" onclick="openMob()">&#9776;</button>
     </header>
     <main class="main" id="main">
