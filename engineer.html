@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Code Engineer — Ship That Works</title>
+<script>(function(){var v=parseInt(localStorage.getItem('ui_scale'));if(!isNaN(v)&&v>=0&&v<=2){document.documentElement.style.fontSize=[15,18,21][v]+'px';}else{document.documentElement.style.fontSize='18px';}}());</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
 :root{--bg:#0f1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--border2:#444c56;--accent:#e8c547;--success:#3fb950;--danger:#f85149;--warn:#d29922;--info:#58a6ff;--text:#c9d1d9;--text-dim:#8b949e;--heading:#f0f6fc;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:16px;scroll-behavior:smooth;}
+html{font-size:18px;scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:0.9375rem;line-height:1.65;min-height:100vh;}
 .shell{display:flex;min-height:100vh;}
 .sidebar{width:16.75rem;min-width:16.75rem;background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;flex-shrink:0;}
@@ -287,6 +288,25 @@ pre .comment{color:#8b949e;}pre .key{color:#79c0ff;}pre .val{color:var(--accent)
 ::-webkit-scrollbar{width:0.3125rem;height:0.3125rem;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:0.1875rem;}
+.logo-link{text-decoration:none;transition:opacity .15s ease;}
+.logo-link:hover{opacity:.75;}
+.scale-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;}
+.scale-label-lft{font-family:'Inter',sans-serif;font-size:0.625rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);}
+.scale-label-val{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--accent);}
+.scale-slider{-webkit-appearance:none;appearance:none;width:100%;height:0.25rem;background:var(--border);border-radius:0.25rem;outline:none;cursor:pointer;margin-bottom:0.5rem;}
+.scale-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.scale-slider::-moz-range-thumb{width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.sb-reset-link{background:none;border:none;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.625rem;cursor:pointer;padding:0;opacity:.5;transition:opacity .15s,color .15s;display:block;text-align:left;width:100%;margin-top:0.25rem;}
+.sb-reset-link:hover{opacity:1;color:#e05c5c;}
+.sb-reset-confirm{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);padding:0.5rem 0 0;margin-top:0.25rem;border-top:1px solid var(--border);}
+.sb-reset-confirm p{margin-bottom:0.375rem;color:var(--text);}
+.sb-reset-confirm small{color:var(--text-dim);display:block;margin-bottom:0.5rem;}
+.sb-rc-btns{display:flex;gap:0.5rem;}
+.sb-rc-btn{background:none;border:1px solid var(--border);border-radius:0.1875rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.5625rem;cursor:pointer;padding:0.1875rem 0.5rem;transition:all .15s;}
+.sb-rc-btn:hover{border-color:var(--border2);color:var(--text);}
+.sb-rc-btn.danger:hover{border-color:#e05c5c;color:#e05c5c;}
+@keyframes phaseGlow{0%{background:transparent;}35%{background:rgba(63,185,80,.1);}100%{background:transparent;}}
+.ph-section.phase-complete-glow{animation:phaseGlow 1.5s ease-out forwards;}
 </style>
 </head>
 <body>
@@ -314,7 +334,7 @@ pre .comment{color:#8b949e;}pre .key{color:#79c0ff;}pre .val{color:var(--accent)
   <h2 id="certRecipient" style="font-size:1.875rem;margin:0.875rem 0;color:#000;font-family:Georgia,serif;"></h2>
   <p style="font-size:1rem;color:#333;">has completed</p>
   <h3 style="font-size:1.375rem;margin:0.625rem 0;color:#000;">AI Code Engineer with Claude Code</h3>
-  <p style="font-size:0.8125rem;margin-top:1.375rem;color:#666;">Ship That Works</p>
+  <p style="font-size:0.8125rem;margin-top:1.375rem;color:#666;">Ship That Works &mdash; <span id="certDate"></span></p>
 </div>
 <button id="panelToggle" onclick="togglePanel()" title="Notes &amp; Transcript">
   <span class="panel-label">NOTES</span>
@@ -357,7 +377,7 @@ pre .comment{color:#8b949e;}pre .key{color:#79c0ff;}pre .val{color:var(--accent)
   </nav>
   <div class="content-area" id="contentArea">
     <header class="topbar">
-      <span class="tb-logo">STW</span>
+      <a class="tb-logo logo-link" href="index.html" title="Back to all courses">STW</a>
       <div class="tb-div"></div>
       <span class="tb-course">AI Code Engineer</span>
       <div class="tb-prog">
@@ -383,15 +403,34 @@ const MODULES = [{"id":"p1m1","phase":1,"phaseName":"Mental Model","num":"1.1","
 const QB = {"p1m1":[{"q":"What does this module describe Claude Code as, regarding memory?","opts":["A context-aware knowledge base","A highly capable amnesiac contractor","A persistent programming assistant","An intelligent code reviewer"],"correct":1,"explanation":"The module describes Claude Code as a 'highly capable, amnesiac contractor' — brilliant execution, zero long-term memory. Every session you re-onboard from scratch."},{"q":"According to the module, what determines the quality of Claude Code's output?","opts":["The model version you use","The length of your prompt","The quality of what you show it","The complexity of your codebase"],"correct":2,"explanation":"'The quality of that model is entirely determined by you. Bad input, bad output — at the speed of light.' Quality of input determines quality of output."},{"q":"What is YOUR role when using Claude Code, per the module's mental model?","opts":["Passive observer","Code reviewer only","Engineering lead who directs execution","QA tester"],"correct":2,"explanation":"'You are the engineering lead. Claude Code is a senior IC who executes exactly what you specify.' Decision-making stays with you."},{"q":"The module says: 'More detail = better results.' What does reality say?","opts":["More detail always improves results","Shorter prompts are always better","Precise constraints = better results; rambling = noise","Detail level doesn't matter"],"correct":2,"explanation":"The comparison table explicitly states: 'More detail = better results' is what people think, but reality is 'Precise constraints = better results. Rambling = noise.'"},{"q":"When can you NOT review Claude Code's output and verify it's correct?","opts":["When the task is too complex","When the code is well-tested","When you don't understand the task well enough to delegate it","When the context window is full"],"correct":2,"explanation":"The Rule: 'If you wouldn't be able to review Claude Code's output and verify it's correct, you don't understand the task well enough to delegate it yet.'"},{"q":"What does Claude Code understand about your codebase?","opts":["Everything, through deep analysis","Only what's in its context window right now","Only what you've shown it in previous sessions","Nothing — it starts fresh each time"],"correct":1,"explanation":"Reality: 'It understands only what's in its context window right now' — not your whole project, only what you've provided in this session."},{"q":"A developer thinks 'Claude Code won't break things.' What's the reality?","opts":["Claude Code has robust safety checks","It will carefully avoid breaking changes","It will confidently break exactly what you didn't mention","It only makes additive changes"],"correct":2,"explanation":"The table is clear: reality is 'It will confidently break exactly what you didn't mention.' What you don't constrain is fair game."},{"q":"The Exercise 1.1 'Constraint Inventory' asks you to do what BEFORE opening Claude Code?","opts":["Write the code yourself first","Document what the code does, must not do, its interfaces, and how you'd know if it's broken","Run the existing tests","Read the documentation"],"correct":1,"explanation":"Before opening Claude Code: write down (1) what this code does, (2) what it must never do, (3) what other code depends on it, (4) how you'd know if it's broken."}],"p1m2":[{"q":"What is the root cause of most 'Claude drifted halfway through' complaints?","opts":["Model limitations","Poor prompting technique","Context window filling and older context being deprioritized","Network connectivity issues"],"correct":2,"explanation":"'As the window fills, older context gets deprioritized. This is the root cause of most Claude drifted halfway through complaints.'"},{"q":"When Claude Code produces 'generic' output contradicting an earlier instruction, what should you do?","opts":["Add a corrective prompt reminding Claude of the constraint","Start a new session — don't try to fix drift in-session","Scroll up and copy the original instruction again","Continue — it probably remembered it differently"],"correct":1,"explanation":"'Start a new session, not a corrective prompt.' Context drift is not fixable within the same session."},{"q":"What is the recommended commit cadence for AI-assisted sessions?","opts":["Commit at the end of the project","Commit once per day","Commit before ending each session to anchor state","Commit only when tests pass"],"correct":2,"explanation":"'Commit cadence: Commit before ending each session — anchors state.' This ensures you can recover from any session that goes wrong."},{"q":"What happens during a 'late session' with Claude Code?","opts":["Claude becomes more precise","Performance improves as context builds","Real risk of contradicting earlier decisions and ignoring edge cases","No change — Claude maintains full fidelity"],"correct":2,"explanation":"Late session: 'Real risk of contradicting earlier decisions, ignoring edge cases you specified, or reverting to generic patterns.'"},{"q":"How many logical units of work should one session contain?","opts":["As many as possible","Two to three","One","Five or fewer"],"correct":2,"explanation":"'Session size: One logical unit of work per session.' This keeps sessions bounded and allows for clean commits."},{"q":"What should you always do at the start of a new session?","opts":["Open a new browser tab","Re-state your CLAUDE.md goals and current task","Ask Claude to summarize the last session","Run your test suite"],"correct":1,"explanation":"'Session start: Always re-state your CLAUDE.md goals + current task.' This counteracts the lack of persistent memory."},{"q":"What should you NEVER do after noticing context drift?","opts":["Start a new session","Update CLAUDE.md","Continue a session after drift hoping it self-corrects","Commit current progress"],"correct":2,"explanation":"'Never: Continue a session after noticing drift hoping it self-corrects.' Drift compounds — it does not self-correct."},{"q":"What does committing before ending each session provide?","opts":["Cleaner git history","An anchor — a recovery point if the next session fails","Automatic code review","Better performance next session"],"correct":1,"explanation":"'Commit before ending each session — anchors state.' The commit is your recovery point, not just history."}],"p1m3":[{"q":"Which category should 'architectural decisions' fall under?","opts":["Safe to Delegate","Delegate with review","You Must Own","Depends on complexity"],"correct":2,"explanation":"The Delegation Matrix explicitly lists 'Architectural decisions' under 'You Must Own.' These require engineering judgment that Claude Code cannot safely substitute."},{"q":"Which of these is listed as 'Safe to Delegate'?","opts":["Security-sensitive logic","Race conditions and async behavior","Syntax transformation (class to hooks)","Business logic correctness"],"correct":2,"explanation":"'Syntax transformation (class → hooks)' is listed as safe to delegate. It's mechanical and verifiable."},{"q":"What is the 'Can I Review This?' test?","opts":["Can you read the code quickly?","Can you confidently say the output is correct after reviewing it?","Do you have tests for it?","Is the function small enough to understand?"],"correct":1,"explanation":"'If Claude Code produces output for this, can I review it and confidently say it's correct?' If no — learn the domain first or break the task into smaller pieces."},{"q":"What should you do if you can't evaluate Claude Code's output for a task?","opts":["Trust Claude Code's judgment","Delegate it anyway and verify later","Either learn the domain first or break into smaller evaluable pieces","Skip that task entirely"],"correct":2,"explanation":"'You need to either learn the domain first or break the task into smaller pieces you can actually evaluate.'"},{"q":"What are the two mistakes new AI developers make?","opts":["Using wrong models and wrong prompts","Being too verbose and too brief","Delegating nothing OR delegating everything","Not testing and over-testing"],"correct":2,"explanation":"'New AI developers make one of two mistakes: they either delegate nothing (making Claude Code a fancy autocomplete) or they delegate everything.'"},{"q":"Security-sensitive logic falls under which category?","opts":["Safe to Delegate","Delegate with review","You Must Own","Context-dependent"],"correct":2,"explanation":"The Delegation Matrix: Security-sensitive logic is under 'You Must Own.' Getting it wrong is a security issue — automatic own."},{"q":"What is the Hard Rule for security, data loss, or production-incident risks?","opts":["Always use Claude Code with extra review","Never use Claude Code for these","Write it yourself or review it line-by-line with untrusted-PR scrutiny","Get two reviewers instead of one"],"correct":2,"explanation":"'If getting it wrong would be a security issue, a data loss issue, or a production incident — you write it yourself or review it line-by-line with untrusted-PR scrutiny. No exceptions.'"},{"q":"Test scaffolding is categorized as...","opts":["You Must Own","Safe to Delegate","Delegate + Review","Prohibited"],"correct":1,"explanation":"Test scaffolding is listed in the Delegation Matrix under 'Safe to Delegate.' The structure is mechanical; you still verify the assertions are correct."}],"p2m1":[{"q":"What is CLAUDE.md?","opts":["A documentation file for your project","A persistent instruction set — your engineering contract with Claude","A file that stores Claude Code's configuration","A log of all Claude Code sessions"],"correct":1,"explanation":"CLAUDE.md is 'your persistent instruction set — the thing that stops Claude Code from reinventing your architecture every session.'"},{"q":"Where does CLAUDE.md live?","opts":["In the /docs folder","In your home directory","In the project root","In a .claude/ directory"],"correct":2,"explanation":"CLAUDE.md is 'a file in your project root that Claude Code reads at the start of every session.'"},{"q":"What is the single most important line in CLAUDE.md?","opts":["The architecture overview","The NEVER section","The Current Session Goal","The folder structure contract"],"correct":2,"explanation":"'The Current Session Goal at the bottom. Update it every time you open a new session. This is what prevents Claude from helpfully solving problems you didn't ask it to solve.'"},{"q":"What happens if you don't update Current Session Goal each session?","opts":["Nothing, it's optional","Claude will ask what the goal is","Claude may solve problems you didn't ask it to solve","The session won't start"],"correct":2,"explanation":"The Current Session Goal 'is what prevents Claude from helpfully solving problems you didn't ask it to solve.' Without it, scope is undefined."},{"q":"CLAUDE.md contains decisions that Claude should...","opts":["Question when they seem wrong","Never question or override","Update automatically over time","Share with all team members"],"correct":1,"explanation":"'Every decision you've already made that Claude should never question or override. The more specific and enforceable, the more value it provides.'"},{"q":"When is Claude Code reading CLAUDE.md?","opts":["On every message","Only when you tell it to","At the start of every session","When it encounters a conflict"],"correct":2,"explanation":"CLAUDE.md is 'a file in your project root that Claude Code reads at the start of every session.'"},{"q":"What should the NEVER section contain?","opts":["Things Claude should do automatically","Files Claude should prioritize","Actions Claude must never take without explicit instruction","Claude Code version requirements"],"correct":2,"explanation":"The NEVER section lists hard prohibitions — things like 'Touch /migrations without explicit instruction' and 'Change the auth middleware.'"},{"q":"Why does the template say '# Last updated: [date]' — what is the purpose?","opts":["For version control metadata","So Claude knows how current the instructions are","As a legal timestamp","For team documentation"],"correct":1,"explanation":"Keeping CLAUDE.md current is essential. If the date is stale, Claude has no way to know if the instructions still apply. Updating it signals the contract is active."}],"p2m2":[{"q":"What branch naming convention does this module recommend for AI sessions?","opts":["feature/[description]","fix/[description]","ai/[description]","claude/[description]"],"correct":2,"explanation":"'git checkout -b ai/refactor-auth-middleware' — the ai/ prefix signals an AI-assisted session and enables selective rollback."},{"q":"What git staging command is non-negotiable for AI-assisted commits?","opts":["git add .","git add -A","git add -p (patch mode)","git add --cached"],"correct":2,"explanation":"'Always use git add -p (patch mode) — never git add . — when committing AI-assisted changes. This forces you to read every diff hunk before it enters your commit history.'"},{"q":"Why use git add -p instead of git add .?","opts":["It's faster","It creates smaller commits","It forces you to read every diff hunk before committing","It automatically tests changes"],"correct":2,"explanation":"'This forces you to read every diff hunk before it enters your commit history. This is not optional.'"},{"q":"What tag should appear in every AI-assisted commit message?","opts":["[claude]","[generated]","[ai-assisted] or [ai]","[auto]"],"correct":2,"explanation":"'Tag AI-assisted commits. Your team deserves to know what to scrutinize more carefully in review. Use [ai] or [ai-assisted].'"},{"q":"What should you do if an AI session produces unusable results?","opts":["Keep prompting until it works","git checkout main && git branch -D ai/[branch]","Reset the HEAD by one commit","Delete the modified files manually"],"correct":1,"explanation":"'If session goes wrong — full rollback: git checkout main && git branch -D ai/refactor-auth-middleware.' The ai/ branch is your containment zone."},{"q":"Before merging a successful AI session, what cleanup should you do?","opts":["Delete all AI commits","git rebase -i main to squash commits","Add a merge commit","Force push to main"],"correct":1,"explanation":"'If session is good — squash before merging: git rebase -i main — clean up the commit history.' Checkpoint commits should become logical commits before merge."},{"q":"What is the primary risk of high-velocity AI development without git discipline?","opts":["Slower development","Inability to safely rollback, review, or explain what changed","Higher cloud costs","Merge conflicts"],"correct":1,"explanation":"'Without a deliberate git strategy, a single session can leave you unable to safely rollback, review, or explain what changed.'"},{"q":"Creating an ai/ branch before each session provides what?","opts":["Better performance","Automatic conflict resolution","Full rollback capability if the session goes wrong","Automatic testing"],"correct":2,"explanation":"The branch is your safety net. If the session goes wrong, you can checkout main and delete the branch — zero damage to your codebase."}],"p2m3":[{"q":"What are characterization tests?","opts":["Tests that verify code is correct","Tests that document current behavior — not verify correctness","Tests written after refactoring","Performance benchmarks"],"correct":1,"explanation":"'Before touching a single line of legacy code, write tests that document current behavior — including behavior that might be bugs. Their job is not to verify correctness. Their job is to tell you when anything changes.'"},{"q":"What is your first move on legacy code before any AI-assisted refactoring?","opts":["Run the existing tests","Open Claude Code and ask it to analyze the code","Write characterization tests","Create a git branch"],"correct":2,"explanation":"'Before touching a single line of legacy code, write [characterization] tests.' These are your safety net before Claude Code touches anything."},{"q":"If a characterization test goes red after an AI refactor, what does that mean?","opts":["The test was wrong — update it","The refactor changed observable behavior — investigate before merging","The test framework has a bug","The refactor was successful"],"correct":1,"explanation":"'Any red test = the refactor changed observable behavior. Investigate before merging.' Red characterization tests are signals, not problems to suppress."},{"q":"The Rule for AI Refactors states: characterization tests must be __ after the refactor.","opts":["Updated to match new behavior","Passing (all green)","Deleted if they conflict","Reviewed manually"],"correct":1,"explanation":"'Characterization tests before the refactor. All green after the refactor. Any red test = the refactor changed observable behavior.'"},{"q":"The example test comments 'We're not saying this behavior is CORRECT.' What is the test documenting?","opts":["Known bugs to fix later","Current behavior — even if it might be a bug","Expected future behavior","The desired behavior"],"correct":1,"explanation":"Characterization tests document current behavior — 'including behavior that might be bugs.' The goal is change detection, not correctness verification."},{"q":"What is the principle about refactoring without tests?","opts":["It's acceptable for small changes","It's fine if Claude Code is careful","It's not refactoring — it's rewriting while pretending you have a safety net","It's acceptable with AI assistance"],"correct":2,"explanation":"'Refactoring without tests is not refactoring. It's rewriting while pretending you have a safety net.'"},{"q":"Why write characterization tests before an AI refactor?","opts":["To satisfy code coverage requirements","To know when any behavior changes during the refactor","To make Claude Code work better","To satisfy team standards"],"correct":1,"explanation":"Their job is to tell you when anything changes. They're your change detection system, not a correctness guarantee."},{"q":"When should you write characterization tests relative to touching source code?","opts":["After the refactor to document what changed","During the refactor","Before touching any source code","Only if you have time"],"correct":2,"explanation":"Exercise 2.3: 'Don't touch the source code until this is done.' Tests first, always."}],"p3m1":[{"q":"What is Part 1 of the 5-Part Prompt Structure?","opts":["The Exact Task","Constraints","Role / Context","Definition of Done"],"correct":2,"explanation":"Part [1] is 'ROLE / CONTEXT' — establishing the environment and codebase context before stating the task."},{"q":"What is Part 5 of the 5-Part Prompt Structure?","opts":["Definition of Done","Constraints","Role / Context","What Not To Do"],"correct":3,"explanation":"Part [5] is 'WHAT NOT TO DO' — explicitly preventing the helpful over-engineering Claude tends toward."},{"q":"What is Part 4 of the 5-Part Prompt Structure?","opts":["Constraints","What Not To Do","Definition of Done","The Exact Task"],"correct":2,"explanation":"Part [4] is 'DEFINITION OF DONE' — the measurable criteria that tell both you and Claude when the task is complete."},{"q":"The module says 'Make it more maintainable' is...","opts":["A valid prompt if used carefully","A good starting point to refine","Not a valid prompt — define what maintainable means first","Acceptable for experienced Claude users"],"correct":2,"explanation":"'Not a valid prompt. Define what maintainable means first.' Vague outcome language is not a specification."},{"q":"How should prompts be treated according to this module?","opts":["Like search queries — short and direct","Like engineering specifications / design documents","Like casual conversation","Like bug reports"],"correct":1,"explanation":"'Most developers treat prompts like search queries. They're not. They're engineering specifications. The prompt is the design document for the output you'll receive.'"},{"q":"What does the structure of your prompt determine?","opts":["How long Claude takes to respond","The quality of output before Claude writes a single character","Whether Claude understands your codebase","How much context Claude uses"],"correct":1,"explanation":"'The structure of your prompt determines the quality of your output before Claude writes a single character.' Structure precedes execution."},{"q":"Part 3 (Constraints) in the example includes 'Do not modify /api/users.ts.' This represents what type of constraint?","opts":["Output format constraint","File scope lock — prevent scope creep","Performance constraint","Naming convention constraint"],"correct":1,"explanation":"File scope locks ('Do not modify X') are Constraint-layer scope controls that prevent Claude from touching code outside your intended change."},{"q":"Why include Part 5 'What Not To Do' in every prompt?","opts":["To make the prompt longer","To prevent Claude from making 'helpful' changes you didn't want","To demonstrate engineering rigor","To improve Claude's memory"],"correct":1,"explanation":"Part [5] explicitly prevents the helpful over-engineering Claude tends toward — adding error handling you didn't ask for, adding TypeScript generics, refactoring adjacent functions."}],"p3m2":[{"q":"What causes scope creep in AI-generated code?","opts":["Bugs in Claude Code","Claude's bias toward being comprehensive without explicit boundaries","Large context windows","Complex codebases"],"correct":1,"explanation":"'Claude Code has a bias toward being comprehensive. Ask it to refactor a function and it will refactor functions near it.' Without explicit constraints, Claude fills the vacuum."},{"q":"What does the audit prompt ask Claude to list?","opts":["Potential bugs in the code","Every file modified, every function changed, every reason, and unauthorized changes","Test coverage statistics","Dependencies used"],"correct":1,"explanation":"'List every file you modified. For each file, list every function or component you changed. For each change, state the reason. Flag anything you changed that I did not explicitly ask you to change.'"},{"q":"What phrase helps preserve a module's public API?","opts":["'Review the public interface'","'All existing exports must remain with identical signatures'","'Keep the API unchanged if possible'","'Maintain backward compatibility'"],"correct":1,"explanation":"'The public API of this module must not change. All existing exports must remain with identical signatures.' This is the exact phrase to use."},{"q":"Why is scope creep in AI diffs dangerous?","opts":["It's not dangerous — extra improvements are welcome","It creates diffs no one can safely approve","It slows down development","It causes merge conflicts"],"correct":1,"explanation":"'Every line Claude changes outside your specified scope is a line you didn't review with intent. Multiply this across a large refactor and you have an unmaintainable diff that no one can safely approve.'"},{"q":"What is your 'scope debt' as defined by Exercise 3.2?","opts":["Technical debt from AI-generated code","Number of extra files touched outside specified scope","Time spent reviewing AI code","Unused code introduced by Claude"],"correct":1,"explanation":"Exercise 3.2: 'Measure how many extra files were touched in the first run. This number is your scope debt.' It quantifies the cost of vague prompting."},{"q":"The phrase 'Only modify /services/userService.ts. Do not touch any other file.' is an example of...","opts":["A definition of done","An explicit file scope lock","A role/context statement","A constraint about naming"],"correct":1,"explanation":"This is a file scope lock — the most explicit form of scope control, preventing any changes to files not specifically named."},{"q":"What should you always include in a code modification prompt?","opts":["Your name and date","Explicit scope boundaries and file locks","Detailed business context","The full file content"],"correct":1,"explanation":"Scope control phrases to always include: explicit file locks, function-level locks, interface preservation statements, and audit prompts."},{"q":"When should you run the audit prompt?","opts":["Before starting a session","After every Claude response","At the end of any Claude Code session, before reviewing the diff","Only when something seems wrong"],"correct":2,"explanation":"'After any Claude Code session, run this as your final prompt before reviewing the diff.' The audit prompt is your session closeout step."}],"p3m3":[{"q":"Pattern 1 is called...","opts":["Middleware Audit","Route Handler Extraction","Dependency Injection Refactor","Async Error Hardening"],"correct":1,"explanation":"Pattern 1: Route Handler Extraction — extracting business logic from route handlers into service functions."},{"q":"Pattern 2 (Middleware Audit) tells Claude to do what?","opts":["Refactor the middleware","List issues and security concerns WITHOUT modifying the file","Add error handling to the middleware","Replace the middleware with a better version"],"correct":1,"explanation":"'Review /middleware/auth.ts. Do not modify it. List every assumption... Output as a structured list only — no code changes.' Pattern 2 is analysis-only."},{"q":"Pattern 3 is for...","opts":["Route extraction","Component decomposition","Async Error Hardening","Data fetching centralization"],"correct":2,"explanation":"Pattern 3: Async Error Hardening — adding try/catch with AppError rethrow to async functions that currently lack error handling."},{"q":"Which pattern uses constructor parameters to accept dependencies?","opts":["Pattern 1: Route Handler Extraction","Pattern 2: Middleware Audit","Pattern 3: Async Error Hardening","Pattern 4: Dependency Injection Refactor"],"correct":3,"explanation":"Pattern 4: Dependency Injection Refactor — 'accept its dependencies (the mailer and logger) as constructor parameters instead of importing them directly.'"},{"q":"In Pattern 1, after extraction what should remain in the route handler?","opts":["All business logic plus HTTP formatting","Nothing — route handlers should be empty","Only: validate input, call the service, and format the HTTP response","Only error handling"],"correct":2,"explanation":"'The route handler should only: validate input, call the service, and format the HTTP response. No business logic should remain in the route.'"},{"q":"In Pattern 3, what class should errors be rethrown as?","opts":["Error","HttpError","AppError (from /lib/errors.ts)","ServiceError"],"correct":2,"explanation":"'use try/catch, rethrow with our AppError class from /lib/errors.ts, preserve the original error as the cause.'"},{"q":"Pattern 2 outputs...","opts":["Refactored middleware code","A pull request with fixes","Structured lists only — no code changes","Test cases for the middleware"],"correct":2,"explanation":"'Output as a structured list only — no code changes.' Pattern 2 is a read-only audit pattern."},{"q":"In Pattern 4, how should the service receive its dependencies?","opts":["As environment variables","Via a dependency injection framework","As constructor parameters (not imported directly)","Through global module state"],"correct":2,"explanation":"'accept its dependencies (the mailer and logger) as constructor parameters instead of importing them directly.'"}],"p3m4":[{"q":"In Pattern 1 (Large Component Decomposition), where should new components be placed?","opts":["Anywhere in /components/","In /components/[ParentName]/ — a dedicated subdirectory","In the same file as the parent","In /components/shared/"],"correct":1,"explanation":"'Each new component must be in its own file in /components/UserProfile/' — a dedicated subdirectory named after the parent component."},{"q":"The React-Specific Trap warns about which high-risk area?","opts":["useState initialization","useEffect dependency arrays","React.memo usage","Component prop types"],"correct":1,"explanation":"'Always ask Claude Code to explicitly justify every useEffect dependency array. This is the single highest-risk area for AI-generated React code — incorrect deps cause infinite loops and stale closures.'"},{"q":"In Pattern 2 (Class to Hook Migration), what must happen to error boundary logic?","opts":["Delete it — hooks handle errors better","Convert it to useState error handling","Move to a parent ErrorBoundary wrapper (provided by Claude)","Keep it as-is in the converted component"],"correct":2,"explanation":"'All error boundary logic must move to a parent ErrorBoundary wrapper (provide it).' Class-based error boundaries can't be converted to hooks — they must become wrappers."},{"q":"Pattern 3 is about...","opts":["Breaking large components apart","Converting class components to hooks","Data Fetching Centralization using React Query","Optimizing re-renders with useMemo"],"correct":2,"explanation":"Pattern 3: Data Fetching Centralization — extracting duplicate fetch logic across 4 components into a single useUsers hook using React Query."},{"q":"In Pattern 1, what must NOT change?","opts":["Component file names","All existing props interfaces","The component's internal state","How the component is styled"],"correct":1,"explanation":"'Keep all existing props interfaces — do not change what parents pass in.' The component's external contract must be preserved."},{"q":"Why ask Claude to justify every useEffect dependency array?","opts":["For code documentation","Claude often forgets to add them","Incorrect deps cause infinite loops and stale closures that are hard to debug","It's a TypeScript requirement"],"correct":2,"explanation":"'Incorrect deps cause infinite loops and stale closures that are hard to debug.' This is the highest-risk AI React output — always demand justification."},{"q":"The useUsers hook from Pattern 3 must support what three features?","opts":["Sorting, filtering, and pagination","Filtering, pagination, and a refresh trigger","Caching, filtering, and real-time updates","Pagination, sorting, and search"],"correct":1,"explanation":"'The hook must support: filtering, pagination, and a refresh trigger.' These are the three requirements specified in Pattern 3."},{"q":"In Pattern 1's decomposition, which component DOES the data fetching?","opts":["Each decomposed sub-component independently","The new shared /components/ui/ components","Only UserProfilePage — decomposed components receive data via props","A separate data layer component"],"correct":2,"explanation":"'No component should fetch data — lift that to UserProfilePage.' The parent page component owns data fetching; decomposed components are presentational."}],"p4m1":[{"q":"What should your first session on any refactor be?","opts":["Writing the first code changes","Read-only reconnaissance — understanding, not changing","Setting up the branch and CLAUDE.md","Running characterization tests"],"correct":1,"explanation":"'Your first session on any refactor should be read-only reconnaissance — understanding the codebase, not changing it.'"},{"q":"How many steps does the Reconnaissance Protocol checklist have?","opts":["4","5","6","7"],"correct":3,"explanation":"The Reconnaissance Protocol checklist has 7 steps: map dependencies, identify interfaces, find hidden coupling, document current behavior, identify risk zones, write characterization tests, write the refactor plan."},{"q":"What does the Reconnaissance Prompt tell Claude NOT to do?","opts":["Read the file","List dependencies","Make any changes","Search the codebase"],"correct":2,"explanation":"'Do not make any changes.' The Reconnaissance Prompt is explicitly read-only: understand and document, never modify."},{"q":"Step 6 in the Reconnaissance Protocol is...","opts":["Identify risk zones","Write the refactor plan","Write characterization tests","Find hidden coupling"],"correct":2,"explanation":"Step 6: 'Write characterization tests: From Module 2.3. Do not skip this.' Characterization tests are part of reconnaissance, before any code changes."},{"q":"'Find hidden coupling' in the Reconnaissance Protocol helps identify...","opts":["Performance bottlenecks","Implicit dependencies and assumptions the code makes about its environment","Code style violations","Unused imports"],"correct":1,"explanation":"'Ask what assumptions does this code make about its environment? Often reveals implicit dependencies.' Hidden coupling causes unexpected breakage during refactors."},{"q":"What is Step 7 of the Reconnaissance Protocol?","opts":["Write characterization tests","Identify risk zones","Write the refactor plan before any code changes","Map dependencies"],"correct":2,"explanation":"Step 7: 'Write the refactor plan: Before any code changes, get Claude Code to output a step-by-step plan. Review it yourself. Then execute it.'"},{"q":"The Reconnaissance Prompt instructs Claude to output results as...","opts":["A code diff","Structured lists only","A narrative description","A modified version of the file"],"correct":1,"explanation":"'Output as structured lists only.' The reconnaissance phase produces documentation, not code changes."},{"q":"Mapping dependencies should reveal...","opts":["Every bug in the file","Every external dependency and every file that imports from the target","Performance characteristics","Code quality metrics"],"correct":1,"explanation":"'Ask Claude Code to read the target file and list every external dependency and every file that imports from it.' This maps the blast radius of any change."}],"p4m2":[{"q":"How many logical changes per micro-session?","opts":["As many as possible","Three maximum","Two","One — hard limit"],"correct":3,"explanation":"'ONE CHANGE ONLY: One logical transformation per session.' This is a hard limit. 'Extract the query and add error handling and rename things is three.'"},{"q":"What is Step 3 in the micro-session loop?","opts":["State the Goal","Commit","Verify Immediately (run tests, review diff)","Repeat or Stop"],"correct":2,"explanation":"Step 3: 'VERIFY IMMEDIATELY: Run tests. All characterization tests must pass. Run the app. Review the diff with git add -p.'"},{"q":"What is the 'Sunk Cost Trap' described in this module?","opts":["Continuing to use AI tools after a bad experience","Continuing a session with 10 corrective prompts instead of starting fresh","Keeping bad code because it took time to write","Over-investing in test infrastructure"],"correct":1,"explanation":"'A session that produces working code after 10 corrective prompts is a bad session. The 10 back-and-forth exchanges eroded context integrity. Start fresh.'"},{"q":"Every AI-assisted commit message should include what tag?","opts":["[claude]","[ai-assisted]","[generated]","[review-required]"],"correct":1,"explanation":"Step 4: 'Write a commit message that explains the WHY, not the what. Tag as [ai-assisted].'"},{"q":"What should a commit message explain according to Step 4?","opts":["What changed (the code diff)","The WHY — motivation, not mechanics","Which files were modified","The Claude Code session ID"],"correct":1,"explanation":"'Write a commit message that explains the WHY, not the what.' The diff shows what changed; the message explains why it was the right change."},{"q":"When should you stop a micro-session and start a new one?","opts":["After 30 minutes","When you've made 5 changes","If tests fail or you're losing confidence in what changed","When context window fills"],"correct":2,"explanation":"'If tests fail — do not proceed. Fix or rollback. If you're losing confidence in what changed — stop. New session.'"},{"q":"How should you stage changes for AI commits?","opts":["git add .","git add -A","git add -p (interactive staging — review every hunk)","git add --all"],"correct":2,"explanation":"Step 4 and Module 2.2: Use 'git add -p' — interactive staging that forces you to review every hunk before committing."},{"q":"Why is 'Extract the query AND add error handling AND rename things' described as wrong for one session?","opts":["It's too complex for Claude Code","It's three separate changes — context integrity requires one change per session","It would take too long","It mixes different types of refactors"],"correct":1,"explanation":"Each of these is a distinct logical transformation with its own commit point. Bundling them erodes context integrity and makes verification harder."}],"p4m3":[{"q":"Which verification layer catches 'interface violations, type drift'?","opts":["Vitest characterization tests","ESLint","tsc --noEmit","Supertest integration tests"],"correct":2,"explanation":"The Verification Stack: Type checking with 'tsc --noEmit' catches 'Interface violations, type drift.'"},{"q":"What does 'TypeScript passing + tests green' NOT guarantee?","opts":["That the code compiles","That the code is correct — only that it's type-safe and matches documented behavior","That tests exist","That linting passes"],"correct":1,"explanation":"The Confidence Trap: 'TypeScript passing and tests green does not mean the refactor is correct. It means it's type-safe and matches documented behavior. Business logic correctness requires human review.'"},{"q":"Which verification layer catches 'API contract breakage'?","opts":["tsc --noEmit","git diff review","Supertest (integration tests)","Manual smoke test"],"correct":2,"explanation":"The Verification Stack: 'Integration tests (Supertest)' catches 'API contract breakage.'"},{"q":"How many layers are in the Verification Stack?","opts":["4","5","6","7"],"correct":3,"explanation":"The Verification Stack has 7 layers: characterization tests, type checking, lint, integration tests, manual smoke test, diff review, peer review."},{"q":"What does peer review catch that automated tools miss?","opts":["Syntax errors","Type violations","Logic errors and maintainability regression","Performance issues"],"correct":2,"explanation":"Verification Stack: 'Peer review (Teammate)' catches 'Logic errors, maintainability regression.' Humans catch what machines miss."},{"q":"What tool is 'You' in the Verification Stack, and what does it catch?","opts":["tsc — type errors","Peer review — logic errors","Manual smoke test — anything automated didn't cover","Lint — pattern violations"],"correct":2,"explanation":"'Manual smoke test (You)' catches 'Anything automated didn't cover.' Human judgment is an explicit layer in the stack."},{"q":"High-risk patterns requiring manual verification include any auth check that was...","opts":["Added for the first time","Moved, extracted, or reordered","Written by the original developer","Documented in comments"],"correct":1,"explanation":"'Any auth check that was moved, extracted, or reordered' is in the high-risk list. Moving auth logic changes its execution context."},{"q":"The 'Confidence Trap' warns specifically about relying on...","opts":["Claude Code's output quality","TypeScript passing and tests green as proof of correctness","Peer review results","Integration test results"],"correct":1,"explanation":"'The Confidence Trap: TypeScript passing and tests green does not mean the refactor is correct.' These tools verify a subset of correctness, not all of it."}],"p4m4":[{"q":"What is Pattern 1 failure called?","opts":["The Helpful Scope Expansion","The Confident Wrong Answer","Context Drift","API Hallucination"],"correct":1,"explanation":"Pattern 1: 'The Confident Wrong Answer' — syntactically correct, passes stated tests, but has subtly wrong business logic."},{"q":"What causes Pattern 1 (The Confident Wrong Answer)?","opts":["Context window overflow","Domain knowledge not fully specified in the prompt","Bugs in Claude Code","Poor model version"],"correct":1,"explanation":"'Usually happens when the task involves domain knowledge you didn't fully specify.' Claude fills domain gaps with plausible but incorrect behavior."},{"q":"Pattern 2 (Helpful Scope Expansion) is caught by...","opts":["Running tests","TypeScript compiler","git diff review and the audit prompt","Peer review"],"correct":2,"explanation":"'Caught by: git diff review, audit prompt.' These are the two tools for detecting scope creep."},{"q":"What is the correct fix for Pattern 3 (Context Drift)?","opts":["Add a corrective prompt with the constraint","Copy the constraint from the beginning of the session","Do not try to correct; start a new session with better context","Scroll up and re-run the session from that point"],"correct":2,"explanation":"'Fix: do not try to correct drift in-session. Start a new session with better context.' In-session corrections don't work because the context is already compromised."},{"q":"Pattern 4 (Hallucinated API) is caught by...","opts":["git diff","TypeScript, tests, or reading the output carefully","Peer review","The audit prompt"],"correct":1,"explanation":"'Caught by: TypeScript, tests, or reading the output carefully. Always verify library API usage against the actual docs — not Claude's memory of them.'"},{"q":"What is Recovery Step 1?","opts":["git diff to understand the damage","Update CLAUDE.md","Stop prompting immediately","Start a new session"],"correct":2,"explanation":"Step 1: 'Stop prompting immediately. More prompts don't fix a broken session.' This is counterintuitive but critical."},{"q":"What is Recovery Step 6?","opts":["git checkout to the last good commit","Start a new session","Update CLAUDE.md with the missing constraint","Write characterization tests"],"correct":2,"explanation":"Step 6: 'Update CLAUDE.md with the missing constraint.' The failure teaches you something; encode that learning so it doesn't happen again."},{"q":"Where should missing constraints discovered from a failure be recorded?","opts":["In a separate failures.md file","In the git commit message","In CLAUDE.md","In a team Slack channel"],"correct":2,"explanation":"'Update CLAUDE.md with the missing constraint.' CLAUDE.md is the persistent contract — failures reveal gaps in it that need to be filled."}],"p5m1":[{"q":"Why does AI-generated code pass review at higher rates than it should?","opts":["It's genuinely higher quality","Reviewers assume the same intentionality as human-written code","Reviewers don't have time for thorough review","AI code is harder to read"],"correct":1,"explanation":"'AI-generated code passes review at a higher rate than it should because reviewers assume the same intentionality behind it. That's a mistake.'"},{"q":"How many items are in the AI Code Review Checklist?","opts":["5","6","7","8"],"correct":3,"explanation":"The AI Code Review Checklist has 8 items covering: diff scope, interfaces, auth, error paths, async patterns, dependencies, library APIs, and tests."},{"q":"What should reviewers assume about patterns that 'look right' in AI code?","opts":["They are correct — AI learns from quality code","They might be cargo-culted from training data rather than chosen for this context","They are better than human-written patterns","They should be reviewed quickly"],"correct":1,"explanation":"'Every pattern that looks right might be cargo-culted from training data rather than chosen for this specific context.'"},{"q":"What is described as 'statistically plausible but domain-incorrect'?","opts":["Type annotations","Error handling","Business logic","Code formatting"],"correct":2,"explanation":"'Business logic may be statistically plausible but domain-incorrect.' Claude predicts what looks right; it doesn't know your business rules."},{"q":"The module says error handling in AI code may be...","opts":["More robust than human-written error handling","Structurally correct but semantically wrong — catching the wrong things","Always incorrect and needs rewriting","Correct if the tests pass"],"correct":1,"explanation":"'Error handling may be structurally correct but semantically wrong — catching the wrong things.' Structure != semantics."},{"q":"What must the code author be able to do with every changed line?","opts":["Explain it without referencing 'Claude did it'","Show which prompt produced it","Provide test coverage for it","Attribute it to a specific PR"],"correct":0,"explanation":"Checklist item: 'You can explain every changed line without referencing Claude did it.' If you can't explain it, you don't own it yet."},{"q":"The checklist item about async patterns checks for...","opts":["Async/await usage","No floating promises","Promise.all usage","Async error handling"],"correct":1,"explanation":"'Async/await patterns are correct — no floating promises.' Floating promises (unhandled promise rejections) are a common AI error."},{"q":"What type of code is described as 'should be treated as untested'?","opts":["Code without type annotations","Code written in unfamiliar frameworks","Any refactor that 'cleans up' untouched code","Code older than 6 months"],"correct":2,"explanation":"'Any refactor that cleans up untouched code should be treated as untested.' If Claude touched it without explicit instruction, there are no characterization tests for it."}],"p5m2":[{"q":"The Team Standard Document should fit on...","opts":["As many pages as needed","Three pages maximum","One page","A wiki page with unlimited sections"],"correct":2,"explanation":"'A one-page document your team agrees to.' Brevity ensures it gets read and followed."},{"q":"What items require human authorship according to the team standard?","opts":["All code","Only frontend code","Auth, payment/billing flows, data migration scripts, security middleware","Only code touching the database"],"correct":2,"explanation":"'What requires human authorship: Auth and permission logic, Payment and billing flows, Data migration scripts, Security middleware.'"},{"q":"What branch convention does the team standard require?","opts":["feature/[description]","fix/[description]","ai/[description]","hotfix/[description]"],"correct":2,"explanation":"'Branch created: ai/[description]' — required before any AI-assisted PR."},{"q":"The Accountability Test states that developers must be able to...","opts":["Prove AI didn't write the critical parts","Explain every changed line when asked","Provide a testing summary","Show the prompts they used"],"correct":1,"explanation":"'Every developer who merges AI-assisted code must be able to stand in front of the team and explain every changed line.'"},{"q":"What requirement prevents 2000-line PRs?","opts":["A 500-line PR limit policy","Commit count limits","Diff must be reviewable","Mandatory squash merges"],"correct":2,"explanation":"'PR requirements: Diff must be reviewable (no 2000-line PRs).' If you can't review the diff, the PR isn't ready."},{"q":"What reviewer tool must be used for AI-assisted PRs?","opts":["An automated code scanner","The AI code review checklist (from Module 5.1)","A separate reviewer unfamiliar with AI","TypeScript strict compilation"],"correct":1,"explanation":"'Reviewer must use the AI code review checklist.' The checklist from Module 5.1 is the team's standard review tool for AI-assisted PRs."},{"q":"Without team standards, what happens to the codebase?","opts":["Nothing — individual discipline is sufficient","It becomes a two-tier codebase with no way to distinguish quality","Code quality improves on average","Teams self-organize naturally"],"correct":1,"explanation":"'Individual discipline without team standards creates a two-tier codebase: carefully crafted AI work... and vibe-prompted garbage... mixed together with no way to tell them apart.'"},{"q":"What does the [ai-assisted] commit tag provide for reviewers?","opts":["An automatic code quality score","A signal for which commits to scrutinize more carefully","Proof that Claude Code was used","A legal liability disclaimer"],"correct":1,"explanation":"'Tag AI-assisted commits. Your team deserves to know what to scrutinize more carefully in review.'"}],"p5m3":[{"q":"What does MCP stand for?","opts":["Machine Control Protocol","Model Context Protocol","Multi-Claude Platform","Managed Code Pipeline"],"correct":1,"explanation":"MCP = Model Context Protocol. It allows Claude Code to be extended with servers that access databases, external APIs, GitHub, and more."},{"q":"The hard rule for production systems is...","opts":["Always get approval before any access","Read-only access only; write only in dev with rollback capability","Two-person rule for any database access","Dry-run everything first"],"correct":1,"explanation":"'Always give Claude Code read-only access to production systems. Write access — to databases, APIs, or filesystems — only in development environments with rollback capability.'"},{"q":"The Principle of Least Privilege means...","opts":["Give Claude the minimum permissions needed for the task","Give Claude read-only access always","Never give Claude database access","Audit all Claude Code MCP usage"],"correct":0,"explanation":"'Principle of least privilege: Grant the minimum permissions needed for the task. A session analyzing your database schema doesn't need write access.'"},{"q":"Before any MCP write operation, what should Claude do?","opts":["Execute immediately for speed","Log the operation and proceed","Output the operations it will perform and wait for approval","Ask for a confirmation code"],"correct":2,"explanation":"'For any MCP-enabled task that mutates data, ask Claude Code to output the operations it will perform before executing them. Review, then approve.'"},{"q":"What is 'Dry-run first'?","opts":["Testing in a sandbox environment","Asking Claude to output planned operations before executing them","Running Claude Code without MCP connections","Testing with synthetic data"],"correct":1,"explanation":"'Dry-run first: For any MCP-enabled task that mutates data, ask Claude Code to output the operations it will perform before executing them.'"},{"q":"What MCP safety principle ensures you know what the agent did, when, and why?","opts":["Principle of least privilege","Scope confirmation","Audit trail of every MCP operation","Dry-run first"],"correct":2,"explanation":"'Audit trail: Ensure every MCP operation is logged. You need to know what the agent did, when, and why.'"},{"q":"The MCP Session Opener Template instructs Claude to...","opts":["Connect to all available systems","Use read-only mode by default","Output intended write operations and wait for 'proceed' confirmation before executing","Log all actions automatically"],"correct":2,"explanation":"'Before any write operation, output exactly what you're about to do and wait for my proceed confirmation.' This is the MCP Session Opener template's core instruction."},{"q":"An undisciplined agent with database write access is described as...","opts":["A productivity tool","A security risk to document","A liability","An advanced feature"],"correct":2,"explanation":"'An undisciplined agent with database access is a liability.' Write access to production is categorically different from read access."}],"p5m4":[{"q":"Phase A of the Complete Refactor Playbook is called...","opts":["Execution Loop","Before You Start (Non-Negotiable)","Before Merging","Setup Phase"],"correct":1,"explanation":"Phase A: 'Before You Start (Non-Negotiable)' — the pre-work that must be completed before any code changes."},{"q":"Phase B of the Playbook is...","opts":["Before You Start","Before Merging","Execution Loop","Verification Phase"],"correct":2,"explanation":"Phase B: 'Execution Loop' — the repeating micro-session protocol: state goal, one change, verify, commit, repeat."},{"q":"Phase C of the Playbook is...","opts":["Before You Start","Execution Loop","Before Merging","Post-Merge Review"],"correct":2,"explanation":"Phase C: 'Before Merging' — the final verification checklist before the PR is approved and merged."},{"q":"Phase A requires what regarding tests?","opts":["Tests will be written during Phase B","At least one test must exist","Characterization tests written and passing","Only unit tests are required"],"correct":2,"explanation":"Phase A checklist item: 'Characterization tests written and passing.' This is non-negotiable before any code changes."},{"q":"In Phase B (Execution Loop), what must happen before each commit?","opts":["Peer review sign-off","All tests passing","TypeScript compilation","Branch sync with main"],"correct":1,"explanation":"Phase B checklist: 'All tests passing before commit.' No commit should introduce failing tests."},{"q":"In Phase C, what TypeScript command must be clean before merging?","opts":["tsc --strict","tsc --build","tsc --noEmit","tsc --check"],"correct":2,"explanation":"Phase C checklist: 'TypeScript clean (tsc --noEmit).' This verifies type correctness without producing output files."},{"q":"The final callout says about AI-generated code: who is responsible for it?","opts":["Claude Code, as the author","The tool vendor","The developer who merges it","The tech lead who approved it"],"correct":2,"explanation":"'The AI wrote the code. The developer is responsible for it.' (From Module 5.2 Accountability Test, echoed here.) Authorship and responsibility are separate."},{"q":"Phase A requires creating a branch named...","opts":["feature/[description]","refactor/[description]","ai/[specific-description]","claude/[description]"],"correct":2,"explanation":"Phase A checklist: 'Created feature branch: ai/[specific-description].' The ai/ prefix signals AI-assisted work."}]};
 
 // ── STATE ──
-var sq = String.fromCharCode(39); // apostrophe for onclick attrs
+var sq = String.fromCharCode(39);
 var panelOpen = false;
 var panelTab = 'notes';
-let completed = new Set(JSON.parse(localStorage.getItem('eng_completed') || '[]'));
-let passedQuizzes = new Set(JSON.parse(localStorage.getItem('eng_quizzes') || '[]'));
-let bookmarks = new Set(JSON.parse(localStorage.getItem('eng_bookmarks') || '[]'));
-let currentMod = null;
-let quizState = {};
-let notesTimer = null;
+var completed = new Set(JSON.parse(localStorage.getItem('eng_completed') || '[]'));
+var passedQuizzes = new Set(JSON.parse(localStorage.getItem('eng_quizzes') || '[]'));
+var bookmarks = new Set(JSON.parse(localStorage.getItem('eng_bookmarks') || '[]'));
+var currentMod = null;
+var quizState = {};
+var notesTimer = null;
+
+// ── SCALE ──
+var SCALE_VALS = [15, 18, 21];
+var SCALE_LABELS = ['Small', 'Default', 'Large'];
+function applyScale(v) {
+  v = parseInt(v, 10);
+  if (isNaN(v) || v < 0 || v > 2) v = 1;
+  document.documentElement.style.fontSize = SCALE_VALS[v] + 'px';
+  localStorage.setItem('ui_scale', v);
+  var lbl = document.getElementById('scaleLbl');
+  if (lbl) lbl.textContent = SCALE_LABELS[v];
+  var sl = document.getElementById('scaleSlider');
+  if (sl) sl.value = v;
+}
+function initScale() {
+  var v = parseInt(localStorage.getItem('ui_scale'), 10);
+  if (isNaN(v) || v < 0 || v > 2) v = 1;
+  document.documentElement.style.fontSize = SCALE_VALS[v] + 'px';
+}
 
 // ── PHASE BADGE COLORS ──
 var PH_COLORS = [null,
@@ -404,7 +443,7 @@ var PH_COLORS = [null,
 ];
 
 // ── SEARCH INDEX ──
-const SEARCH_IDX = MODULES.map(function(m) {
+var SEARCH_IDX = MODULES.map(function(m) {
   return {
     id: m.id, num: m.num, title: m.title,
     text: (m.lead + ' ' + m.content).replace(/<[^>]+>/g,' ').toLowerCase()
@@ -413,68 +452,105 @@ const SEARCH_IDX = MODULES.map(function(m) {
 
 // ── PROGRESS ──
 function updateProgress() {
-  const n = completed.size;
-  const total = MODULES.length;
-  const pct = Math.round(n / total * 100);
-  const el = function(id) { return document.getElementById(id); };
-  if (el('sbFill')) el('sbFill').style.width = pct + '%';
-  if (el('tbFill')) el('tbFill').style.width = pct + '%';
-  if (el('sbStatsRow')) el('sbStatsRow').textContent = n + ' / ' + total + ' modules';
-  if (el('tbPct')) el('tbPct').textContent = n + ' / ' + total;
-  const cb = el('certBtn');
-  if (cb) cb.style.display = n === total ? 'block' : 'none';
-  localStorage.setItem('eng_completed', JSON.stringify([...completed]));
+  var n = completed.size;
+  var total = MODULES.length;
+  var pct = total > 0 ? Math.round(n / total * 100) : 0;
+  var sbFill = document.getElementById('sbFill');
+  var tbFill = document.getElementById('tbFill');
+  var sbStatsRow = document.getElementById('sbStatsRow');
+  var tbPct = document.getElementById('tbPct');
+  var certBtn = document.getElementById('certBtn');
+  if (sbFill) sbFill.style.width = pct + '%';
+  if (tbFill) tbFill.style.width = pct + '%';
+  if (sbStatsRow) sbStatsRow.textContent = n + ' / ' + total + ' modules';
+  if (tbPct) tbPct.textContent = n + ' / ' + total;
+  if (certBtn) certBtn.style.display = n === total ? 'block' : 'none';
+  localStorage.setItem('eng_completed', JSON.stringify(Array.from(completed)));
   updateFooter();
 }
 
 // ── SIDEBAR FOOTER ──
 function updateFooter() {
-  const el = document.getElementById('sbFooter');
+  var el = document.getElementById('sbFooter');
   if (!el) return;
-  const n = completed.size;
-  const total = MODULES.length;
-  const pct = Math.round(n / total * 100);
-  let minsDone = 0;
-  [...completed].forEach(function(id) { const t = TIME_MAP[id]; if (t) minsDone += parseInt(t); });
-  let minsTotal = 0;
-  Object.values(TIME_MAP).forEach(function(t) { minsTotal += parseInt(t); });
-  const minsLeft = minsTotal - minsDone;
-  const h = Math.floor(minsLeft / 60);
-  const m = minsLeft % 60;
-  const timeStr = h > 0 ? '~' + h + 'h ' + (m > 0 ? m + 'm' : '') + ' remaining' : m + 'm remaining';
+  var n = completed.size;
+  var total = MODULES.length;
+  var pct = total > 0 ? Math.round(n / total * 100) : 0;
+  var minsDone = 0;
+  Array.from(completed).forEach(function(id) { var t = TIME_MAP[id]; if (t) minsDone += parseInt(t, 10); });
+  var minsTotal = 0;
+  Object.values(TIME_MAP).forEach(function(t) { minsTotal += parseInt(t, 10); });
+  var minsLeft = minsTotal - minsDone;
+  var h = Math.floor(minsLeft / 60);
+  var m = minsLeft % 60;
+  var timeStr = h > 0 ? '~' + h + 'h ' + (m > 0 ? m + 'm' : '') + ' remaining' : m + 'm remaining';
+  var sv = parseInt(localStorage.getItem('ui_scale'), 10);
+  if (isNaN(sv) || sv < 0 || sv > 2) sv = 1;
   el.innerHTML =
     '<div class="sb-ft-count">' + n + ' of ' + total + ' complete</div>' +
     '<div class="sb-ft-bar"><div class="sb-ft-fill" style="width:' + pct + '%"></div></div>' +
-    '<div class="sb-ft-time">' + timeStr + '</div>';
+    '<div class="sb-ft-time">' + timeStr + '</div>' +
+    '<div class="scale-label-row" style="margin-top:0.625rem">' +
+      '<span class="scale-label-lft">Text size</span>' +
+      '<span class="scale-label-val" id="scaleLbl">' + SCALE_LABELS[sv] + '</span>' +
+    '</div>' +
+    '<input type="range" class="scale-slider" id="scaleSlider" min="0" max="2" step="1" value="' + sv + '" oninput="applyScale(this.value)">' +
+    '<button class="sb-reset-link" onclick="resetCourse()">Reset course progress</button>';
+}
+
+// ── RESET ──
+function resetCourse() {
+  var el = document.getElementById('sbFooter');
+  if (!el) return;
+  el.innerHTML =
+    '<div class="sb-reset-confirm">' +
+      '<p>Reset all progress?</p>' +
+      '<small>This cannot be undone.</small>' +
+      '<div class="sb-rc-btns">' +
+        '<button class="sb-rc-btn" onclick="cancelReset()">Cancel</button>' +
+        '<button class="sb-rc-btn danger" onclick="doReset()">Yes, reset</button>' +
+      '</div>' +
+    '</div>';
+}
+function cancelReset() { updateFooter(); }
+function doReset() {
+  localStorage.removeItem('eng_completed');
+  localStorage.removeItem('eng_quizzes');
+  localStorage.removeItem('eng_panel');
+  localStorage.removeItem('eng_last');
+  localStorage.removeItem('eng_phases');
+  localStorage.removeItem('eng_bookmarks');
+  Object.keys(localStorage).filter(function(k) { return k.indexOf('eng_notes_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
+  location.reload();
 }
 
 // ── PHASE COLLAPSE ──
 function isPhaseCollapsed(n) {
-  const phases = JSON.parse(localStorage.getItem('eng_phases') || '{}');
+  var phases = JSON.parse(localStorage.getItem('eng_phases') || '{}');
   return phases[n] === true;
 }
 function togglePhase(n) {
-  const sec = document.getElementById('ph-sec-' + n);
+  var sec = document.getElementById('ph-sec-' + n);
   if (!sec) return;
   sec.classList.toggle('collapsed');
-  const phases = JSON.parse(localStorage.getItem('eng_phases') || '{}');
+  var phases = JSON.parse(localStorage.getItem('eng_phases') || '{}');
   phases[n] = sec.classList.contains('collapsed');
   localStorage.setItem('eng_phases', JSON.stringify(phases));
 }
 
 // ── BUILD SIDEBAR ──
 function buildNavRow(m) {
-  const active = currentMod === m.id ? ' active' : '';
-  const done = completed.has(m.id);
-  const isDone = done ? ' is-done' : '';
-  const bmOn = bookmarks.has(m.id) ? ' on' : '';
-  let chip = '';
+  var active = currentMod === m.id ? ' active' : '';
+  var done = completed.has(m.id);
+  var isDoneClass = done ? ' is-done' : '';
+  var bmOn = bookmarks.has(m.id) ? ' on' : '';
+  var chip = '';
   if (currentMod === m.id) {
     chip = '<span class="ni-chip in-prog">● In progress</span>';
   } else if (done) {
     chip = '<span class="ni-chip is-done">✓ Complete</span>';
   }
-  return '<div class="nav-item' + active + isDone + '" id="ni-' + m.id + '" onclick="showModule(' + sq + m.id + sq + ')">' +
+  return '<div class="nav-item' + active + isDoneClass + '" id="ni-' + m.id + '" onclick="showModule(' + sq + m.id + sq + ')">' +
     '<div class="ni-line1"><span class="ni-num">' + m.num + '</span><span class="ni-title">' + m.title + '</span></div>' +
     '<div class="ni-line2"><span class="ni-dur">' + (TIME_MAP[m.id] || '') + '</span>' + chip +
     '<button class="ni-bm' + bmOn + '" onclick="toggleBookmark(' + sq + m.id + sq + ');event.stopPropagation()" title="Bookmark">&#9733;</button>' +
@@ -484,18 +560,18 @@ function buildNavRow(m) {
 function buildSidebar(container) {
   container = container || document.getElementById('sbNav');
   if (!container) return;
-  let html = '';
-  const bms = MODULES.filter(function(m) { return bookmarks.has(m.id); });
+  var html = '';
+  var bms = MODULES.filter(function(m) { return bookmarks.has(m.id); });
   if (bms.length) {
     html += '<div class="sb-bm-label">&#9733; Bookmarks</div>';
     bms.forEach(function(m) { html += buildNavRow(m); });
     html += '<div class="sb-bm-divider"></div>';
   }
   PHASE_META.forEach(function(pm) {
-    const c = PH_COLORS[pm.n] || {bg:'#8b949e',fg:'#0f1117'};
-    const mods = MODULES.filter(function(m) { return m.phase === pm.n; });
-    const doneCount = mods.filter(function(m) { return completed.has(m.id); }).length;
-    const collapsed = isPhaseCollapsed(pm.n) ? ' collapsed' : '';
+    var c = PH_COLORS[pm.n] || {bg:'#8b949e',fg:'#0f1117'};
+    var mods = MODULES.filter(function(m) { return m.phase === pm.n; });
+    var doneCount = mods.filter(function(m) { return completed.has(m.id); }).length;
+    var collapsed = isPhaseCollapsed(pm.n) ? ' collapsed' : '';
     html += '<div class="ph-section' + collapsed + '" id="ph-sec-' + pm.n + '">';
     html += '<button class="ph-toggle" onclick="togglePhase(' + pm.n + ')">';
     html += '<span class="ph-badge" style="background:' + c.bg + ';color:' + c.fg + '">P' + pm.n + '</span>';
@@ -510,12 +586,29 @@ function buildSidebar(container) {
   container.innerHTML = html;
 }
 
+// ── PHASE GLOW ──
+function checkPhaseGlow(modId) {
+  var mod = MODULES.find(function(m) { return m.id === modId; });
+  if (!mod || !completed.has(modId)) return;
+  var phaseMods = MODULES.filter(function(m) { return m.phase === mod.phase; });
+  var allDone = phaseMods.every(function(m) { return completed.has(m.id); });
+  if (allDone) {
+    var sec = document.getElementById('ph-sec-' + mod.phase);
+    if (sec) {
+      sec.classList.remove('phase-complete-glow');
+      void sec.offsetWidth;
+      sec.classList.add('phase-complete-glow');
+      setTimeout(function() { sec.classList.remove('phase-complete-glow'); }, 1500);
+    }
+  }
+}
+
 // ── COURSE HOME ──
 function buildHome() {
-  const last = localStorage.getItem('eng_last');
-  const resumeMod = last ? MODULES.find(function(m) { return m.id === last; }) : null;
-  const nextMod = MODULES.find(function(m) { return !completed.has(m.id); });
-  let html = '<div class="course-home">';
+  var last = localStorage.getItem('eng_last');
+  var resumeMod = last ? MODULES.find(function(m) { return m.id === last; }) : null;
+  var nextMod = MODULES.find(function(m) { return !completed.has(m.id); });
+  var html = '<div class="course-home">';
   html += '<div class="ch-eyebrow">// ai_code_engineer.course</div>';
   html += '<h1 class="ch-title">Stop Vibing.<br>Start <em>Engineering</em>.</h1>';
   html += '<p class="ch-sub">A complete curriculum for Node.js and React developers who want to use Claude Code with the discipline of a senior engineer — not the optimism of a first-timer.</p>';
@@ -527,40 +620,44 @@ function buildHome() {
   html += '</div>';
   html += '<div class="ch-actions">';
   if (resumeMod) {
-    html += '<button class="btn btn-primary" onclick="showModule(' + sq + resumeMod.id + sq + ')">Resume: ' + resumeMod.num + ' ' + resumeMod.title + '</button>';
+    html += '<button class="btn btn-primary" onclick="showModule(' + sq + resumeMod.id + sq + ')">Continue: ' + resumeMod.num + ' ' + resumeMod.title + ' →</button>';
   } else if (nextMod) {
     html += '<button class="btn btn-primary" onclick="showModule(' + sq + nextMod.id + sq + ')">Start Course →</button>';
   }
   html += '</div>';
   html += '<div class="phase-cards">';
   PHASE_META.forEach(function(pm) {
-    const modsDone = pm.mods.filter(function(id) { return completed.has(id); }).length;
+    var c = PH_COLORS[pm.n] || {bg:'var(--accent)',fg:'#0f1117'};
+    var modsDone = pm.mods.filter(function(id) { return completed.has(id); }).length;
     html += '<div class="pc" onclick="showModule(' + sq + pm.mods[0] + sq + ')">';
-    html += '<div class="pc-badge" style="background:' + pm.color + ';color:#0f1117">P' + pm.n + '</div>';
+    html += '<div class="pc-badge" style="background:' + c.bg + ';color:' + c.fg + '">P' + pm.n + '</div>';
     html += '<div class="pc-body"><div class="pc-title">' + pm.name + '</div><div class="pc-desc">' + pm.desc + '</div>';
-    html += '<div class="pc-mods">' + pm.mods.length + ' modules</div></div>';
-    html += '<div class="pc-done">' + modsDone + '/' + pm.mods.length + '</div>';
+    html += '<div class="pc-mods">' + pm.mods.length + ' modules &mdash; ' + modsDone + '/' + pm.mods.length + ' done</div></div>';
     html += '</div>';
   });
   html += '</div></div>';
-  document.getElementById('homeView').innerHTML = html;
+  var hv = document.getElementById('homeView');
+  if (hv) hv.innerHTML = html;
 }
 
 // ── MODULE VIEW ──
 function showModule(id) {
-  const mod = MODULES.find(function(m) { return m.id === id; });
+  var mod = MODULES.find(function(m) { return m.id === id; });
   if (!mod) return;
   currentMod = id;
   localStorage.setItem('eng_last', id);
-  document.getElementById('homeView').style.display = 'none';
-  const mv = document.getElementById('modView');
+  var homeView = document.getElementById('homeView');
+  if (homeView) homeView.style.display = 'none';
+  var mv = document.getElementById('modView');
+  if (!mv) return;
   mv.style.display = 'block';
-  const pm = PHASE_META.find(function(p) { return p.n === mod.phase; });
-  const phaseColor = pm ? pm.color : 'var(--accent)';
-  const modIdx = MODULES.findIndex(function(m) { return m.id === id; });
-  const prevMod = modIdx > 0 ? MODULES[modIdx - 1] : null;
-  const nextMod = modIdx < MODULES.length - 1 ? MODULES[modIdx + 1] : null;
-  const isDone = completed.has(id);
+  var pm = PHASE_META.find(function(p) { return p.n === mod.phase; });
+  var c = pm && PH_COLORS[pm.n] ? PH_COLORS[pm.n] : {bg:'var(--accent)',fg:'#0f1117'};
+  var phaseColor = c.bg;
+  var modIdx = MODULES.findIndex(function(m) { return m.id === id; });
+  var prevMod = modIdx > 0 ? MODULES[modIdx - 1] : null;
+  var nextMod = modIdx < MODULES.length - 1 ? MODULES[modIdx + 1] : null;
+  var isDone = completed.has(id);
   mv.innerHTML =
     '<div class="mod-bc">' +
       '<a onclick="goHome()">All Courses</a>' +
@@ -576,7 +673,7 @@ function showModule(id) {
       '<span class="audio-lbl">Audio coming soon</span>' +
     '</div></div>' +
     '<div class="lesson-pane">' +
-      '<div class="mod-eyebrow"><span class="ptag" style="background:' + phaseColor + ';color:#0f1117">Phase ' + mod.phase + '</span><span class="mnum">' + mod.num + '</span></div>' +
+      '<div class="mod-eyebrow"><span class="ptag" style="background:' + phaseColor + ';color:' + c.fg + '">Phase ' + mod.phase + '</span><span class="mnum">' + mod.num + '</span></div>' +
       '<h2>' + mod.title + '</h2>' +
       '<p class="mod-lead">' + mod.lead + '</p>' +
       mod.content +
@@ -600,24 +697,26 @@ function showModule(id) {
 
 function goHome() {
   currentMod = null;
-  document.getElementById('homeView').style.display = 'block';
-  document.getElementById('modView').style.display = 'none';
+  var homeView = document.getElementById('homeView');
+  var modView = document.getElementById('modView');
+  if (homeView) homeView.style.display = 'block';
+  if (modView) modView.style.display = 'none';
   buildHome();
   buildSidebar();
   scrollTop();
 }
 
 function scrollTop() {
-  const main = document.getElementById('main');
+  var main = document.getElementById('main');
   if (main) main.scrollTop = 0;
 }
 
 // ── PANEL ──
 function togglePanel() {
   panelOpen = !panelOpen;
-  const panel = document.getElementById('notesPanel');
-  const toggle = document.getElementById('panelToggle');
-  const ca = document.getElementById('contentArea');
+  var panel = document.getElementById('notesPanel');
+  var toggle = document.getElementById('panelToggle');
+  var ca = document.getElementById('contentArea');
   if (panel) panel.classList.toggle('open', panelOpen);
   if (toggle) toggle.classList.toggle('active', panelOpen);
   if (ca) ca.classList.toggle('panel-open', panelOpen);
@@ -628,8 +727,8 @@ function togglePanel() {
 function switchPanelTab(tab) {
   panelTab = tab;
   ['notes','transcript'].forEach(function(t) {
-    const btn = document.getElementById('panelTabBtn-' + t);
-    const content = document.getElementById('panelContent-' + t);
+    var btn = document.getElementById('panelTabBtn-' + t);
+    var content = document.getElementById('panelContent-' + t);
     if (btn) btn.classList.toggle('active', t === tab);
     if (content) content.classList.toggle('hidden', t !== tab);
   });
@@ -637,10 +736,10 @@ function switchPanelTab(tab) {
 }
 
 function loadPanelNotes(id) {
-  const ta = document.getElementById('panelNotesTa');
-  const cnt = document.getElementById('panelNotesCount');
+  var ta = document.getElementById('panelNotesTa');
+  var cnt = document.getElementById('panelNotesCount');
   if (!ta) return;
-  const val = localStorage.getItem('eng_notes_' + id) || '';
+  var val = localStorage.getItem('eng_notes_' + id) || '';
   ta.value = val;
   if (cnt) cnt.textContent = val.length + ' chars';
 }
@@ -650,7 +749,7 @@ function savePanelState() {
 }
 
 function initPanel() {
-  const saved = JSON.parse(localStorage.getItem('eng_panel') || '{}');
+  var saved = JSON.parse(localStorage.getItem('eng_panel') || '{}');
   if (saved.tab) { panelTab = saved.tab; switchPanelTab(panelTab); }
   if (saved.open) togglePanel();
 }
@@ -665,15 +764,15 @@ function buildQuizSection(modId) {
 }
 
 function startQuiz(modId) {
-  const bank = QB[modId];
+  var bank = QB[modId];
   if (!bank) return;
-  const shuffled = bank.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 4);
-  const drawn = shuffled.map(function(q) {
-    const opts = q.opts.slice();
-    const correctText = opts[q.correct];
-    for (let i = opts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
+  var shuffled = bank.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 4);
+  var drawn = shuffled.map(function(q) {
+    var opts = q.opts.slice();
+    var correctText = opts[q.correct];
+    for (var i = opts.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
     }
     return { q: q.q, opts: opts, correct: opts.indexOf(correctText), explanation: q.explanation };
   });
@@ -682,13 +781,13 @@ function startQuiz(modId) {
 }
 
 function renderQuizQ(modId) {
-  const state = quizState[modId];
+  var state = quizState[modId];
   if (!state) return;
-  const q = state.drawn[state.current];
-  const wrap = document.getElementById('qz-' + modId);
+  var q = state.drawn[state.current];
+  var wrap = document.getElementById('qz-' + modId);
   if (!wrap) return;
-  const isLast = state.current === state.drawn.length - 1;
-  let optsHtml = '';
+  var isLast = state.current === state.drawn.length - 1;
+  var optsHtml = '';
   q.opts.forEach(function(opt, i) {
     optsHtml += '<div class="quiz-opt" id="qo-' + modId + '-' + i + '" onclick="answerQ(' + sq + modId + sq + ',' + i + ')">' + opt + '</div>';
   });
@@ -703,31 +802,31 @@ function renderQuizQ(modId) {
 }
 
 function answerQ(modId, chosen) {
-  const state = quizState[modId];
+  var state = quizState[modId];
   if (!state) return;
-  const q = state.drawn[state.current];
-  const isCorrect = chosen === q.correct;
+  var q = state.drawn[state.current];
+  var isCorrect = chosen === q.correct;
   q.opts.forEach(function(_, i) {
-    const el = document.getElementById('qo-' + modId + '-' + i);
+    var el = document.getElementById('qo-' + modId + '-' + i);
     if (!el) return;
     el.classList.add('locked');
     if (i === q.correct) el.classList.add('correct');
     else if (i === chosen) el.classList.add('wrong');
   });
-  const exp = document.getElementById('qexp-' + modId);
+  var exp = document.getElementById('qexp-' + modId);
   if (exp) {
     exp.textContent = (isCorrect ? '✓ ' : '✗ ') + q.explanation;
     exp.className = 'quiz-exp show ' + (isCorrect ? 'correct' : 'wrong');
   }
   state.answers.push({ chosen: chosen, correct: q.correct, isCorrect: isCorrect });
   setTimeout(function() {
-    const btn = document.getElementById('qnxt-' + modId);
+    var btn = document.getElementById('qnxt-' + modId);
     if (btn) btn.style.display = 'inline-block';
   }, 600);
 }
 
 function nextQ(modId) {
-  const state = quizState[modId];
+  var state = quizState[modId];
   if (!state) return;
   state.current++;
   if (state.current >= state.drawn.length) showQuizResults(modId);
@@ -735,31 +834,47 @@ function nextQ(modId) {
 }
 
 function showQuizResults(modId) {
-  const state = quizState[modId];
+  var state = quizState[modId];
   if (!state) return;
-  const nCorrect = state.answers.filter(function(a) { return a.isCorrect; }).length;
-  const passed = nCorrect >= 3;
+  var nCorrect = state.answers.filter(function(a) { return a.isCorrect; }).length;
+  var passed = nCorrect >= 3;
   if (passed) {
     passedQuizzes.add(modId);
-    localStorage.setItem('eng_quizzes', JSON.stringify([...passedQuizzes]));
+    localStorage.setItem('eng_quizzes', JSON.stringify(Array.from(passedQuizzes)));
   }
-  const wrap = document.getElementById('qz-' + modId);
+  var wrap = document.getElementById('qz-' + modId);
   if (!wrap) return;
-  let reviewHtml = '';
+  var reviewHtml = '';
   state.drawn.forEach(function(q, i) {
-    const ans = state.answers[i];
+    var ans = state.answers[i];
     reviewHtml += '<div class="rv-item ' + (ans.isCorrect ? 'c' : 'w') + '">' +
       '<div class="rv-q">' + (ans.isCorrect ? '✓ ' : '✗ ') + q.q + '</div>' +
       (ans.isCorrect ? '' : '<div class="rv-ans">Your answer: ' + q.opts[ans.chosen] + '</div><div class="rv-correct">Correct: ' + q.opts[q.correct] + '</div>') +
       '<div class="rv-exp">' + q.explanation + '</div></div>';
   });
-  wrap.innerHTML =
-    '<div class="quiz-result">' +
-      '<div class="qr-score ' + (passed ? 'pass' : 'fail') + '">' + nCorrect + '/4 ' + (passed ? '✓ PASS' : '✗ RETRY') + '</div>' +
-      '<div class="qr-msg">' + (passed ? 'Quiz passed! You can mark this module complete.' : 'Need 3/4 to pass. Review and try again.') + '</div>' +
-      '<div class="qr-review">' + reviewHtml + '</div>' +
-      (!passed ? '<button class="btn btn-primary" onclick="startQuiz(' + sq + modId + sq + ')">Retry Quiz</button>' : '') +
-    '</div>';
+  if (passed) {
+    wrap.innerHTML =
+      '<div class="quiz-result">' +
+        '<div class="qr-score pass">' + nCorrect + '/4 ✓ PASS</div>' +
+        '<div class="qr-msg">Quiz passed! You can mark this module complete.</div>' +
+        '<button class="btn btn-secondary" style="font-size:0.75rem;margin-bottom:0.75rem" onclick="toggleReview(' + sq + modId + sq + ')">Review Answers</button>' +
+        '<div class="qr-review" id="qr-review-' + modId + '" style="display:none">' + reviewHtml + '</div>' +
+      '</div>';
+  } else {
+    wrap.innerHTML =
+      '<div class="quiz-result">' +
+        '<div class="qr-score fail">' + nCorrect + '/4 ✗ RETRY</div>' +
+        '<div class="qr-msg">Need 3/4 to pass. Review and try again.</div>' +
+        '<div class="qr-review">' + reviewHtml + '</div>' +
+        '<button class="btn btn-primary" onclick="startQuiz(' + sq + modId + sq + ')">Retry Quiz</button>' +
+      '</div>';
+  }
+}
+
+function toggleReview(modId) {
+  var el = document.getElementById('qr-review-' + modId);
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
 }
 
 // ── COMPLETE ──
@@ -768,60 +883,62 @@ function toggleComplete(id) {
   else completed.add(id);
   updateProgress();
   buildSidebar();
-  const btn = document.getElementById('cbtn-' + id);
+  checkPhaseGlow(id);
+  var btn = document.getElementById('cbtn-' + id);
   if (btn) {
     btn.textContent = completed.has(id) ? '✓ Complete' : 'Mark Complete';
     btn.classList.toggle('done', completed.has(id));
   }
-  buildHome();
 }
 
 // ── BOOKMARKS ──
 function toggleBookmark(id) {
   if (bookmarks.has(id)) bookmarks.delete(id);
   else bookmarks.add(id);
-  localStorage.setItem('eng_bookmarks', JSON.stringify([...bookmarks]));
+  localStorage.setItem('eng_bookmarks', JSON.stringify(Array.from(bookmarks)));
   buildSidebar();
 }
 
 // ── NOTES ──
 function saveNotes(id) {
-  const ta = document.getElementById('panelNotesTa');
+  var ta = document.getElementById('panelNotesTa');
   if (!ta) return;
-  const val = ta.value;
-  const cnt = document.getElementById('panelNotesCount');
+  var val = ta.value;
+  var cnt = document.getElementById('panelNotesCount');
   if (cnt) cnt.textContent = val.length + ' chars';
   clearTimeout(notesTimer);
   notesTimer = setTimeout(function() {
     localStorage.setItem('eng_notes_' + id, val);
-    const saved = document.getElementById('panelSaved');
-    if (saved) { saved.classList.add('show'); setTimeout(function() { saved.classList.remove('show'); }, 1500); }
+    var savedEl = document.getElementById('panelSaved');
+    if (savedEl) { savedEl.classList.add('show'); setTimeout(function() { savedEl.classList.remove('show'); }, 1500); }
   }, 500);
 }
 
 // ── SEARCH ──
 function openSearch() {
-  document.getElementById('searchOv').classList.add('show');
-  setTimeout(function() { const el = document.getElementById('searchIn'); if (el) el.focus(); }, 50);
+  var ov = document.getElementById('searchOv');
+  if (ov) ov.classList.add('show');
+  setTimeout(function() { var el = document.getElementById('searchIn'); if (el) el.focus(); }, 50);
 }
 function closeSearch() {
-  document.getElementById('searchOv').classList.remove('show');
-  const el = document.getElementById('searchIn');
+  var ov = document.getElementById('searchOv');
+  if (ov) ov.classList.remove('show');
+  var el = document.getElementById('searchIn');
   if (el) el.value = '';
-  const res = document.getElementById('searchRes');
+  var res = document.getElementById('searchRes');
   if (res) res.innerHTML = '';
 }
 function runSearch(q) {
-  const res = document.getElementById('searchRes');
+  var res = document.getElementById('searchRes');
   if (!res) return;
   if (!q.trim()) { res.innerHTML = ''; return; }
-  const lower = q.toLowerCase();
-  const hits = SEARCH_IDX.filter(function(m) { return m.title.toLowerCase().indexOf(lower) >= 0 || m.text.indexOf(lower) >= 0; }).slice(0, 8);
+  var lower = q.toLowerCase();
+  var hits = SEARCH_IDX.filter(function(m) { return m.title.toLowerCase().indexOf(lower) >= 0 || m.text.indexOf(lower) >= 0; }).slice(0, 8);
   if (!hits.length) { res.innerHTML = '<div class="s-empty">No results for "' + q + '"</div>'; return; }
-  let html = '';
+  var html = '';
   hits.forEach(function(h) {
-    const si = h.text.indexOf(lower);
-    const snip = si >= 0 ? '…' + h.text.slice(Math.max(0, si - 30), si + 60) + '…' : '';
+    var si = h.text.indexOf(lower);
+    var snip = si >= 0 ? '…' + h.text.slice(Math.max(0, si - 30), si + 60) + '…' : '';
     html += '<div class="s-hit" onclick="closeSearch();showModule(' + sq + h.id + sq + ')">' +
       '<div class="sh-num">' + h.num + '</div>' +
       '<div><div class="sh-title">' + h.title + '</div>' +
@@ -832,19 +949,22 @@ function runSearch(q) {
 }
 
 // ── CERTIFICATE ──
-function showCert() { document.getElementById('certOv').classList.add('show'); }
-function closeCert() { document.getElementById('certOv').classList.remove('show'); }
+function showCert() { var el = document.getElementById('certOv'); if (el) el.classList.add('show'); }
+function closeCert() { var el = document.getElementById('certOv'); if (el) el.classList.remove('show'); }
 function printCert() {
-  const name = document.getElementById('certName').value.trim() || 'Student';
-  const el = document.getElementById('certRecipient');
-  if (el) el.textContent = name;
+  var name = document.getElementById('certName');
+  var nameVal = name ? name.value.trim() || 'Student' : 'Student';
+  var el = document.getElementById('certRecipient');
+  if (el) el.textContent = nameVal;
+  var dateEl = document.getElementById('certDate');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
   closeCert();
   setTimeout(function() { window.print(); }, 100);
 }
 
 // ── CODE COPY ──
 function copyCode(btn) {
-  const pre = btn.closest('.code-block').querySelector('pre');
+  var pre = btn.closest('.code-block').querySelector('pre');
   if (!pre) return;
   navigator.clipboard.writeText(pre.textContent).then(function() {
     btn.textContent = '✓ copied';
@@ -854,14 +974,14 @@ function copyCode(btn) {
 
 // ── MOBILE NAV ──
 function openMob() {
-  const d = document.getElementById('mobDraw');
-  const o = document.getElementById('mobOv');
+  var d = document.getElementById('mobDraw');
+  var o = document.getElementById('mobOv');
   if (!d) return;
-  const topEl = document.querySelector('.sb-top');
-  const topClone = topEl ? topEl.cloneNode(true) : document.createElement('div');
+  var topEl = document.querySelector('.sb-top');
+  var topClone = topEl ? topEl.cloneNode(true) : document.createElement('div');
   d.innerHTML = '';
   d.appendChild(topClone);
-  const navDiv = document.createElement('div');
+  var navDiv = document.createElement('div');
   navDiv.className = 'sb-nav';
   d.appendChild(navDiv);
   buildSidebar(navDiv);
@@ -869,8 +989,8 @@ function openMob() {
   if (o) o.classList.add('show');
 }
 function closeMob() {
-  const d = document.getElementById('mobDraw');
-  const o = document.getElementById('mobOv');
+  var d = document.getElementById('mobDraw');
+  var o = document.getElementById('mobOv');
   if (d) d.classList.remove('show');
   if (o) o.classList.remove('show');
 }
@@ -881,12 +1001,13 @@ document.addEventListener('keydown', function(e) {
   if (e.key === '/') { e.preventDefault(); openSearch(); return; }
   if (e.key === 'Escape') { closeSearch(); closeCert(); if (panelOpen) togglePanel(); return; }
   if (!currentMod) return;
-  const idx = MODULES.findIndex(function(m) { return m.id === currentMod; });
+  var idx = MODULES.findIndex(function(m) { return m.id === currentMod; });
   if (e.key === 'ArrowRight' && idx < MODULES.length - 1) showModule(MODULES[idx + 1].id);
   if (e.key === 'ArrowLeft' && idx > 0) showModule(MODULES[idx - 1].id);
 });
 
 // ── INIT ──
+initScale();
 updateProgress();
 buildSidebar();
 buildHome();

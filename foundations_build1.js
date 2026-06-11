@@ -6,7 +6,7 @@ const css = `<style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
 :root{--bg:#0f1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--border2:#444c56;--accent:#e8c547;--success:#3fb950;--danger:#f85149;--warn:#d29922;--info:#58a6ff;--text:#c9d1d9;--text-dim:#8b949e;--heading:#f0f6fc;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:16px;scroll-behavior:smooth;}
+html{font-size:18px;scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:0.9375rem;line-height:1.65;min-height:100vh;}
 .shell{display:flex;min-height:100vh;}
 .sidebar{width:16.75rem;min-width:16.75rem;background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;flex-shrink:0;}
@@ -285,6 +285,25 @@ pre .comment{color:#8b949e;}pre .key{color:#79c0ff;}pre .val{color:var(--accent)
 ::-webkit-scrollbar{width:0.3125rem;height:0.3125rem;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:0.1875rem;}
+.logo-link{text-decoration:none;transition:opacity .15s ease;}
+.logo-link:hover{opacity:.75;}
+.scale-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;}
+.scale-label-lft{font-family:'Inter',sans-serif;font-size:0.625rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);}
+.scale-label-val{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--accent);}
+.scale-slider{-webkit-appearance:none;appearance:none;width:100%;height:0.25rem;background:var(--border);border-radius:0.25rem;outline:none;cursor:pointer;margin-bottom:0.5rem;}
+.scale-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.scale-slider::-moz-range-thumb{width:1rem;height:1rem;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.sb-reset-link{background:none;border:none;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.625rem;cursor:pointer;padding:0;opacity:.5;transition:opacity .15s,color .15s;display:block;text-align:left;width:100%;margin-top:0.25rem;}
+.sb-reset-link:hover{opacity:1;color:#e05c5c;}
+.sb-reset-confirm{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);padding:0.5rem 0 0;margin-top:0.25rem;border-top:1px solid var(--border);}
+.sb-reset-confirm p{margin-bottom:0.375rem;color:var(--text);}
+.sb-reset-confirm small{color:var(--text-dim);display:block;margin-bottom:0.5rem;}
+.sb-rc-btns{display:flex;gap:0.5rem;}
+.sb-rc-btn{background:none;border:1px solid var(--border);border-radius:0.1875rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.5625rem;cursor:pointer;padding:0.1875rem 0.5rem;transition:all .15s;}
+.sb-rc-btn:hover{border-color:var(--border2);color:var(--text);}
+.sb-rc-btn.danger:hover{border-color:#e05c5c;color:#e05c5c;}
+@keyframes phaseGlow{0%{background:transparent;}35%{background:rgba(63,185,80,.1);}100%{background:transparent;}}
+.ph-section.phase-complete-glow{animation:phaseGlow 1.5s ease-out forwards;}
 </style>`;
 
 const htmlTop = `<!DOCTYPE html>
@@ -293,6 +312,7 @@ const htmlTop = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Dev Foundations \u2014 Ship That Works</title>
+<script>(function(){var v=parseInt(localStorage.getItem('ui_scale'));if(!isNaN(v)&&v>=0&&v<=2){document.documentElement.style.fontSize=[15,18,21][v]+'px';}else{document.documentElement.style.fontSize='18px';}}());</script>
 ${css}
 </head>
 <body>
@@ -320,7 +340,7 @@ ${css}
   <h2 id="certRecipient" style="font-size:1.875rem;margin:0.875rem 0;color:#000;font-family:Georgia,serif;"></h2>
   <p style="font-size:1rem;color:#333;">has completed</p>
   <h3 style="font-size:1.375rem;margin:0.625rem 0;color:#000;">AI Dev Foundations</h3>
-  <p style="font-size:0.8125rem;margin-top:1.375rem;color:#666;">Ship That Works</p>
+  <p style="font-size:0.8125rem;margin-top:1.375rem;color:#666;">Ship That Works &mdash; <span id="certDate"></span></p>
 </div>
 <button id="panelToggle" onclick="togglePanel()" title="Notes &amp; Transcript">
   <span class="panel-label">NOTES</span>
@@ -363,7 +383,7 @@ ${css}
   </nav>
   <div class="content-area" id="contentArea">
     <header class="topbar">
-      <span class="tb-logo">STW</span>
+      <a class="tb-logo logo-link" href="index.html" title="Back to all courses">STW</a>
       <div class="tb-div"></div>
       <span class="tb-course">AI Dev Foundations</span>
       <div class="tb-prog">
