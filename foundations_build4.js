@@ -89,46 +89,23 @@ function updateProgress() {
   if (tbPct) tbPct.textContent = n + ' / ' + total;
   if (certBtn) certBtn.style.display = n === total ? 'block' : 'none';
   localStorage.setItem('adf_done', JSON.stringify(Array.from(completed)));
-  updateFooter();
-}
-
-// ── SIDEBAR FOOTER ──
-function updateFooter() {
-  var el = document.getElementById('sbFooter');
-  if (!el) return;
-  var n = completed.size;
-  var total = MODULES.length;
-  var pct = total > 0 ? Math.round(n / total * 100) : 0;
-  var minsDone = 0;
-  Array.from(completed).forEach(function(id) { var t = TIME_MAP[id]; if (t) minsDone += parseInt(t, 10); });
-  var minsTotal = 0;
-  Object.values(TIME_MAP).forEach(function(t) { minsTotal += parseInt(t, 10); });
-  var minsLeft = minsTotal - minsDone;
-  var h = Math.floor(minsLeft / 60);
-  var m = minsLeft % 60;
-  var timeStr = h > 0 ? '~' + h + 'h ' + (m > 0 ? m + 'm' : '') + ' remaining' : m + 'm remaining';
-  el.innerHTML =
-    '<div class="sb-ft-count">' + n + ' of ' + total + ' complete</div>' +
-    '<div class="sb-ft-bar"><div class="sb-ft-fill" style="width:' + pct + '%"></div></div>' +
-    '<div class="sb-ft-time">' + timeStr + '</div>' +
-    '<button class="sb-reset-link" onclick="resetCourse()">Reset course progress</button>';
 }
 
 // ── RESET ──
-function resetCourse() {
-  var el = document.getElementById('sbFooter');
+function showResetConfirm() {
+  var el = document.getElementById('settingsResetArea');
   if (!el) return;
   el.innerHTML =
-    '<div class="sb-reset-confirm">' +
-      '<p>Reset all progress?</p>' +
-      '<small>This cannot be undone.</small>' +
-      '<div class="sb-rc-btns">' +
-        '<button class="sb-rc-btn" onclick="cancelReset()">Cancel</button>' +
-        '<button class="sb-rc-btn danger" onclick="doReset()">Yes, reset</button>' +
-      '</div>' +
+    '<div class="settings-rc-confirm">Reset all progress for this course?<br>This cannot be undone.</div>' +
+    '<div class="settings-rc-btns">' +
+      '<button class="settings-rc-btn" onclick="cancelReset()">Cancel</button>' +
+      '<button class="settings-rc-btn danger" onclick="doReset()">Yes, reset</button>' +
     '</div>';
 }
-function cancelReset() { updateFooter(); }
+function cancelReset() {
+  var el = document.getElementById('settingsResetArea');
+  if (el) el.innerHTML = '<button class="settings-danger-link" onclick="showResetConfirm()">Reset course progress</button>';
+}
 function doReset() {
   localStorage.removeItem('adf_done');
   localStorage.removeItem('adf_quizzes');
@@ -228,11 +205,20 @@ function buildHome() {
   html += '<div class="ch-eyebrow">// ai_dev_foundations.course</div>';
   html += '<h1 class="ch-title">From <em>Claude Code User</em><br>to Team Developer</h1>';
   html += '<p class="ch-sub">The literacy, patterns, and discipline that turn AI-assisted coding into professional-grade work others can build on.</p>';
+  var minsTotal = 0;
+  Object.values(TIME_MAP).forEach(function(t) { minsTotal += parseInt(t, 10); });
+  var minsDone = 0;
+  Array.from(completed).forEach(function(id) { var t = TIME_MAP[id]; if (t) minsDone += parseInt(t, 10); });
+  var minsLeft = minsTotal - minsDone;
+  var hLeft = Math.floor(minsLeft / 60);
+  var mLeft = minsLeft % 60;
+  var remainStr = hLeft > 0 ? '~' + hLeft + 'h' + (mLeft > 0 ? '\u00a0' + mLeft + 'm' : '') : mLeft + 'm';
   html += '<div class="ch-stats">';
   html += '<div><div class="chs-val">6<span>\u00d7</span></div><div class="chs-lbl">Phases</div></div>';
   html += '<div><div class="chs-val">18</div><div class="chs-lbl">Modules</div></div>';
   html += '<div><div class="chs-val">~<span>8</span>h</div><div class="chs-lbl">Duration</div></div>';
   html += '<div><div class="chs-val">' + completed.size + '</div><div class="chs-lbl">Completed</div></div>';
+  html += '<div><div class="chs-val">' + remainStr + '</div><div class="chs-lbl">Remaining</div></div>';
   html += '</div>';
   html += '<div class="ch-resume">';
   var hasProgress = resumeMod || completed.size > 0;
@@ -313,7 +299,6 @@ function showModule(id) {
       '</button>' +
     '</div>';
   buildSidebar();
-  updateFooter();
   scrollTop();
   if (panelOpen) loadPanelNotes(id);
   if (QB[id] && !quizState[id]) {
