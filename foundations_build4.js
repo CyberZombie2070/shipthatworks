@@ -291,7 +291,7 @@ function showModule(id) {
       mod.content +
       buildQuizSection(id) +
     '</div>' +
-    '<div class="mod-footer">' +
+    '<div class="mod-footer" id="mod-footer-' + id + '"' + (QB[id] ? ' style="display:none"' : '') + '>' +
       (prevMod ? '<button class="btn btn-secondary" onclick="showModule(' + sq + prevMod.id + sq + ')">\u2190 ' + prevMod.num + '</button>' : '') +
       (nextMod ? '<button class="btn btn-primary" onclick="showModule(' + sq + nextMod.id + sq + ')">Next: ' + nextMod.num + ' \u2192</button>' : '') +
       '<button class="btn btn-complete' + (isDone ? ' done' : '') + '" id="cbtn-' + id + '" onclick="toggleComplete(' + sq + id + sq + ')">' +
@@ -480,6 +480,8 @@ function showQuizResults(modId) {
         '<button class="btn btn-primary" onclick="startQuiz(' + sq + modId + sq + ')">Retry Quiz</button>' +
       '</div>';
   }
+  var footer = document.getElementById('mod-footer-' + modId);
+  if (footer) footer.style.display = 'flex';
 }
 
 function toggleReview(modId) {
@@ -490,8 +492,15 @@ function toggleReview(modId) {
 
 // ── COMPLETE ──
 function toggleComplete(id) {
-  if (completed.has(id)) completed.delete(id);
-  else completed.add(id);
+  var done = JSON.parse(localStorage.getItem('adf_done') || '[]');
+  if (completed.has(id)) {
+    completed.delete(id);
+    done = done.filter(function(d) { return d !== id; });
+  } else {
+    completed.add(id);
+    if (!done.includes(id)) done.push(id);
+  }
+  localStorage.setItem('adf_done', JSON.stringify(done));
   updateProgress();
   buildSidebar();
   checkPhaseGlow(id);

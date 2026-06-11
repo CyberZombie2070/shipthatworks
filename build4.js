@@ -7,9 +7,9 @@ const js = `
 var sq = String.fromCharCode(39);
 var panelOpen = false;
 var panelTab = 'notes';
-var completed = new Set(JSON.parse(localStorage.getItem('eng_completed') || '[]'));
-var passedQuizzes = new Set(JSON.parse(localStorage.getItem('eng_quizzes') || '[]'));
-var bookmarks = new Set(JSON.parse(localStorage.getItem('eng_bookmarks') || '[]'));
+var completed = new Set(JSON.parse(localStorage.getItem('cc_done') || '[]'));
+var passedQuizzes = new Set(JSON.parse(localStorage.getItem('cc_quizzes') || '[]'));
+var bookmarks = new Set(JSON.parse(localStorage.getItem('cc_bookmarks') || '[]'));
 var currentMod = null;
 var quizState = {};
 var notesTimer = null;
@@ -88,7 +88,7 @@ function updateProgress() {
   if (sbStatsRow) sbStatsRow.textContent = n + ' / ' + total + ' modules';
   if (tbPct) tbPct.textContent = n + ' / ' + total;
   if (certBtn) certBtn.style.display = n === total ? 'block' : 'none';
-  localStorage.setItem('eng_completed', JSON.stringify(Array.from(completed)));
+  localStorage.setItem('cc_done', JSON.stringify(Array.from(completed)));
 }
 
 // ── RESET ──
@@ -107,28 +107,28 @@ function cancelReset() {
   if (el) el.innerHTML = '<button class="settings-danger-link" onclick="showResetConfirm()">Reset course progress</button>';
 }
 function doReset() {
-  localStorage.removeItem('eng_completed');
-  localStorage.removeItem('eng_quizzes');
-  localStorage.removeItem('eng_panel');
-  localStorage.removeItem('eng_last');
-  localStorage.removeItem('eng_phases');
-  localStorage.removeItem('eng_bookmarks');
-  Object.keys(localStorage).filter(function(k) { return k.indexOf('eng_notes_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
+  localStorage.removeItem('cc_done');
+  localStorage.removeItem('cc_quizzes');
+  localStorage.removeItem('cc_panel');
+  localStorage.removeItem('cc_last');
+  localStorage.removeItem('cc_phases');
+  localStorage.removeItem('cc_bookmarks');
+  Object.keys(localStorage).filter(function(k) { return k.indexOf('cc_notes_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
   location.reload();
 }
 
 // ── PHASE COLLAPSE ──
 function isPhaseCollapsed(n) {
-  var phases = JSON.parse(localStorage.getItem('eng_phases') || '{}');
+  var phases = JSON.parse(localStorage.getItem('cc_phases') || '{}');
   return phases[n] === true;
 }
 function togglePhase(n) {
   var sec = document.getElementById('ph-sec-' + n);
   if (!sec) return;
   sec.classList.toggle('collapsed');
-  var phases = JSON.parse(localStorage.getItem('eng_phases') || '{}');
+  var phases = JSON.parse(localStorage.getItem('cc_phases') || '{}');
   phases[n] = sec.classList.contains('collapsed');
-  localStorage.setItem('eng_phases', JSON.stringify(phases));
+  localStorage.setItem('cc_phases', JSON.stringify(phases));
 }
 
 // ── BUILD SIDEBAR ──
@@ -198,7 +198,7 @@ function checkPhaseGlow(modId) {
 
 // ── COURSE HOME ──
 function buildHome() {
-  var last = localStorage.getItem('eng_last');
+  var last = localStorage.getItem('cc_last');
   var resumeMod = last ? MODULES.find(function(m) { return m.id === last; }) : null;
   var nextMod = MODULES.find(function(m) { return !completed.has(m.id); });
   var html = '<div class="course-home">';
@@ -256,7 +256,7 @@ function showModule(id) {
   var mod = MODULES.find(function(m) { return m.id === id; });
   if (!mod) return;
   currentMod = id;
-  localStorage.setItem('eng_last', id);
+  localStorage.setItem('cc_last', id);
   var homeView = document.getElementById('homeView');
   if (homeView) homeView.style.display = 'none';
   var mv = document.getElementById('modView');
@@ -290,7 +290,7 @@ function showModule(id) {
       mod.content +
       buildQuizSection(id) +
     '</div>' +
-    '<div class="mod-footer">' +
+    '<div class="mod-footer" id="mod-footer-' + id + '"' + (QB[id] ? ' style="display:none"' : '') + '>' +
       (prevMod ? '<button class="btn btn-secondary" onclick="showModule(' + sq + prevMod.id + sq + ')">\u2190 ' + prevMod.num + '</button>' : '') +
       (nextMod ? '<button class="btn btn-primary" onclick="showModule(' + sq + nextMod.id + sq + ')">Next: ' + nextMod.num + ' \u2192</button>' : '') +
       '<button class="btn btn-complete' + (isDone ? ' done' : '') + '" id="cbtn-' + id + '" onclick="toggleComplete(' + sq + id + sq + ')">' +
@@ -349,17 +349,17 @@ function loadPanelNotes(id) {
   var ta = document.getElementById('panelNotesTa');
   var cnt = document.getElementById('panelNotesCount');
   if (!ta) return;
-  var val = localStorage.getItem('eng_notes_' + id) || '';
+  var val = localStorage.getItem('cc_notes_' + id) || '';
   ta.value = val;
   if (cnt) cnt.textContent = val.length + ' chars';
 }
 
 function savePanelState() {
-  localStorage.setItem('eng_panel', JSON.stringify({open: panelOpen, tab: panelTab}));
+  localStorage.setItem('cc_panel', JSON.stringify({open: panelOpen, tab: panelTab}));
 }
 
 function initPanel() {
-  var saved = JSON.parse(localStorage.getItem('eng_panel') || '{}');
+  var saved = JSON.parse(localStorage.getItem('cc_panel') || '{}');
   if (saved.tab) { panelTab = saved.tab; switchPanelTab(panelTab); }
   if (saved.open) togglePanel();
 }
@@ -450,7 +450,7 @@ function showQuizResults(modId) {
   var passed = nCorrect >= 3;
   if (passed) {
     passedQuizzes.add(modId);
-    localStorage.setItem('eng_quizzes', JSON.stringify(Array.from(passedQuizzes)));
+    localStorage.setItem('cc_quizzes', JSON.stringify(Array.from(passedQuizzes)));
   }
   var wrap = document.getElementById('qz-' + modId);
   if (!wrap) return;
@@ -479,6 +479,8 @@ function showQuizResults(modId) {
         '<button class="btn btn-primary" onclick="startQuiz(' + sq + modId + sq + ')">Retry Quiz</button>' +
       '</div>';
   }
+  var footer = document.getElementById('mod-footer-' + modId);
+  if (footer) footer.style.display = 'flex';
 }
 
 function toggleReview(modId) {
@@ -489,8 +491,15 @@ function toggleReview(modId) {
 
 // ── COMPLETE ──
 function toggleComplete(id) {
-  if (completed.has(id)) completed.delete(id);
-  else completed.add(id);
+  var done = JSON.parse(localStorage.getItem('cc_done') || '[]');
+  if (completed.has(id)) {
+    completed.delete(id);
+    done = done.filter(function(d) { return d !== id; });
+  } else {
+    completed.add(id);
+    if (!done.includes(id)) done.push(id);
+  }
+  localStorage.setItem('cc_done', JSON.stringify(done));
   updateProgress();
   buildSidebar();
   checkPhaseGlow(id);
@@ -505,7 +514,7 @@ function toggleComplete(id) {
 function toggleBookmark(id) {
   if (bookmarks.has(id)) bookmarks.delete(id);
   else bookmarks.add(id);
-  localStorage.setItem('eng_bookmarks', JSON.stringify(Array.from(bookmarks)));
+  localStorage.setItem('cc_bookmarks', JSON.stringify(Array.from(bookmarks)));
   buildSidebar();
 }
 
@@ -518,7 +527,7 @@ function saveNotes(id) {
   if (cnt) cnt.textContent = val.length + ' chars';
   clearTimeout(notesTimer);
   notesTimer = setTimeout(function() {
-    localStorage.setItem('eng_notes_' + id, val);
+    localStorage.setItem('cc_notes_' + id, val);
     var savedEl = document.getElementById('panelSaved');
     if (savedEl) { savedEl.classList.add('show'); setTimeout(function() { savedEl.classList.remove('show'); }, 1500); }
   }, 500);
