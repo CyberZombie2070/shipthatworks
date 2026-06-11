@@ -433,10 +433,20 @@ function answerQ(modId, chosen) {
       if (!main) return;
       var expRect = exp.getBoundingClientRect();
       var mainRect = main.getBoundingClientRect();
-      if (expRect.bottom > mainRect.bottom - 80) {
-        main.scrollBy({ top: expRect.bottom - mainRect.bottom + 80, behavior: 'smooth' });
+      if (expRect.bottom > mainRect.bottom - 16) {
+        main.scrollBy({ top: expRect.bottom - mainRect.bottom + 16, behavior: 'smooth' });
       }
     }, 50);
+    setTimeout(function() {
+      var main = document.getElementById('main');
+      var btn = document.getElementById('qnxt-' + modId);
+      if (!main || !btn) return;
+      var btnRect = btn.getBoundingClientRect();
+      var mainRect = main.getBoundingClientRect();
+      if (btnRect.bottom > mainRect.bottom - 16) {
+        main.scrollBy({ top: btnRect.bottom - mainRect.bottom + 16, behavior: 'smooth' });
+      }
+    }, 700);
   }
   state.answers.push({ chosen: chosen, correct: q.correct, isCorrect: isCorrect });
   setTimeout(function() {
