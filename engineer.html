@@ -855,7 +855,15 @@ function answerQ(modId, chosen) {
   if (exp) {
     exp.textContent = (isCorrect ? '✓ ' : '✗ ') + q.explanation;
     exp.className = 'quiz-exp show ' + (isCorrect ? 'correct' : 'wrong');
-    setTimeout(function() { exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
+    setTimeout(function() {
+      var main = document.getElementById('main');
+      if (!main) return;
+      var expRect = exp.getBoundingClientRect();
+      var mainRect = main.getBoundingClientRect();
+      if (expRect.bottom > mainRect.bottom - 80) {
+        main.scrollBy({ top: expRect.bottom - mainRect.bottom + 80, behavior: 'smooth' });
+      }
+    }, 50);
   }
   state.answers.push({ chosen: chosen, correct: q.correct, isCorrect: isCorrect });
   setTimeout(function() {
