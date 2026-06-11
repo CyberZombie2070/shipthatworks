@@ -428,6 +428,7 @@ function answerQ(modId, chosen) {
   if (exp) {
     exp.textContent = (isCorrect ? '\u2713 ' : '\u2717 ') + q.explanation;
     exp.className = 'quiz-exp show ' + (isCorrect ? 'correct' : 'wrong');
+    setTimeout(function() { exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
   }
   state.answers.push({ chosen: chosen, correct: q.correct, isCorrect: isCorrect });
   setTimeout(function() {
