@@ -448,7 +448,7 @@ const QB = {"p1m1":[{"q":"What does this module describe Claude Code as, regardi
 var sq = String.fromCharCode(39);
 var panelOpen = false;
 var panelTab = 'notes';
-var completed = new Set(JSON.parse(localStorage.getItem('cc_done') || '[]'));
+var _completedSet = new Set();
 var passedQuizzes = new Set(JSON.parse(localStorage.getItem('cc_quizzes') || '[]'));
 var bookmarks = new Set(JSON.parse(localStorage.getItem('cc_bookmarks') || '[]'));
 var currentMod = null;
@@ -514,9 +514,32 @@ var SEARCH_IDX = MODULES.map(function(m) {
   };
 });
 
-// ── PROGRESS ──
-function updateProgress() {
-  var n = completed.size;
+// ── PROGRESS (SINGLE SOURCE OF TRUTH) ──
+function getCompletedModules(courseId) {
+  var key = courseId + '_done';
+  try {
+    var raw = localStorage.getItem(key);
+    if (!raw) return [];
+    var arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) { localStorage.removeItem(key); return []; }
+    return arr.filter(function(v, i, a) { return a.indexOf(v) === i; });
+  } catch(e) {
+    localStorage.removeItem(key);
+    return [];
+  }
+}
+
+function markModuleComplete(courseId, moduleId) {
+  var arr = getCompletedModules(courseId);
+  if (arr.indexOf(moduleId) === -1) arr.push(moduleId);
+  localStorage.setItem(courseId + '_done', JSON.stringify(arr));
+  refreshProgressDisplays(courseId);
+}
+
+function refreshProgressDisplays(courseId) {
+  var arr = getCompletedModules(courseId);
+  _completedSet = new Set(arr);
+  var n = _completedSet.size;
   var total = MODULES.length;
   var pct = total > 0 ? Math.round(n / total * 100) : 0;
   var sbFill = document.getElementById('sbFill');
@@ -529,7 +552,17 @@ function updateProgress() {
   if (sbStatsRow) sbStatsRow.textContent = n + ' / ' + total + ' modules';
   if (tbPct) tbPct.textContent = n + ' / ' + total;
   if (certBtn) certBtn.style.display = n === total ? 'block' : 'none';
-  localStorage.setItem('cc_done', JSON.stringify(Array.from(completed)));
+  buildSidebar();
+  if (currentMod) {
+    var btn = document.getElementById('cbtn-' + currentMod);
+    if (btn) {
+      var isDone = _completedSet.has(currentMod);
+      btn.textContent = isDone ? '✓ Complete' : 'Mark Complete';
+      btn.classList.toggle('done', isDone);
+    }
+  }
+  var homeView = document.getElementById('homeView');
+  if (homeView && homeView.style.display !== 'none') buildHome();
 }
 
 // ── RESET ──
@@ -575,7 +608,7 @@ function togglePhase(n) {
 // ── BUILD SIDEBAR ──
 function buildNavRow(m) {
   var active = currentMod === m.id ? ' active' : '';
-  var done = completed.has(m.id);
+  var done = _completedSet.has(m.id);
   var isDoneClass = done ? ' is-done' : '';
   var bmOn = bookmarks.has(m.id) ? ' on' : '';
   var chip = '';
@@ -604,7 +637,7 @@ function buildSidebar(container) {
   PHASE_META.forEach(function(pm) {
     var c = PH_COLORS[pm.n] || {bg:'#8b949e',fg:'#0f1117'};
     var mods = MODULES.filter(function(m) { return m.phase === pm.n; });
-    var doneCount = mods.filter(function(m) { return completed.has(m.id); }).length;
+    var doneCount = mods.filter(function(m) { return _completedSet.has(m.id); }).length;
     var collapsed = isPhaseCollapsed(pm.n) ? ' collapsed' : '';
     html += '<div class="ph-section' + collapsed + '" id="ph-sec-' + pm.n + '">';
     html += '<button class="ph-toggle" onclick="togglePhase(' + pm.n + ')">';
@@ -623,9 +656,9 @@ function buildSidebar(container) {
 // ── PHASE GLOW ──
 function checkPhaseGlow(modId) {
   var mod = MODULES.find(function(m) { return m.id === modId; });
-  if (!mod || !completed.has(modId)) return;
+  if (!mod || !_completedSet.has(modId)) return;
   var phaseMods = MODULES.filter(function(m) { return m.phase === mod.phase; });
-  var allDone = phaseMods.every(function(m) { return completed.has(m.id); });
+  var allDone = phaseMods.every(function(m) { return _completedSet.has(m.id); });
   if (allDone) {
     var sec = document.getElementById('ph-sec-' + mod.phase);
     if (sec) {
@@ -641,7 +674,7 @@ function checkPhaseGlow(modId) {
 function buildHome() {
   var last = localStorage.getItem('cc_last');
   var resumeMod = last ? MODULES.find(function(m) { return m.id === last; }) : null;
-  var nextMod = MODULES.find(function(m) { return !completed.has(m.id); });
+  var nextMod = MODULES.find(function(m) { return !_completedSet.has(m.id); });
   var html = '<div class="course-home">';
   html += '<div class="ch-eyebrow">// ai_code_engineer.course</div>';
   html += '<h1 class="ch-title">Stop Vibing.<br>Start <em>Engineering</em>.</h1>';
@@ -649,7 +682,7 @@ function buildHome() {
   var minsTotal = 0;
   Object.values(TIME_MAP).forEach(function(t) { minsTotal += parseInt(t, 10); });
   var minsDone = 0;
-  Array.from(completed).forEach(function(id) { var t = TIME_MAP[id]; if (t) minsDone += parseInt(t, 10); });
+  Array.from(_completedSet).forEach(function(id) { var t = TIME_MAP[id]; if (t) minsDone += parseInt(t, 10); });
   var minsLeft = minsTotal - minsDone;
   var hLeft = Math.floor(minsLeft / 60);
   var mLeft = minsLeft % 60;
@@ -658,17 +691,17 @@ function buildHome() {
   html += '<div><div class="chs-val">5<span>×</span></div><div class="chs-lbl">Phases</div></div>';
   html += '<div><div class="chs-val">18</div><div class="chs-lbl">Modules</div></div>';
   html += '<div><div class="chs-val">~<span>12</span>h</div><div class="chs-lbl">Duration</div></div>';
-  html += '<div><div class="chs-val">' + completed.size + '</div><div class="chs-lbl">Completed</div></div>';
+  html += '<div><div class="chs-val">' + _completedSet.size + '</div><div class="chs-lbl">Completed</div></div>';
   html += '<div><div class="chs-val">' + remainStr + '</div><div class="chs-lbl">Remaining</div></div>';
   html += '</div>';
   html += '<div class="ch-resume">';
-  var hasProgress = resumeMod || completed.size > 0;
+  var hasProgress = resumeMod || _completedSet.size > 0;
   if (hasProgress) {
     var tgtMod = resumeMod || nextMod;
     if (tgtMod) {
       var tgtPm = PHASE_META.find(function(p) { return p.n === tgtMod.phase; });
       var phTotal = tgtPm ? tgtPm.mods.length : 0;
-      var phDone = tgtPm ? tgtPm.mods.filter(function(id) { return completed.has(id); }).length : 0;
+      var phDone = tgtPm ? tgtPm.mods.filter(function(id) { return _completedSet.has(id); }).length : 0;
       var tgtLabel = resumeMod ? 'Continue: ' + tgtMod.title + ' →' : 'Start Course →';
       html += '<button class="resume-btn" onclick="showModule(' + sq + tgtMod.id + sq + ')">' + tgtLabel + '</button>';
       html += '<div class="resume-btn-meta">Module ' + tgtMod.num + ' · Phase ' + tgtMod.phase + ': ' + (tgtPm ? tgtPm.name : '') + ' · ' + phDone + ' of ' + phTotal + ' complete</div>';
@@ -680,7 +713,7 @@ function buildHome() {
   html += '<div class="phase-cards">';
   PHASE_META.forEach(function(pm) {
     var c = PH_COLORS[pm.n] || {bg:'var(--accent)',fg:'#0f1117'};
-    var modsDone = pm.mods.filter(function(id) { return completed.has(id); }).length;
+    var modsDone = pm.mods.filter(function(id) { return _completedSet.has(id); }).length;
     html += '<div class="pc" onclick="showModule(' + sq + pm.mods[0] + sq + ')">';
     html += '<div class="pc-badge" style="background:' + c.bg + ';color:' + c.fg + '">P' + pm.n + '</div>';
     html += '<div class="pc-body"><div class="pc-title">' + pm.name + '</div><div class="pc-desc">' + pm.desc + '</div>';
@@ -709,7 +742,7 @@ function showModule(id) {
   var modIdx = MODULES.findIndex(function(m) { return m.id === id; });
   var prevMod = modIdx > 0 ? MODULES[modIdx - 1] : null;
   var nextMod = modIdx < MODULES.length - 1 ? MODULES[modIdx + 1] : null;
-  var isDone = completed.has(id);
+  var isDone = _completedSet.has(id);
   mv.innerHTML =
     '<div class="mod-bc">' +
       '<a onclick="goHome()">All Courses</a>' +
@@ -951,23 +984,9 @@ function toggleReview(modId) {
 
 // ── COMPLETE ──
 function toggleComplete(id) {
-  var done = JSON.parse(localStorage.getItem('cc_done') || '[]');
-  if (completed.has(id)) {
-    completed.delete(id);
-    done = done.filter(function(d) { return d !== id; });
-  } else {
-    completed.add(id);
-    if (!done.includes(id)) done.push(id);
-  }
-  localStorage.setItem('cc_done', JSON.stringify(done));
-  updateProgress();
-  buildSidebar();
+  if (_completedSet.has(id)) return;
+  markModuleComplete('cc', id);
   checkPhaseGlow(id);
-  var btn = document.getElementById('cbtn-' + id);
-  if (btn) {
-    btn.textContent = completed.has(id) ? '✓ Complete' : 'Mark Complete';
-    btn.classList.toggle('done', completed.has(id));
-  }
 }
 
 // ── BOOKMARKS ──
@@ -1087,9 +1106,7 @@ document.addEventListener('keydown', function(e) {
 
 // ── INIT ──
 initScaleOffset();
-updateProgress();
-buildSidebar();
-buildHome();
+refreshProgressDisplays('cc');
 initPanel();
 
 </script>
