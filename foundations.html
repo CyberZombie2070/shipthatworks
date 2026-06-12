@@ -367,6 +367,23 @@ pre .comment{color:#4a5570;}pre .key{color:#5b8ff9;}pre .val{color:#e8c547;}pre 
 .narrative-saved{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--success);opacity:0;transition:opacity .3s;display:inline-block;margin-left:0.25rem;}
 .narrative-saved.show{opacity:1;}
 .cbtn-gate-hint{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--text-dim);margin-left:0.5rem;display:inline;line-height:1.35;}
+/* ── CODE RUNNER ── */
+.runner-wrap{margin:0.875rem 0;}
+.runner-editor{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:0.375rem 0.375rem 0 0;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.875rem;line-height:1.65;padding:0.75rem 1rem;resize:vertical;outline:none;transition:border-color .15s;box-sizing:border-box;tab-size:2;}
+.runner-editor:focus{border-color:var(--info);}
+.runner-btn-row{display:flex;gap:0.5rem;padding:0.5rem 0.625rem;background:var(--surface);border:1px solid var(--border);border-top:none;border-bottom:none;}
+.runner-console{background:#0a0d14;border:1px solid var(--border);border-top:none;border-radius:0 0 0.375rem 0.375rem;min-height:4rem;max-height:20rem;overflow-y:auto;padding:0.5rem 0.875rem;font-family:'JetBrains Mono',monospace;font-size:0.8125rem;line-height:1.7;}
+.runner-placeholder{color:var(--text-dim);font-style:italic;}
+.runner-line{display:block;white-space:pre-wrap;word-break:break-all;}
+.runner-line.log{color:#c4cfe8;}
+.runner-line.warn{color:var(--warn);}
+.runner-line.error{color:var(--danger);}
+.runner-line.info{color:var(--text-dim);}
+.runner-line.system{color:var(--accent);}
+.runner-line::before{content:'> ';color:var(--border2);font-size:0.6875rem;}
+.runner-line.error::before{color:var(--danger);}
+.runner-line.warn::before{color:var(--warn);}
+.runner-line.system::before{color:var(--accent);}
 </style>
 </head>
 <body>
@@ -605,52 +622,43 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 <p>Be brutal. A flattering score wastes exactly one person's time.</p>
 <div id="p1m1-assess-mount"></div>
 
-<!-- Phase 4 replaces the JSFiddle instructions with the in-page code runner -->
 <div class="floor-test">
   <div class="floor-test-label">Floor Test 1.1 &mdash; Your Honest Baseline</div>
   <h4>A guided exercise: roughly 20 minutes, no prior coding experience, no installation, no existing codebase.</h4>
   <p><strong>Why this test exists:</strong> Every claim this module made about silent wrongness and code reading is about to become something you <em>experienced</em> rather than something you read. The point is to discover your actual starting point, not to perform.</p>
   <h4>Part 1: Run something (5 minutes)</h4>
   <ol>
-    <li>Open JSFiddle, a free tool that runs JavaScript in your browser: <a href="https://jsfiddle.net/" target="_blank" rel="noopener noreferrer">Open JSFiddle in a new tab &#x2197;</a>. You'll see several panels; the one labeled <strong>JavaScript</strong> is the only one you need. Output appears in the <strong>Console</strong>.</li>
     <li>Ask Claude (Claude Code, or Claude in a chat) for exactly this: <em>"Write a JavaScript function called greet that takes a name and returns the string Hello, [name]! Then add a line that calls it with a sample name and logs the result."</em></li>
-    <li>Paste the result into the JavaScript panel and run it. Confirm you see the greeting.</li>
+    <li>Paste the code into the editor below and press <strong>Run</strong>. Confirm you see the greeting. If you prefer an external tool, <a href="https://jsfiddle.net/" target="_blank" rel="noopener noreferrer">JSFiddle&#x2197;</a> and <a href="https://codepen.io" target="_blank" rel="noopener noreferrer">CodePen&#x2197;</a> work the same way.</li>
   </ol>
+  <div id="ft1-greet-mount"></div>
   <p>You've now done the loop millions of people stop at: prompt, paste, run, it works. Everything after this line is what makes you different from them.</p>
   <h4>Part 2: Read it (5 minutes)</h4>
-  <p>Without asking Claude anything, answer these four questions by reading the code on your screen:</p>
+  <p>Without asking Claude anything, answer these four questions by reading the code in the editor:</p>
   <ol>
     <li>What is the name of the function?</li>
     <li>What does the function take in?</li>
     <li>What does the function give back?</li>
-    <li><strong>Predict before you run it:</strong> what will happen if you call the function with <em>no</em> name at all? Write your prediction down. Then add the line <code>console.log(greet());</code> and run it. Was your prediction right?</li>
+    <li><strong>Predict before you run it:</strong> what will happen if you call the function with <em>no</em> name at all? Write your prediction down. Then add the line <code>console.log(greet());</code> at the bottom of the editor and press Run again. Was your prediction right?</li>
   </ol>
   <p>If you saw <code>Hello, undefined!</code> and didn't predict it: congratulations, you just caught silent wrongness in the wild, on your first day. That's the experience this entire course is built around.</p>
   <h4>Part 3: Find the flaw nobody demonstrated (10 minutes)</h4>
-  <p>Paste this new function into JSFiddle. Read it before running anything:</p>
-  <div class="code-block" style="margin:0.75rem 0">
-    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">discount.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-    <pre><span class="key">function</span> <span class="val">applyDiscount</span>(price, discountPercent) {
-  <span class="key">const</span> discount = price * (discountPercent / 100);
-  <span class="key">return</span> price - discount;
-}
-
-console.log(applyDiscount(50, 20));</pre>
-  </div>
+  <p>The editor below is pre-loaded with a new function. Read it before running anything:</p>
+  <div id="ft1-discount-mount"></div>
   <p>Run it. You get <code>40</code>. A $50 item with a 20% discount costs $40. It works.</p>
   <p>Now answer these by reading first, then verifying with the console:</p>
   <ol>
     <li>What does <code>applyDiscount(100, 50)</code> return? Predict, then run.</li>
-    <li>What does <code>applyDiscount(50)</code> return, a price with the discount left out entirely? Predict, then run. <em>(Hint: you've seen this failure shape before in this module.)</em></li>
+    <li>What does <code>applyDiscount(50)</code> return, a price with the discount left out entirely? Predict, then run. <em>(Hint: you&#39;ve seen this failure shape before in this module.)</em></li>
     <li>What does <code>applyDiscount(50, 150)</code> return? Predict, then run. Is that a price a real store should ever charge?</li>
     <li>In one or two plain sentences: this function "works," so what is actually wrong with it?</li>
   </ol>
-  <p>There's no code to write and no fix required. Module 2 will give you the tools for that. The skill being built right now is the <em>question-asking:</em> looking at working code and probing what happens beyond the one happy case the demo showed.</p>
+  <p>There&#39;s no code to write and no fix required. Module 2 will give you the tools for that. The skill being built right now is the <em>question-asking:</em> looking at working code and probing what happens beyond the one happy case the demo showed.</p>
   <h4>Optional team extension: if you have access to a real codebase</h4>
   <p>Ask a teammate (or Claude Code, pointed at your repo) to show you the <strong>smallest, simplest function in the project,</strong> five to ten lines. Apply the same four questions from Part 2 to it: name, inputs, output, behavior with missing input. Write your answers down, then verify them with a teammate or by testing. Do not pick something complex; the win condition is <em>fully</em> understanding something small, not partially understanding something big.</p>
   <div class="pass-criteria">
     <div class="pass-label">Pass criteria</div>
-    <p>You attempted every prediction <strong>before</strong> running the code, and you wrote down which predictions were wrong. Wrong predictions are not failure. They are the most precise map you'll ever get of what Module 2 needs to teach you. The only way to fail this floor test is to skip the predicting and just run things.</p>
+    <p>You attempted every prediction <strong>before</strong> running the code, and you wrote down which predictions were wrong. Wrong predictions are not failure. They are the most precise map you&#39;ll ever get of what Module 2 needs to teach you. The only way to fail this floor test is to skip the predicting and just run things.</p>
   </div>
 </div>
 
@@ -2037,6 +2045,153 @@ function updateP1m1CompleteGating() {
   }
 }
 
+// ── CODE RUNNER ──
+var RUNNER_HARNESS = '<!DOCTYPE html><html><body><script>(function(){' +
+  'var rid=null;' +
+  'function sp(o){try{return JSON.stringify(o);}catch(e){return String(o);}}' +
+  'function sa(args){return Array.prototype.slice.call(args).map(function(a){return a===undefined?"undefined":typeof a==="string"?a:sp(a);}).join(" ");}' +
+  '["log","warn","error","info"].forEach(function(lvl){var orig=console[lvl];console[lvl]=function(){orig.apply(console,arguments);parent.postMessage({runnerId:rid,type:"console",level:lvl,text:sa(arguments)},"*");};});' +
+  'window.onerror=function(msg){parent.postMessage({runnerId:rid,type:"error",message:String(msg)},"*");return true;};' +
+  'window.addEventListener("unhandledrejection",function(e){parent.postMessage({runnerId:rid,type:"error",message:"Unhandled rejection: "+(e.reason&&e.reason.message||String(e.reason))},"*");});' +
+  'window.addEventListener("message",function(e){if(!e.data||e.data.type!=="exec")return;rid=e.data.runnerId;try{new Function(e.data.code)();}catch(err){parent.postMessage({runnerId:rid,type:"error",message:err.message||String(err)},"*");}parent.postMessage({runnerId:rid,type:"done"},"*");});' +
+  '})();<\/script></body></html>';
+var runnerStates = {};
+var runnerSaveTimers = {};
+
+function mountRunner(containerEl, config) {
+  if (!containerEl) return;
+  var id = config.id;
+  var starterCode = config.starterCode || '';
+  var heightRem = config.heightRem || 10;
+  var savedCode = null;
+  try { savedCode = localStorage.getItem('adf_runner_' + id); } catch(e) {}
+  var code = savedCode !== null ? savedCode : starterCode;
+  runnerStates[id] = {config: config, iframeEl: null, running: false, watchdogTimer: null, msgHandler: null};
+  containerEl.innerHTML =
+    '<div class="runner-wrap">' +
+      '<textarea class="runner-editor" id="runner-ed-' + id + '" style="height:' + heightRem + 'rem" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off">' + escHtml(code) + '</textarea>' +
+      '<div class="runner-btn-row">' +
+        '<button class="btn btn-primary" id="runner-run-' + id + '" onclick="runnerRun(' + sq + id + sq + ')">Run</button>' +
+        '<button class="btn btn-secondary" onclick="runnerReset(' + sq + id + sq + ')">Reset code</button>' +
+        '<button class="btn btn-secondary" id="runner-stop-' + id + '" style="display:none" onclick="runnerStop(' + sq + id + sq + ')">Stop</button>' +
+      '</div>' +
+      '<div class="runner-console" id="runner-console-' + id + '"><span class="runner-placeholder">Console output appears here</span></div>' +
+    '</div>';
+  var edEl = document.getElementById('runner-ed-' + id);
+  if (edEl) {
+    edEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        var s = this.selectionStart, en = this.selectionEnd;
+        this.value = this.value.substring(0, s) + '  ' + this.value.substring(en);
+        this.selectionStart = this.selectionEnd = s + 2;
+      }
+    });
+    edEl.addEventListener('input', function() { runnerSave(id, this.value); });
+  }
+}
+
+function runnerRun(id) {
+  var state = runnerStates[id];
+  if (!state || state.running) return;
+  var edEl = document.getElementById('runner-ed-' + id);
+  var consoleEl = document.getElementById('runner-console-' + id);
+  if (!edEl || !consoleEl) return;
+  var code = edEl.value;
+  consoleEl.innerHTML = '';
+  if (state.iframeEl) {
+    if (state.iframeEl.parentNode) state.iframeEl.parentNode.removeChild(state.iframeEl);
+    state.iframeEl = null;
+  }
+  if (state.msgHandler) window.removeEventListener('message', state.msgHandler);
+  clearTimeout(state.watchdogTimer);
+  state.running = true;
+  runnerSetRunning(id, true);
+  var msgHandler = function(e) {
+    if (!e.data || e.data.runnerId !== id) return;
+    if (e.data.type === 'console') runnerAppendLine(id, e.data.text, e.data.level);
+    else if (e.data.type === 'error') runnerAppendLine(id, e.data.message, 'error');
+    if (e.data.type === 'done') {
+      clearTimeout(state.watchdogTimer);
+      state.running = false;
+      runnerSetRunning(id, false);
+    }
+  };
+  state.msgHandler = msgHandler;
+  window.addEventListener('message', msgHandler);
+  state.watchdogTimer = setTimeout(function() {
+    runnerAppendLine(id, 'Still running after 5s. Possible infinite loop. Press Stop to end it.', 'system');
+  }, 5000);
+  var iframe = document.createElement('iframe');
+  iframe.setAttribute('sandbox', 'allow-scripts');
+  iframe.style.cssText = 'position:absolute;width:0;height:0;border:none;opacity:0;pointer-events:none;';
+  document.body.appendChild(iframe);
+  state.iframeEl = iframe;
+  iframe.addEventListener('load', function() {
+    if (iframe.contentWindow) iframe.contentWindow.postMessage({type:'exec', code:code, runnerId:id}, '*');
+  }, {once: true});
+  iframe.srcdoc = RUNNER_HARNESS;
+}
+
+function runnerStop(id) {
+  var state = runnerStates[id];
+  if (!state) return;
+  clearTimeout(state.watchdogTimer);
+  if (state.iframeEl) {
+    if (state.iframeEl.parentNode) state.iframeEl.parentNode.removeChild(state.iframeEl);
+    state.iframeEl = null;
+  }
+  state.running = false;
+  runnerSetRunning(id, false);
+}
+
+function runnerReset(id) {
+  var state = runnerStates[id];
+  if (!state) return;
+  runnerStop(id);
+  var edEl = document.getElementById('runner-ed-' + id);
+  if (edEl) edEl.value = state.config.starterCode || '';
+  try { localStorage.removeItem('adf_runner_' + id); } catch(e) {}
+  var consoleEl = document.getElementById('runner-console-' + id);
+  if (consoleEl) consoleEl.innerHTML = '<span class="runner-placeholder">Console output appears here</span>';
+}
+
+function runnerAppendLine(id, text, level) {
+  var consoleEl = document.getElementById('runner-console-' + id);
+  if (!consoleEl) return;
+  var ph = consoleEl.querySelector('.runner-placeholder');
+  if (ph) ph.parentNode.removeChild(ph);
+  var lines = consoleEl.querySelectorAll('.runner-line');
+  if (lines.length >= 200) {
+    if (!consoleEl.querySelector('.runner-cap')) {
+      var capEl = document.createElement('span');
+      capEl.className = 'runner-line system runner-cap';
+      capEl.textContent = 'Output truncated (200 line limit)';
+      consoleEl.appendChild(capEl);
+    }
+    return;
+  }
+  var lineEl = document.createElement('span');
+  lineEl.className = 'runner-line ' + (level || 'log');
+  lineEl.textContent = String(text);
+  consoleEl.appendChild(lineEl);
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+function runnerSetRunning(id, isRunning) {
+  var runBtn = document.getElementById('runner-run-' + id);
+  var stopBtn = document.getElementById('runner-stop-' + id);
+  if (runBtn) { runBtn.disabled = isRunning; }
+  if (stopBtn) stopBtn.style.display = isRunning ? 'inline-flex' : 'none';
+}
+
+function runnerSave(id, code) {
+  clearTimeout(runnerSaveTimers[id]);
+  runnerSaveTimers[id] = setTimeout(function() {
+    try { localStorage.setItem('adf_runner_' + id, code); } catch(e) {}
+  }, 500);
+}
+
 // ── STATE ──
 var sq = String.fromCharCode(39);
 var panelOpen = false;
@@ -2183,6 +2338,7 @@ function doReset() {
   localStorage.removeItem('adf_assess_baseline');
   localStorage.removeItem('adf_assess_final');
   Object.keys(localStorage).filter(function(k) { return k.indexOf('adf_notes_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
+  Object.keys(localStorage).filter(function(k) { return k.indexOf('adf_runner_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
   location.reload();
 }
 
@@ -2374,7 +2530,19 @@ function showModule(id) {
     setTimeout(function() { startQuiz(id); }, 100);
   }
   if (id === 'p1m1') {
-    setTimeout(function() { mountAssessment(document.getElementById('p1m1-assess-mount'), 'adf_assess_baseline', 'Baseline'); }, 150);
+    setTimeout(function() {
+      mountAssessment(document.getElementById('p1m1-assess-mount'), 'adf_assess_baseline', 'Baseline');
+      mountRunner(document.getElementById('ft1-greet-mount'), {
+        id: 'ft1-greet',
+        starterCode: '// Part 1: Ask Claude for the greet function described above,\n// then paste the code it gives you below this line and press Run.\n',
+        heightRem: 8
+      });
+      mountRunner(document.getElementById('ft1-discount-mount'), {
+        id: 'ft1-discount',
+        starterCode: 'function applyDiscount(price, discountPercent) {\n  const discount = price * (discountPercent / 100);\n  return price - discount;\n}\n\nconsole.log(applyDiscount(50, 20));',
+        heightRem: 10
+      });
+    }, 150);
   }
 }
 

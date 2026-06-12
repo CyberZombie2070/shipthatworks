@@ -11,3 +11,7 @@ All links to external URLs use `target="_blank" rel="noopener noreferrer"` and i
 ## Em dashes in module body copy
 
 Module body copy avoids em dashes. Use commas, colons, periods, or parentheses instead. The only permitted em dash in a module is in the phase-label header that names the phase (e.g., "Phase 1 — The Honest Reckoning") — that format matches the existing platform label convention and must be preserved there.
+
+## In-page code runner
+
+Floor test code exercises use the in-page sandboxed runner via `mountRunner(containerEl, config)`. Runner IDs are namespaced `ft{module}-{slug}` (e.g., `ft1-greet`, `ft1-discount`). Starter code lives in the module's `showModule` call as `config.starterCode`, not hardcoded inside the runner function. The runner persists edits under `adf_runner_{id}` and course reset clears all `adf_runner_*` keys.
