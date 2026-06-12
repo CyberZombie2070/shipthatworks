@@ -7,7 +7,7 @@
 <script>(function(){var o=parseInt(localStorage.getItem('ui_scale_offset')||'0');document.documentElement.style.fontSize=(18*(1+(o/100)))+'px';}());</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
-:root{--bg:#0f1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--border2:#444c56;--accent:#e8c547;--success:#3fb950;--danger:#f85149;--warn:#d29922;--info:#58a6ff;--text:#c9d1d9;--text-dim:#8b949e;--heading:#f0f6fc;}
+:root{--bg:#0f1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--border2:#444c56;--accent:#e8c547;--success:#3fb950;--danger:#f85149;--warn:#d29922;--info:#58a6ff;--accent-blue:#58a6ff;--text:#c9d1d9;--text-dim:#8b949e;--heading:#f0f6fc;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:18px;scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:0.9375rem;line-height:1.65;min-height:100vh;}
@@ -384,6 +384,19 @@ pre .comment{color:#4a5570;}pre .key{color:#5b8ff9;}pre .val{color:#e8c547;}pre 
 .runner-line.error::before{color:var(--danger);}
 .runner-line.warn::before{color:var(--warn);}
 .runner-line.system::before{color:var(--accent);}
+/* ── COLLAPSIBLE REVEAL ── */
+details.reveal{background:var(--surface2);border:1px solid var(--border);border-radius:0.375rem;margin:1rem 0;}
+details.reveal summary{cursor:pointer;padding:0.75rem 1rem;font-size:0.875rem;color:var(--text-dim);list-style:none;display:flex;align-items:center;gap:0.5rem;user-select:none;}
+details.reveal summary::-webkit-details-marker{display:none;}
+details.reveal summary::before{content:'▶';font-size:0.5625rem;color:var(--text-dim);transition:transform 200ms ease;flex-shrink:0;}
+details.reveal[open] summary::before{transform:rotate(90deg);}
+details.reveal .reveal-body{padding:0.875rem 1rem 1rem;border-top:1px solid var(--border);}
+details.reveal[open] .reveal-body{animation:revealFade 180ms ease-out;}
+@keyframes revealFade{from{opacity:0;transform:translateY(-0.1875rem);}to{opacity:1;transform:translateY(0);}}
+/* ── IN-CONTENT LINK LEGIBILITY ── */
+.lesson-pane a[href]:not([class]){color:var(--accent-blue);text-decoration:underline;text-underline-offset:0.125rem;}
+.lesson-pane a[href]:not([class]):hover{filter:brightness(1.25);}
+.lesson-pane a[href]:not([class]):visited{color:var(--accent-blue);}
 </style>
 </head>
 <body>
@@ -513,18 +526,19 @@ const PHASE_META = [
 const MODULES = [
 
 {id:'p1m1',phase:1,phaseName:'The Honest Reckoning',num:'1.1',title:"What You Actually Know (And What You Don't)",
-lead:'Two very different people open this module. They share the one trait that defines this entire course: both are now accountable for code they cannot yet fully read.',
+lead:'However you arrived here, you share the one trait that defines this course: you are, or soon will be, accountable for code you cannot yet fully read.',
 content:`
 <div class="phase-intro">
   <div class="phase-intro-label">Phase 1 &mdash; The Honest Reckoning</div>
   <h3>Naming the gap so you can close it</h3>
   <p>Three modules. One goal: build an accurate picture of what Claude Code has been hiding from you, and what that means for your work on a real team.</p>
 </div>
-<p>Two very different people open this module.</p>
-<p>The first is here by choice. You've been building things with Claude Code for weeks, maybe a year. You've shipped real features. Some of them impressed people. You picked up this course because somewhere along the way you noticed a gap between what you can <em>produce</em> and what you can <em>explain</em>, and it's started to bother you.</p>
-<p>The second is here because someone sent you. Your company is using Claude Code to accelerate a major engineering effort: a refactor, a migration, a backlog burn-down. You've been assigned to it even though "developer" was never your job title. You may not have chosen this. You may be somewhere between excited and quietly terrified. Your manager expects output, the tool produces output, and the question gnawing at you is whether you're allowed to trust it.</p>
-<p>These two people look nothing alike on paper. But they share the one trait that defines this entire course:</p>
-<p><strong>You are now accountable for code you cannot yet fully read.</strong></p>
+<p>People arrive at this module from very different directions.</p>
+<p>Maybe you're here by choice. You've been building things with Claude Code for weeks, maybe a year. You've shipped real features. Some of them impressed people. And somewhere along the way you noticed a gap between what you can <em>produce</em> and what you can <em>explain</em>, and it's started to bother you.</p>
+<p>Maybe you're here with a plan. You're aiming at a role that barely existed a few years ago: AI engineer, AI-assisted developer, whatever the posting calls it this month. You can already make Claude Code produce things that look like a portfolio. What you can't yet do is survive the interviewer who slides a laptop across the table and says "walk me through what this does," or the first week on the job, when the output stops being a demo and starts being your name on a commit.</p>
+<p>Maybe you're here because someone sent you. Your company is using Claude Code to accelerate a major engineering effort: a refactor, a migration, a backlog burn-down. You've been assigned to it even though "developer" was never your job title. You may not have chosen this. You may be somewhere between excited and quietly terrified. Your manager expects output, the tool produces output, and the question gnawing at you is whether you're allowed to trust it.</p>
+<p>Or maybe none of these is quite your story. It doesn't matter. Every path into this course converges on the same trait, and it's the one this entire course is built around:</p>
+<p><strong>You are, or are about to be, accountable for code you cannot yet fully read.</strong></p>
 <p>That sentence is the problem this course solves. Not "learn JavaScript." Not "get better at prompting." Those are means. The end is closing the gap between what you ship and what you understand, because in every context that matters, from a side project with real users to a production refactor with a deadline, that gap is where failures live.</p>
 <p>This module is the honest measurement of how wide that gap currently is for you. Not to discourage you. You can't navigate without knowing where you're standing.</p>
 
@@ -537,7 +551,7 @@ content:`
 <p>Here's the part that matters for you specifically: with traditional hand-written coding, Reason 2 has a natural ceiling. You eventually hit a wall. A bug you can't trial-and-error your way past, a concept you can't fake. The wall forces you to learn. The confusion is the curriculum. Generations of developers learned this way, painfully but reliably.</p>
 <p><strong>With Claude Code, that ceiling disappears.</strong> The tool will keep generating plausible, professional-looking, frequently <em>working</em> output indefinitely. The wall never arrives. You can operate in Reason 2 mode for months, shipping real things the entire time, and the feedback loop that would have forced understanding simply never fires.</p>
 <p>This is not a criticism of Claude Code. It's a description of a trap that the tool creates <em>specifically for motivated, productive people,</em> the kind of person who measures themselves by output. The more you ship, the more confident you feel, and the wider the invisible gap grows underneath you.</p>
-<p>The gap doesn't announce itself. It waits. It waits for the production incident, the security review, the senior developer reading your PR, the customer-facing bug that Claude can't fix because <em>you</em> can't describe what's actually wrong. Then it presents the bill all at once.</p>
+<p>The gap doesn't announce itself. It waits. It waits for the production incident, the security review, the senior developer reading your pull request (a PR: the bundle of changes a developer submits for team review before it joins the shared codebase), the customer-facing bug that Claude can't fix because <em>you</em> can't describe what's actually wrong. Then it presents the bill all at once.</p>
 
 <h3>Why the Most Dangerous Failures Don&apos;t Throw Errors</h3>
 <p>Let's make this concrete immediately, with code simple enough that no prior experience is needed.</p>
@@ -563,7 +577,7 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
   <p>No error. No crash. No red text. The program ran "successfully" and produced something wrong.</p>
 </div>
 <p>If this function fed a welcome email system, real customers would receive "Hello, undefined!" in their inbox. Nothing in any log would flag it. The code "works" by every signal a non-reader can see, and fails by the only standard that matters.</p>
-<p>This is the category of failure that AI-assisted development multiplies: <strong>silent wrongness</strong>. Crashes are loud. Even a beginner notices a crash. Silent wrongness is only visible to someone who can <em>read the code and predict its behavior under conditions nobody demonstrated.</em></p>
+<p>This is the category of failure that AI-assisted development multiplies: <strong>silent failure</strong>, the industry's name for exactly this: a program that keeps running and reports success while producing wrong results. Crashes are loud. Even a beginner notices a crash. Silent failure is only visible to someone who can <em>read the code and predict its behavior under conditions nobody demonstrated.</em></p>
 <p>That skill, looking at five lines of code and asking "and what happens when the input is missing? empty? enormous? hostile?", is not advanced. It's foundational. It's also exactly the skill that shipping working demos never builds. You will start building it in this module's floor test, and you will drill it for the rest of this course.</p>
 
 <h3>The Confidence Calibration Problem</h3>
@@ -583,7 +597,7 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 <p>Can you look at a piece of code and say what it does? Not vaguely ("it handles the login stuff") but specifically. What does it return when the condition is false? What does it do with bad input? What happens if the network call inside it fails?</p>
 <p><strong>What this looks like at novice level:</strong> Given a short function, you can name its inputs, its output, and predict its behavior with at least one input the author didn't demo, like you just did with <code>greet()</code>.</p>
 <p><strong>What this looks like on a team:</strong> A code review comes back with "what happens here if <code>items</code> is empty?" and you answer from the code, in minutes, without re-prompting Claude and pasting whatever it says.</p>
-<p><strong>The trap it prevents:</strong> Approving, or merging, silent wrongness.</p>
+<p><strong>The trap it prevents:</strong> Approving, or merging, silent failure.</p>
 <h4>Skill 2: Explaining your decisions</h4>
 <p>When someone asks "why is it structured this way?", can you answer? Not <em>"Claude suggested it."</em> That's not a reason, it's an attribution. A reason is grounded in tradeoffs: this is more readable, this handles the failure case, this avoids the security issue, this matches how the rest of the codebase does it.</p>
 <p><strong>What this looks like at novice level:</strong> For any change you ship, you can state in one or two plain sentences what it does and why this approach rather than an obvious alternative.</p>
@@ -598,21 +612,22 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 <p>Everything else in this course (the JavaScript literacy, the Node patterns, the React concepts, the workflow discipline) exists in service of these three skills. They are the curriculum. The technologies are the terrain you practice on.</p>
 
 <h3>If You Were Assigned This Course</h3>
-<p>A direct word to the second reader from the lead: the one who's here because a CTO or engineering lead decided to put many hands on Claude Code at once.</p>
+<p>A direct word to the reader who's here because a CTO or engineering lead decided to put many hands on Claude Code at once.</p>
 <p>Here is the honest situation you're in, stated without spin:</p>
-<p>Your organization is betting that AI assistance can let people without traditional development backgrounds do meaningful engineering work. That bet can pay off. There are real teams making it work. But understand what the <em>failure mode</em> of that bet looks like, because you are the person standing closest to it: people merging code they can't evaluate, at scale, into systems that matter. Every risk described in this module (silent wrongness, calibration error, the velocity incentive) applies to you with a deadline attached.</p>
+<p>Your organization is betting that AI assistance can let people without traditional development backgrounds do meaningful engineering work. That bet can pay off. There are real teams making it work. But understand what the <em>failure mode</em> of that bet looks like, because you are the person standing closest to it: people merging code they can't evaluate, at scale, into systems that matter. Every risk described in this module (silent failure, calibration error, the velocity incentive) applies to you with a deadline attached.</p>
 <p>That sounds like bad news. It's actually your leverage, for three reasons:</p>
 <p><strong>1. The accountability is real either way.</strong> When code you merged breaks, "the AI wrote it" will not be an accepted answer. Not by your team lead, not in the post-mortem. You own every line you merge. That's not this course being dramatic; that's how engineering organizations work, and it's the professional standard this course trains you to meet rather than fear.</p>
 <p><strong>2. The three skills are learnable faster than "learning to code."</strong> You are not being asked to become someone who writes systems from scratch. You're being asked to become someone who can <em>read, explain, and debug:</em> a verifier, a responsible operator of a powerful tool. That's a genuinely smaller mountain, and it's climbable in weeks of deliberate practice, not years.</p>
 <p><strong>3. Calibrated people become the trusted people.</strong> In a team of newly AI-assisted developers, the ones who can say <em>"this change is safe, here's how I verified it"</em> and be right become the ones handed the important work. The skills in this course are precisely the differentiator, because the tool itself is identical for everyone.</p>
 <p>So do the floor tests for real. Score the assessment below honestly. Nobody is grading your starting point. But everyone, eventually, grades your trajectory.</p>
+<p>And a word for the reader chasing the role rather than assigned to it: everything in this section is your interview preparation. The "walk me through what this does" moment filters every AI-era engineering interview, and it is a direct test of the three skills. Candidates who can read, explain, and debug walk out with offers. Candidates who can only prompt do not get to use Claude Code in the interview room.</p>
 <div class="callout info">
   <div class="callout-label">For the team lead deploying this course</div>
   <p>The baseline assessment below doubles as a placement and progress instrument. Have each person complete it privately in week one and again at the end of the course; the delta is your training signal. Scores of 23+ at intake suggest the Engineer course is the better starting point. And one standard worth setting on day one, because it makes everything else in this course land: <strong>no one merges code they cannot explain in two sentences.</strong> That single rule converts this course from optional enrichment into daily practice.</p>
 </div>
 
 <h3>The Baseline Assessment: 20 Skills, Scored Honestly</h3>
-<p>Talk is cheap and self-perception is broken. We just spent a whole section on why. So here is a concrete instrument.</p>
+<p>Feelings are not measurements, and the previous section explained why your sense of your own skill can't be trusted right now. So instead of asking how confident you feel, here is a concrete instrument: twenty specific skills, scored one at a time.</p>
 <p>Score yourself on each item below using the selector next to it. Your scores save automatically to this browser, your running total updates as you go, and you will retake this same assessment at the end of the course to measure the distance traveled.</p>
 <ul>
   <li><strong>0</strong> means: I couldn't do this.</li>
@@ -625,12 +640,32 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 <div class="floor-test">
   <div class="floor-test-label">Floor Test 1.1 &mdash; Your Honest Baseline</div>
   <h4>A guided exercise: roughly 20 minutes, no prior coding experience, no installation, no existing codebase.</h4>
-  <p><strong>Why this test exists:</strong> Every claim this module made about silent wrongness and code reading is about to become something you <em>experienced</em> rather than something you read. The point is to discover your actual starting point, not to perform.</p>
+  <p><strong>Why this test exists:</strong> Every claim this module made about silent failure and code reading is about to become something you <em>experienced</em> rather than something you read. The point is to discover your actual starting point, not to perform.</p>
   <h4>Part 1: Run something (5 minutes)</h4>
   <ol>
-    <li>Ask Claude (Claude Code, or Claude in a chat) for exactly this: <em>"Write a JavaScript function called greet that takes a name and returns the string Hello, [name]! Then add a line that calls it with a sample name and logs the result."</em></li>
-    <li>Paste the code into the editor below and press <strong>Run</strong>. Confirm you see the greeting. If you prefer an external tool, <a href="https://jsfiddle.net/" target="_blank" rel="noopener noreferrer">JSFiddle&#x2197;</a> and <a href="https://codepen.io" target="_blank" rel="noopener noreferrer">CodePen&#x2197;</a> work the same way.</li>
+    <li>You'll run code using the editor below. If you prefer an external tool, <a href="https://jsfiddle.net/" target="_blank" rel="noopener noreferrer">JSFiddle&#x2197;</a> and <a href="https://codepen.io" target="_blank" rel="noopener noreferrer">CodePen&#x2197;</a> (both linked in Further Reading) work the same way.</li>
+    <li>Ask Claude for exactly the prompt below. Claude Code works; so does Claude in the browser, free, at <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">claude.ai&#x2197;</a>. Use the copy button and paste it in.
+    <div class="code-block" style="margin-top:0.625rem;margin-bottom:0.125rem">
+      <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">PROMPT</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <pre style="white-space:pre-wrap">Write a JavaScript function called greet that takes a name and returns the string Hello, [name]! Then add a line that calls it with a sample name and logs the result.</pre>
+    </div>
+    </li>
+    <li>Paste what Claude gives you into the editor below and press <strong>Run</strong>. Confirm you see the greeting.</li>
   </ol>
+  <details class="reveal">
+    <summary>No AI access right now? Click to reveal the code and keep going.</summary>
+    <div class="reveal-body">
+      <p>No account, blocked network, no problem. Here is the code Claude would have produced. You&#39;ll skip the prompting practice this once, but the reading practice below is the part that matters.</p>
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">greet.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="key">function</span> <span class="val">greet</span>(name) {
+  <span class="key">return</span> <span class="str">"Hello, "</span> + name + <span class="str">"!"</span>;
+}
+
+console.log(greet(<span class="str">"Maria"</span>));</pre>
+      </div>
+    </div>
+  </details>
   <div id="ft1-greet-mount"></div>
   <p>You've now done the loop millions of people stop at: prompt, paste, run, it works. Everything after this line is what makes you different from them.</p>
   <h4>Part 2: Read it (5 minutes)</h4>
@@ -641,7 +676,12 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
     <li>What does the function give back?</li>
     <li><strong>Predict before you run it:</strong> what will happen if you call the function with <em>no</em> name at all? Write your prediction down. Then add the line <code>console.log(greet());</code> at the bottom of the editor and press Run again. Was your prediction right?</li>
   </ol>
-  <p>If you saw <code>Hello, undefined!</code> and didn't predict it: congratulations, you just caught silent wrongness in the wild, on your first day. That's the experience this entire course is built around.</p>
+  <details class="reveal">
+    <summary>Ran it? Click to compare notes.</summary>
+    <div class="reveal-body">
+      <p>If you saw <code>Hello, undefined!</code> and didn&#39;t predict it: congratulations, you just caught silent failure in the wild, on your first day. That&#39;s the experience this entire course is built around.</p>
+    </div>
+  </details>
   <h4>Part 3: Find the flaw nobody demonstrated (10 minutes)</h4>
   <p>The editor below is pre-loaded with a new function. Read it before running anything:</p>
   <div id="ft1-discount-mount"></div>
@@ -1557,18 +1597,18 @@ content:`
 
 const QB = {
 p1m1:[
-  {q:"According to this module, what single trait unifies the hobbyist builder and the enterprise employee assigned to an AI-assisted refactor?",opts:["Both chose to learn AI-assisted development","Both are accountable for code they cannot yet fully read","Both have prior programming experience","Both are measured on the number of features they ship"],correct:1,explanation:"The two readers differ in motivation, context, and stakes, but both have become responsible for code that a tool produced and they cannot yet independently evaluate. That shared accountability gap, not any particular technology, is what this course exists to close."},
-  {q:"The module describes two reasons something can 'work.' Which one represents genuine understanding?",opts:["You tried things until something stopped breaking","You understood the problem, made deliberate decisions, and could have predicted the result before running it","Claude Code generated clean, professional-looking code","The output looked correct when you ran it once"],correct:1,explanation:"The test of understanding is prediction. If you could have said what would happen before running the code, the success confirmed knowledge. If success came as relief rather than confirmation, it was trial and error, which produces working software but not knowledge."},
-  {q:"Why does the module say the natural 'ceiling' on trial-and-error development disappears with Claude Code?",opts:["Claude Code explains every piece of code it generates","Claude Code never produces incorrect code","Claude Code keeps generating plausible, often working output indefinitely, so the wall of confusion that traditionally forced learning never arrives","Modern programming languages are easier than older ones"],correct:2,explanation:"In traditional coding, confusion eventually halts progress and forces understanding. Claude Code removes that forcing function: you can keep shipping for months in trial-and-error mode, and the feedback loop that would have taught you never fires."},
-  {q:"The greet() function returned 'Hello, undefined!' when called with no name. Why does the module treat this as more dangerous than a crash?",opts:["Because undefined is a security vulnerability","Because the program failed silently: it ran successfully and produced wrong output that no error or log would flag","Because crashes are impossible to debug","Because it proves the AI wrote the function incorrectly"],correct:1,explanation:"Crashes are loud; even a beginner notices them. Silent wrongness produces every visible signal of success while delivering wrong results, and it is only catchable by someone who can read code and predict its behavior under conditions nobody demonstrated. AI-assisted development multiplies exactly this category of failure."},
-  {q:"How does the module say AI tools 'supercharge' the Dunning-Kruger effect?",opts:["They make experienced developers overconfident about AI capabilities","They produce the external signals of competence (clean code, working features, fast progress) without the underlying understanding that normally generates those signals","They prevent developers from ever receiving feedback","They make code too complex for anyone to evaluate"],correct:1,explanation:"Your brain calibrates self-assessment using signals that historically required understanding to produce. Claude Code produces those signals on your behalf, so you receive every indicator of competence while the competence belongs to the tool. That breaks the natural self-correction that normally fixes overconfidence."},
-  {q:"What are the three skills this course identifies as the ones Claude Code cannot perform on your behalf?",opts:["Typing speed, syntax memorization, and prompt engineering","Writing code from scratch, designing architecture, and deploying servers","Reading code accurately, explaining your decisions, and debugging independently","Learning JavaScript, Node.js, and React"],correct:2,explanation:"These three are your accountability, exercised at moments the tool isn't in the loop: the review question, the standup follow-up, the production incident. Every technology taught in this course exists in service of building these three capabilities."},
-  {q:"A reviewer asks why you structured a change a particular way. According to the module, why is 'Claude suggested it' an inadequate answer?",opts:["Because mentioning AI tools is against most company policies","Because it's an attribution, not a reason. A real answer is grounded in tradeoffs like readability, failure handling, or consistency with the codebase","Because Claude's suggestions are usually wrong","Because reviewers only accept answers backed by documentation links"],correct:1,explanation:"Explaining decisions means owning them. 'Claude suggested it' describes where the code came from, not why it's right for this situation. The person who can only attribute becomes a clipboard between the tool and the codebase, and still carries the blame when the code fails, because they merged it."},
-  {q:"What does the module identify as the difference between using Claude as a debugging partner versus being dependent on it?",opts:["Partners use Claude Code; dependents use the chat interface","A partner feeds Claude hypotheses, exact errors, and relevant code by choice; a dependent is unable to do anything except re-prompt and hope","Partners never ask Claude about bugs","There is no meaningful difference"],correct:1,explanation:"Re-prompting is sometimes the right move. The distinction is capability: choosing to use Claude with your own hypothesis and evidence is leverage; having no other option is dependence, and dependence fails exactly when stakes are highest and someone needs answers from you right now."},
-  {q:"For the team lead deploying this course, what single team standard does the module recommend setting on day one?",opts:["All code must be written without AI assistance","Every developer must complete both courses before touching the codebase","No one merges code they cannot explain in two sentences","All prompts must be reviewed by a senior developer"],correct:2,explanation:"This one rule converts the course from optional enrichment into daily practice. It directly enforces the accountability principle (you own every line you merge) without banning the tool or adding heavyweight process."},
-  {q:"The assessment note says a high Category C score combined with near-zero Categories A and B is a recognizable profile. What does it indicate?",opts:["The person is ready for the Engineer course","The person is an experienced tool operator without coding literacy: skilled at directing Claude Code, but unable to evaluate what it produces","The person scored the assessment dishonestly","The person should stop using Claude Code entirely"],correct:1,explanation:"This is the signature profile of the course's core audience: real, hard-won fluency with the tool, sitting on top of a literacy gap in load-bearing places. It's not a failure state. It's a precise diagnosis, and Phases 2-4 are aimed directly at it."},
-  {q:"In the floor test's discount function, applyDiscount(50, 150) returns -25. What lesson is this designed to teach?",opts:["JavaScript cannot handle percentages correctly","The function is broken and the AI should rewrite it","Code can run without errors and still produce results that are wrong in the real world (a negative price), which only a human reading and probing the code will catch","Discounts should always be calculated on the backend"],correct:2,explanation:"Nothing about a 150% discount triggers an error. The math executes flawlessly and produces a price no real store should ever charge. Whether inputs make real-world sense is a judgment the code doesn't make on its own here; catching it requires a reader who probes beyond the demonstrated happy case."},
-  {q:"What is the only way to fail Floor Test 1.1?",opts:["Getting any prediction wrong","Needing to look up what a function is","Skipping the prediction step and just running the code","Taking longer than 20 minutes"],correct:2,explanation:"Wrong predictions are the entire point. They are the most precise map of what the next modules need to teach you. The test measures honesty of process, not prior knowledge. Running code without predicting first is the trial-and-error habit this course exists to replace."}
+  {q:"The lead sketches several ways people arrive at this course: building by choice, chasing a new role, or being assigned by an employer. What single trait does the module say every path converges on?",opts:["All have already shipped production features with Claude Code","All are, or soon will be, accountable for code they cannot yet fully read","All were directed by an employer to adopt AI-assisted development","All have professional software experience from before AI tools"],correct:1,explanation:"The paths into this course differ in motivation, employment status, and stakes, and the lead is explicit that no list of them is complete. What every path shares is the accountability gap: responsibility, now or imminently, for code a tool produced and the person cannot yet independently evaluate. Closing that gap is the course."},
+  {q:"The module describes two reasons something can 'work.' Which one represents genuine understanding?",opts:["The result matched what you predicted before you ran it","The code ran cleanly with no errors or warnings","Working code emerged after several rounds of adjustment","The output looked correct every time you tested it"],correct:0,explanation:"The test of understanding is prediction. Clean runs, repeated correct-looking output, and eventual success can all come from trial and error. Only a prediction made before running, and confirmed, demonstrates knowledge."},
+  {q:"Why does the module say the natural 'ceiling' on trial-and-error development disappears with Claude Code?",opts:["The tool's output quality makes learning fundamentals unnecessary","The wall of confusion that forces learning never arrives, because the tool keeps producing plausible output","Modern tooling catches most mistakes before they reach production","AI assistance lets beginners skip directly to advanced concepts"],correct:1,explanation:"Traditionally, confusion eventually halts progress and forces understanding. Claude Code removes that forcing function by generating plausible output indefinitely, so trial-and-error mode can continue for months without the feedback loop that would have taught you ever firing."},
+  {q:"The greet() function returned 'Hello, undefined!' when called with no name. Why does the module treat this as more dangerous than a crash?",opts:["Undefined values spread and corrupt data elsewhere in a program","It ran 'successfully,' so nothing visible flags that the output is wrong","Failures without error text cannot be captured by logging tools","It signals the function was generated incorrectly and needs a rewrite"],correct:1,explanation:"Crashes are loud; even a beginner notices them. A silent failure produces every visible signal of success while delivering wrong results, and only a reader who probes behavior beyond the demonstrated case will catch it. AI-assisted development multiplies exactly this category."},
+  {q:"How does the module say AI tools 'supercharge' the Dunning-Kruger effect?",opts:["They hand beginners techniques that once required years of experience","They produce the signals of competence without the understanding that normally creates them","They accelerate output faster than anyone's skills can keep pace","They respond agreeably and positively regardless of code quality"],correct:1,explanation:"Your brain calibrates self-assessment from signals (clean code, working features, fast progress) that historically required understanding to produce. When the tool produces those signals on your behalf, you receive every indicator of competence while the competence belongs to the tool, and the natural self-correction never triggers."},
+  {q:"What are the three skills this course identifies as the ones Claude Code cannot perform on your behalf?",opts:["Prompt engineering, context management, and output verification","Reading code, explaining your decisions, and debugging independently","JavaScript fluency, system design, and automated testing","Writing, reviewing, and deploying code without any assistance"],correct:1,explanation:"Option A describes operating the tool well, which matters but is not the gap. The three skills are your accountability at the moments the tool is not in the loop: the review question, the standup follow-up, the production incident."},
+  {q:"A reviewer asks why you structured a change a particular way. Why does the module call 'Claude suggested it' an inadequate answer?",opts:["Most teams expect official documentation to be cited in reviews","It names where the code came from, not why it is right for this situation","Disclosing AI involvement reduces a reviewer's trust in the change","AI suggestions have not been validated against the team's codebase"],correct:1,explanation:"It's an attribution, not a reason. A real answer is grounded in tradeoffs: readability, failure handling, security, consistency with the codebase. The person who can only attribute is a clipboard between the tool and the repo, and still owns the blame when the merged code fails."},
+  {q:"What is the module's distinction between using Claude as a debugging partner versus being dependent on it?",opts:["Partners always attempt their own fix before consulting the tool","A partner brings hypotheses and evidence by choice; a dependent has no move except re-prompting and hoping","Partners verify each suggested fix while dependents apply them as-is","Dependence means using chat interfaces instead of the command line"],correct:1,explanation:"The distinction is capability, not etiquette. Feeding Claude your hypothesis, the exact error, and the relevant code is leverage. Having no other option is dependence, and dependence fails precisely when stakes are highest and someone needs answers from you immediately."},
+  {q:"What single day-one team standard does the module recommend to a lead deploying this course?",opts:["Every AI-assisted change is labeled as such in its commit message","No one merges code they cannot explain in two sentences","A senior developer reviews all AI-generated output before merge","Each team member completes the baseline assessment in week one"],correct:1,explanation:"All four are real practices a team might adopt, but the module names one as the converter: the two-sentence rule. It enforces ownership of every merged line without banning the tool or adding heavyweight process, and it turns the course's skills into daily requirements."},
+  {q:"A learner scores high in Category C (Working with Claude Code) and near zero in Categories A and B (Reading Code, Understanding the System). What does the module say this profile indicates?",opts:["Readiness to skip Foundations and start the Engineer course","A skilled tool operator who cannot yet evaluate what the tool produces","Dishonest self-scoring in the first two categories","A learner better served by traditional programming instruction"],correct:1,explanation:"This is the signature profile of the course's core audience: real fluency with the tool sitting on top of a literacy gap in load-bearing places. It is a diagnosis, not a failure state, and Phases 2 through 4 target columns A and B directly."},
+  {q:"In the floor test, applyDiscount(50, 150) returns -25 without any error. What lesson is this designed to teach?",opts:["Percentage math in JavaScript requires explicit bounds checking","Code can run flawlessly and still produce real-world nonsense that only a probing reader will question","Functions should validate every input before calculating anything","Enough trial-and-error testing eventually surfaces edge cases like this"],correct:1,explanation:"Options A and C describe real fixes, but the module hasn't taught fixes yet and that isn't the point of the exercise. The lesson is the reader's habit: a negative price triggers no error, executes flawlessly, and is caught only by a human who probes beyond the demonstrated happy case."},
+  {q:"What is the only way to fail Floor Test 1.1?",opts:["Answering fewer than three of the four reading questions correctly","Running the code without writing your predictions down first","Using the click-to-reveal code instead of prompting Claude yourself","Taking longer than the suggested twenty minutes to finish"],correct:1,explanation:"Wrong predictions are the point; they map exactly what the next modules must teach you. The reveal fallback and the time estimate are conveniences, not requirements. The test measures honesty of process, and skipping the prediction step is the trial-and-error habit this course exists to replace."}
 ],
 p1m2:[
   {q:"What does Claude Code fundamentally do, stripped of all mystique?",opts:["Understands your codebase architecture and generates optimal code","Predicts what code should come next based on training patterns and the context you provide","Learns your preferences over time and improves its suggestions","Analyzes runtime behavior to generate safer code"],correct:1,explanation:"Claude Code is a large language model that predicts likely code given context. It has no understanding of your codebase, no persistent memory, and no runtime awareness."},
@@ -2669,29 +2709,16 @@ function answerQ(modId, chosen) {
     exp.textContent = (isCorrect ? '✓ ' : '✗ ') + q.explanation;
     exp.className = 'quiz-exp show ' + (isCorrect ? 'correct' : 'wrong');
     setTimeout(function() {
-      var main = document.getElementById('main');
-      if (!main) return;
-      var expRect = exp.getBoundingClientRect();
-      var mainRect = main.getBoundingClientRect();
-      if (expRect.bottom > mainRect.bottom - 16) {
-        main.scrollTop += expRect.bottom - mainRect.bottom + 16;
-      }
+      exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 50);
-    setTimeout(function() {
-      var main = document.getElementById('main');
-      var btn = document.getElementById('qnxt-' + modId);
-      if (!main || !btn) return;
-      var btnRect = btn.getBoundingClientRect();
-      var mainRect = main.getBoundingClientRect();
-      if (btnRect.bottom > mainRect.bottom - 16) {
-        main.scrollBy({ top: btnRect.bottom - mainRect.bottom + 16, behavior: 'smooth' });
-      }
-    }, 700);
   }
   state.answers.push({ chosen: chosen, correct: q.correct, isCorrect: isCorrect });
   setTimeout(function() {
     var btn = document.getElementById('qnxt-' + modId);
-    if (btn) btn.style.display = 'inline-block';
+    if (btn) {
+      btn.style.display = 'inline-block';
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }, 600);
 }
 

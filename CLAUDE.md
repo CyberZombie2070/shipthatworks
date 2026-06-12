@@ -15,3 +15,7 @@ Module body copy avoids em dashes. Use commas, colons, periods, or parentheses i
 ## In-page code runner
 
 Floor test code exercises use the in-page sandboxed runner via `mountRunner(containerEl, config)`. Runner IDs are namespaced `ft{module}-{slug}` (e.g., `ft1-greet`, `ft1-discount`). Starter code lives in the module's `showModule` call as `config.starterCode`, not hardcoded inside the runner function. The runner persists edits under `adf_runner_{id}` and course reset clears all `adf_runner_*` keys.
+
+## Quiz bank standards
+
+All options within roughly 25% of each other's character length. Distractors are plausible misconceptions or true-sounding statements that miss the lesson's core point, never absurd throwaways. The correct answer must not be reliably the longest or most qualified option.
