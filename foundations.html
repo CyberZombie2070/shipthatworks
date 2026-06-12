@@ -25,7 +25,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .sb-bm-divider{height:1px;background:var(--border);margin:0.375rem 0;}
 .ph-section{border-top:1px solid var(--border);}
 .ph-section:first-of-type{border-top:none;}
-.ph-toggle{display:flex;align-items:center;gap:0.5rem;padding:0.625rem 0.875rem;cursor:pointer;width:100%;background:none;border:none;color:inherit;text-align:left;transition:background 150ms ease;}
+.ph-toggle{display:flex;align-items:center;gap:0.5rem;padding:0.625rem 0.875rem;cursor:pointer;width:100%;background:var(--surface);border:none;color:inherit;text-align:left;transition:background 150ms ease;position:sticky;top:0;z-index:1;}
 .ph-toggle:hover{background:rgba(255,255,255,.04);}
 .ph-badge{width:1.25rem;height:1.25rem;min-width:1.25rem;border-radius:0.25rem;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:700;}
 .ph-name{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);flex:1;}
@@ -38,17 +38,17 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .nav-item:hover .ni-title{color:var(--heading);}
 .nav-item.active{border-left-color:var(--accent);background:rgba(232,197,71,.08);transform:translateX(2px);}
 .nav-item.active .ni-title{color:var(--heading);}
-.nav-item.is-done .ni-title{color:var(--text-dim);}
-.ni-line1{display:flex;align-items:flex-start;gap:0.375rem;margin-bottom:0.1875rem;}
-.ni-line2{display:flex;align-items:center;gap:0.375rem;padding-left:1.625rem;}
-.ni-num{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);min-width:1.625rem;flex-shrink:0;padding-top:0.125rem;}
-.ni-title{font-size:0.8125rem;color:var(--text);line-height:1.4;}
-.ni-dur{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);}
-.ni-chip{font-family:'JetBrains Mono',monospace;font-size:0.5rem;display:inline-flex;align-items:center;gap:0.1875rem;}
-.ni-chip.is-done{color:var(--success);}
-.ni-chip.in-prog{color:var(--accent);}
-.ni-bm{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.6875rem;padding:0.125rem 0.25rem;flex-shrink:0;line-height:1;opacity:.4;margin-left:auto;}
+.nav-item.is-done .ni-title{color:var(--text);}
+.ni-line1{display:flex;align-items:center;gap:0.375rem;}
+.ni-num{font-family:'JetBrains Mono',monospace;font-size:0.5625rem;color:var(--text-dim);min-width:1.625rem;flex-shrink:0;}
+.ni-title{font-size:0.8125rem;color:var(--text-dim);line-height:1.4;flex:1;}
+.ni-status{font-size:0.5rem;flex-shrink:0;line-height:1;}
+.ni-status.is-active{color:var(--accent);}
+.ni-status.is-done{color:var(--success);}
+.ni-bm{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.6875rem;padding:0.125rem 0.25rem;flex-shrink:0;line-height:1;opacity:0;margin-left:auto;transition:opacity 150ms ease;}
+.nav-item:hover .ni-bm{opacity:1;}
 .ni-bm:hover,.ni-bm.on{color:var(--accent);opacity:1;}
+@media(hover:none){.ni-bm{opacity:.4;}}
 .tb-logo-link{display:flex;align-items:center;gap:0.5rem;text-decoration:none;opacity:1;transition:opacity .15s;flex-shrink:0;}
 .tb-logo-link:hover{opacity:.8;}
 .tb-logo-mark{width:1.75rem;height:1.75rem;min-width:1.75rem;background:#e8c547;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:0.875rem;font-weight:700;color:#0f1117;}
@@ -525,7 +525,7 @@ const PHASE_META = [
 
 const MODULES = [
 
-{id:'p1m1',phase:1,phaseName:'The Honest Reckoning',num:'1.1',title:"What You Actually Know (And What You Don't)",
+{id:'p1m1',phase:1,phaseName:'The Honest Reckoning',num:'1.1',title:"What You Actually Know (And What You Don't)",navTitle:'What You Actually Know',
 lead:'However you arrived here, you share the one trait that defines this course: you are, or soon will be, accountable for code you cannot yet fully read.',
 content:`
 <div class="phase-intro">
@@ -711,7 +711,7 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 </ul>
 `},
 
-{id:'p1m2',phase:1,phaseName:'The Honest Reckoning',num:'1.2',title:'How Claude Code Actually Works (No More Illusions)',
+{id:'p1m2',phase:1,phaseName:'The Honest Reckoning',num:'1.2',title:'How Claude Code Actually Works (No More Illusions)',navTitle:'How Claude Code Works',
 lead:'Understanding the mechanism removes the magic &mdash; and the magical thinking that gets you into trouble.',
 content:`
 <p>Claude Code is a large language model connected to your filesystem and a shell. It has no understanding of your codebase. It has no memory between sessions. It predicts what code should come next based on patterns in its training data and the context you give it. That&apos;s it.</p>
@@ -751,7 +751,7 @@ content:`
 </div>
 `},
 
-{id:'p1m3',phase:1,phaseName:'The Honest Reckoning',num:'1.3',title:'What "Working on a Team" Actually Requires',
+{id:'p1m3',phase:1,phaseName:'The Honest Reckoning',num:'1.3',title:'What "Working on a Team" Actually Requires',navTitle:'What Teams Actually Require',
 lead:"Teams have standards, reviews, and accountability. This module makes those expectations concrete so you know exactly what you're building toward.",
 content:`
 <p>Solo projects are forgiving. If the code is messy, only you pay the price. On a team, every line you merge is debt or dividend for everyone. Understanding the team contract before you join one is how you avoid the most common failure mode: the developer who ships fast but leaves messes others have to clean up.</p>
@@ -782,7 +782,7 @@ content:`
 </div>
 `},
 
-{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'Reading JavaScript: The Minimum Viable Literacy',
+{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
 lead:"You don't need to write JS fluently. You need to read it accurately. These are the patterns that appear constantly in Node.js and React code.",
 content:`
 <div class="phase-intro">
@@ -849,7 +849,7 @@ content:`
 </div>
 `},
 
-{id:'p2m2',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Async/Await — The Pattern You See Everywhere',
+{id:'p2m2',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Async/Await — The Pattern You See Everywhere',navTitle:'Async/Await Fundamentals',
 lead:'The majority of Node.js and React bugs involving Claude Code output come from async misuse. You need to understand this cold.',
 content:`
 <p>Almost everything in a web application is asynchronous &mdash; database calls, API requests, file reads. JavaScript handles this with Promises and async/await. Claude Code uses these constantly. Misunderstanding them is how silent bugs get into production.</p>
@@ -921,7 +921,7 @@ content:`
 </div>
 `},
 
-{id:'p2m3',phase:2,phaseName:'JavaScript You Must Know',num:'2.3',title:'Modules, Imports, and Why Dependencies Matter',
+{id:'p2m3',phase:2,phaseName:'JavaScript You Must Know',num:'2.3',title:'Modules, Imports, and Why Dependencies Matter',navTitle:'Modules & Dependencies',
 lead:"Every file you import is a dependency you own. Understanding how modules work is what lets you evaluate whether Claude Code's import choices are safe.",
 content:`
 <p>Modern JavaScript code is split into modules &mdash; files that import and export specific pieces. When Claude Code writes code, it makes import decisions that carry real consequences: wrong version, wrong path, or an unnecessary dependency can break builds, create security vulnerabilities, or add megabytes to a bundle.</p>
@@ -969,7 +969,7 @@ content:`
 </div>
 `},
 
-{id:'p2m4',phase:2,phaseName:'JavaScript You Must Know',num:'2.4',title:'TypeScript: Reading Types Without Being a TypeScript Expert',
+{id:'p2m4',phase:2,phaseName:'JavaScript You Must Know',num:'2.4',title:'TypeScript: Reading Types Without Being a TypeScript Expert',navTitle:'Reading TypeScript Types',
 lead:"You don't need to write TypeScript. You need to read it accurately enough to evaluate what Claude Code produces.",
 content:`
 <p>TypeScript adds a type layer on top of JavaScript. When you work in a TypeScript codebase, Claude Code will produce typed code. You need to read those types accurately &mdash; not to write them from scratch, but to catch when Claude gets them wrong.</p>
@@ -1021,7 +1021,7 @@ content:`
 </div>
 `},
 
-{id:'p3m1',phase:3,phaseName:'Node.js / Express Patterns',num:'3.1',title:'Express Route Structure — Read Any Route Handler',
+{id:'p3m1',phase:3,phaseName:'Node.js / Express Patterns',num:'3.1',title:'Express Route Structure — Read Any Route Handler',navTitle:'Express Route Structure',
 lead:'Express is the most common Node.js framework. Once you can read a route handler cold, you can evaluate any backend Claude Code produces.',
 content:`
 <div class="phase-intro">
@@ -1070,7 +1070,7 @@ router.get(<span class="str">'/users/:id'</span>, authenticate, <span class="key
 </div>
 `},
 
-{id:'p3m2',phase:3,phaseName:'Node.js / Express Patterns',num:'3.2',title:'Services, Repositories, and Why the Layer Structure Matters',
+{id:'p3m2',phase:3,phaseName:'Node.js / Express Patterns',num:'3.2',title:'Services, Repositories, and Why the Layer Structure Matters',navTitle:'Services & Repository Layers',
 lead:'Most teams structure their backend in layers. Understanding why this structure exists is what lets you evaluate whether Claude Code is respecting it.',
 content:`
 <p>A common Node.js codebase separates concerns into layers: routes call services, services call repositories, repositories call the database. When Claude Code violates this structure &mdash; putting database calls in route handlers, or business logic in repositories &mdash; it creates code that&apos;s harder to test, harder to change, and harder to reason about.</p>
@@ -1119,7 +1119,7 @@ router.post(<span class="str">'/users'</span>, <span class="key">async</span> (r
 </div>
 `},
 
-{id:'p3m3',phase:3,phaseName:'Node.js / Express Patterns',num:'3.3',title:'Middleware, Validation, and Error Handling',
+{id:'p3m3',phase:3,phaseName:'Node.js / Express Patterns',num:'3.3',title:'Middleware, Validation, and Error Handling',navTitle:'Middleware & Error Handling',
 lead:'Three cross-cutting concerns that run through every Express application. If Claude Code gets any of these wrong, bugs are invisible until production.',
 content:`
 <p>Middleware are functions that run between the request arriving and your route handler executing. Validation ensures data is what you expect before you act on it. Error handling determines whether failures are visible or silent. Claude Code gets all three wrong in predictable ways.</p>
@@ -1181,7 +1181,7 @@ app.use((err, req, res, next) =&gt; {
 </div>
 `},
 
-{id:'p4m1',phase:4,phaseName:'React Patterns',num:'4.1',title:'Components and Props — The Mental Model for React',
+{id:'p4m1',phase:4,phaseName:'React Patterns',num:'4.1',title:'Components and Props — The Mental Model for React',navTitle:'Components & Props',
 lead:'React is a system for composing UI from small, reusable pieces. This module gives you the mental model that makes every React diff readable.',
 content:`
 <div class="phase-intro">
@@ -1243,7 +1243,7 @@ content:`
 </div>
 `},
 
-{id:'p4m2',phase:4,phaseName:'React Patterns',num:'4.2',title:'useState and useEffect — Where Claude Code Makes Mistakes',
+{id:'p4m2',phase:4,phaseName:'React Patterns',num:'4.2',title:'useState and useEffect — Where Claude Code Makes Mistakes',navTitle:'useState & useEffect',
 lead:"These two hooks are the most used in React. They're also where Claude Code introduces the most subtle bugs.",
 content:`
 <p>State is data that, when it changes, causes the component to re-render. Effects are code that runs after render to synchronize the component with external systems. Claude Code uses both constantly and gets both wrong in predictable ways.</p>
@@ -1312,7 +1312,7 @@ useEffect(() =&gt; {
 </div>
 `},
 
-{id:'p4m3',phase:4,phaseName:'React Patterns',num:'4.3',title:'Component Decomposition — Reading and Evaluating a Design',
+{id:'p4m3',phase:4,phaseName:'React Patterns',num:'4.3',title:'Component Decomposition — Reading and Evaluating a Design',navTitle:'Component Decomposition',
 lead:'How you break a UI into components determines how maintainable it is. Claude Code makes consistent choices here that you need to be able to evaluate.',
 content:`
 <p>Component decomposition is the decision of how to split a UI into component boundaries. Done well, it produces code that&apos;s reusable, testable, and easy to change. Done poorly, it produces monolithic components that are impossible to test and brittle to modify. Claude Code tends toward one specific anti-pattern when generating UI quickly.</p>
@@ -1361,7 +1361,7 @@ content:`
 </div>
 `},
 
-{id:'p5m1',phase:5,phaseName:'Workflow & Discipline',num:'5.1',title:'CLAUDE.md and Session Discipline',
+{id:'p5m1',phase:5,phaseName:'Workflow & Discipline',num:'5.1',title:'CLAUDE.md and Session Discipline',navTitle:'CLAUDE.md & Session Discipline',
 lead:'A CLAUDE.md file is the difference between a contractor who guesses your standards and one who knows them. This module shows you how to build one that works.',
 content:`
 <div class="phase-intro">
@@ -1410,7 +1410,7 @@ Stack: Node 20, Express 5, Prisma, React 18, TypeScript.
 </div>
 `},
 
-{id:'p5m2',phase:5,phaseName:'Workflow & Discipline',num:'5.2',title:'Surgical Prompts: Writing Instructions That Get Consistent Results',
+{id:'p5m2',phase:5,phaseName:'Workflow & Discipline',num:'5.2',title:'Surgical Prompts: Writing Instructions That Get Consistent Results',navTitle:'Writing Surgical Prompts',
 lead:'Vague prompts produce vague output. This module teaches the prompt structure that gets consistent, reviewable results from Claude Code.',
 content:`
 <p>The difference between &ldquo;build me a login form&rdquo; and a prompt that actually produces production-quality output is specificity. Surgical prompts define the exact scope, constraints, output format, and what not to do. They take longer to write and they save hours of review and rework.</p>
@@ -1458,7 +1458,7 @@ All async operations are in try/catch.</pre>
 </div>
 `},
 
-{id:'p5m3',phase:5,phaseName:'Workflow & Discipline',num:'5.3',title:'Git Discipline and the Verification Stack',
+{id:'p5m3',phase:5,phaseName:'Workflow & Discipline',num:'5.3',title:'Git Discipline and the Verification Stack',navTitle:'Git & Verification Stack',
 lead:'Git is your safety net and your audit trail. Using it correctly with Claude Code output is what separates recoverable mistakes from catastrophic ones.',
 content:`
 <p>When Claude Code makes a change, you need to be able to: inspect exactly what changed, run it and know if it broke anything, and roll back if it did. Git, combined with a verification stack, is how you maintain that capability on every commit.</p>
@@ -1497,7 +1497,7 @@ git commit -m <span class="str">"feat: add refresh token rotation"</span></pre>
 </div>
 `},
 
-{id:'p6m1',phase:6,phaseName:'Team Collaboration',num:'6.1',title:'Pull Requests: Submitting Work You Can Defend',
+{id:'p6m1',phase:6,phaseName:'Team Collaboration',num:'6.1',title:'Pull Requests: Submitting Work You Can Defend',navTitle:'PRs: Work You Can Defend',
 lead:'A PR is a commitment. Every line you merge carries your name. This module teaches how to write PRs that pass review and build trust.',
 content:`
 <div class="phase-intro">
@@ -1551,7 +1551,7 @@ Closes #124.
 </div>
 `},
 
-{id:'p6m2',phase:6,phaseName:'Team Collaboration',num:'6.2',title:'Receiving Feedback, Debugging, and the Long Game',
+{id:'p6m2',phase:6,phaseName:'Team Collaboration',num:'6.2',title:'Receiving Feedback, Debugging, and the Long Game',navTitle:'Feedback & the Long Game',
 lead:"How you respond to feedback and how you debug without AI determines whether you're growing or stuck. This module sets the trajectory.",
 content:`
 <p>You&apos;ll receive code review feedback that challenges what Claude produced. You&apos;ll face production bugs you can&apos;t just re-prompt your way out of. How you handle these moments determines your reputation on the team far more than how fast you ship features.</p>
@@ -2383,17 +2383,37 @@ function doReset() {
 }
 
 // ── PHASE COLLAPSE ──
+function getNavActivePhase() {
+  if (currentMod) {
+    var m = MODULES.find(function(x) { return x.id === currentMod; });
+    if (m) return m.phase;
+  }
+  var lastId = localStorage.getItem('adf_last');
+  if (lastId) {
+    var lm = MODULES.find(function(x) { return x.id === lastId; });
+    if (lm) return lm.phase;
+  }
+  var firstIncomplete = MODULES.find(function(x) { return !_completedSet.has(x.id); });
+  return firstIncomplete ? firstIncomplete.phase : 1;
+}
 function isPhaseCollapsed(n) {
-  var phases = JSON.parse(localStorage.getItem('adf_phases') || '{}');
-  return phases[n] === true;
+  var saved = localStorage.getItem('nav_open_phases_adf');
+  if (saved === null) return n !== getNavActivePhase();
+  return JSON.parse(saved)[n] !== true;
+}
+function saveNavPhaseState() {
+  var prefs = {};
+  PHASE_META.forEach(function(pm) {
+    var sec = document.getElementById('ph-sec-' + pm.n);
+    prefs[pm.n] = sec ? !sec.classList.contains('collapsed') : false;
+  });
+  localStorage.setItem('nav_open_phases_adf', JSON.stringify(prefs));
 }
 function togglePhase(n) {
   var sec = document.getElementById('ph-sec-' + n);
   if (!sec) return;
   sec.classList.toggle('collapsed');
-  var phases = JSON.parse(localStorage.getItem('adf_phases') || '{}');
-  phases[n] = sec.classList.contains('collapsed');
-  localStorage.setItem('adf_phases', JSON.stringify(phases));
+  saveNavPhaseState();
 }
 
 // ── BUILD SIDEBAR ──
@@ -2402,16 +2422,15 @@ function buildNavRow(m) {
   var done = _completedSet.has(m.id);
   var isDoneClass = done ? ' is-done' : '';
   var bmOn = bookmarks.has(m.id) ? ' on' : '';
-  var chip = '';
+  var status = '';
   if (currentMod === m.id) {
-    chip = '<span class="ni-chip in-prog">● In progress</span>';
+    status = '<span class="ni-status is-active">&#x25cf;</span>';
   } else if (done) {
-    chip = '<span class="ni-chip is-done">✓ Complete</span>';
+    status = '<span class="ni-status is-done">&#x2713;</span>';
   }
   return '<div class="nav-item' + active + isDoneClass + '" id="ni-' + m.id + '" onclick="showModule(' + sq + m.id + sq + ')">' +
-    '<div class="ni-line1"><span class="ni-num">' + m.num + '</span><span class="ni-title">' + m.title + '</span></div>' +
-    '<div class="ni-line2"><span class="ni-dur">' + (TIME_MAP[m.id] || '') + '</span>' + chip +
-    '<button class="ni-bm' + bmOn + '" onclick="toggleBookmark(' + sq + m.id + sq + ');event.stopPropagation()" title="Bookmark">&#9733;</button>' +
+    '<div class="ni-line1"><span class="ni-num">' + m.num + '</span><span class="ni-title">' + (m.navTitle || m.title) + '</span>' +
+    status + '<button class="ni-bm' + bmOn + '" onclick="toggleBookmark(' + sq + m.id + sq + ');event.stopPropagation()" title="Bookmark">&#9733;</button>' +
     '</div></div>';
 }
 
@@ -2563,6 +2582,15 @@ function showModule(id) {
         (isDone ? '✓ Complete' : 'Mark Complete') +
       '</button>' +
     '</div>';
+  var _navSaved = localStorage.getItem('nav_open_phases_adf');
+  var _navPrefs = _navSaved !== null ? JSON.parse(_navSaved) : null;
+  if (_navPrefs === null) {
+    _navPrefs = {};
+    PHASE_META.forEach(function(pm) { _navPrefs[pm.n] = (pm.n === mod.phase); });
+  } else {
+    _navPrefs[mod.phase] = true;
+  }
+  localStorage.setItem('nav_open_phases_adf', JSON.stringify(_navPrefs));
   buildSidebar();
   scrollTop();
   if (panelOpen) loadPanelNotes(id);
