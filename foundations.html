@@ -824,6 +824,8 @@ content:`
   </ol>
   <p>Identical prompts. Different output. Nothing malfunctioned. Now connect it: if the same prompt produces different code twice, what does that mean for any workflow where you need the same result every time? Write one sentence answering that. (You just derived Fact 2's professional consequence yourself.)</p>
   <div id="pred-ft2-p1b-mount"></div>
+  <p style="margin-top:0.875rem">Run it yourself above, or view real captured responses below to see the variance directly.</p>
+  <div id="ft2-motivational-pool-mount"></div>
   <h4>Part 2: Confidence vs. a deterministic check (7 minutes)</h4>
   <ol>
     <li>In one of your chats, paste exactly this:
@@ -945,6 +947,8 @@ content:`
     <pre style="white-space:pre-wrap">Write a JavaScript function called validatePassword that checks whether a password meets these rules: at least 8 characters, contains a number, contains an uppercase letter. It should return an object saying whether the password passed and, if not, which rules it failed. Include three example calls showing different outcomes.</pre>
   </div>
   <p>Read what comes back, but do not study it to memorization. Glance at it the way you'd glance at code you wrote a month ago and half-remember.</p>
+  <p style="margin-top:0.875rem">If you want to study a real Claude response for this prompt before writing your own, the captured examples below reflect baseline output with no personal rules or custom style applied.</p>
+  <div id="ft3-validate-pool-mount"></div>
   <h4>Part 2: Write the handoff argument (7 minutes)</h4>
   <p>Without re-reading the code line by line, answer the three PR questions about it. Write real sentences, not notes.</p>
   <div id="pred-ft3-pr-mount"></div>
@@ -2485,7 +2489,6 @@ function mountPredictionBox(containerEl, config) {
 
 // ── RESPONSE POOLS ──
 var RESPONSE_POOLS = {
-  'ft1-greet':        {mode:'single',  capturedNote:'Real Claude outputs, captured June 2026', prompt:'Write a JavaScript function called greet that takes a name and returns the string Hello, [name]! Then add a line that calls it with a sample name and logs the result.'},
   'ft2-motivational': {mode:'compare', capturedNote:'Real Claude outputs, captured June 2026', prompt:'Write a JavaScript function that returns a motivational message for a developer, choosing from five messages you invent. Show the function and one example of its output.'},
   'ft3-validate':     {mode:'single',  capturedNote:'Real Claude outputs, captured June 2026', prompt:'Write a JavaScript function called validatePassword that checks whether a password meets these rules: at least 8 characters, contains a number, contains an uppercase letter. It should return an object saying whether the password passed and, if not, which rules it failed. Include three example calls showing different outcomes.'}
 };
@@ -3002,6 +3005,7 @@ function showModule(id) {
         id: 'ft2-p1b',
         prompt: 'Your one-sentence consequence:'
       });
+      mountResponsePool(document.getElementById('ft2-motivational-pool-mount'), 'ft2-motivational');
       mountPredictionBox(document.getElementById('pred-ft2-p2-mount'), {
         id: 'ft2-p2',
         prompt: 'Your prediction:'
@@ -3014,6 +3018,7 @@ function showModule(id) {
   }
   if (id === 'p1m3') {
     setTimeout(function() {
+      mountResponsePool(document.getElementById('ft3-validate-pool-mount'), 'ft3-validate');
       mountPredictionBox(document.getElementById('pred-ft3-pr-mount'), {
         id: 'ft3-pr',
         prompt: 'Your handoff argument (what / why / how to verify):',
@@ -3363,34 +3368,6 @@ initPanel();
 
 </script>
 <!-- CAPTURED RESPONSE POOLS: replace PLACEHOLDER content with real captured Claude runs; copy a tag and bump data-idx to add more. Do not present as live generation. -->
-<script type="text/plain" data-pool="ft1-greet" data-idx="0">
-PLACEHOLDER — replace with a real captured Claude response for the greet prompt.
-
-Here is one example of what Claude might produce for this prompt.
-
-```javascript
-function greet(name) {
-  return "Hello, " + name + "!";
-}
-
-console.log(greet("Maria"));
-```
-
-This placeholder content should be replaced with actual Claude output before publishing.
-</script>
-<script type="text/plain" data-pool="ft1-greet" data-idx="1">
-PLACEHOLDER — replace with a second real captured Claude response for the greet prompt.
-
-A variation Claude might produce.
-
-```javascript
-const greet = (name) => `Hello, ${name}!`;
-
-console.log(greet("Jordan"));
-```
-
-This placeholder content should be replaced with actual Claude output before publishing.
-</script>
 <script type="text/plain" data-pool="ft2-motivational" data-idx="0">
 PLACEHOLDER — replace with a real captured Claude response for the motivational message prompt.
 

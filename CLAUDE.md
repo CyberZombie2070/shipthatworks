@@ -31,3 +31,5 @@ Real Claude outputs for fixed floor-test prompts are stored as `<script type="te
 ## Spec-driven commits
 
 When a spec defines multiple commits, produce exactly those commits; never combine spec steps into a single commit.
+
+Standard staging for module and convention changes: `git add foundations.html CLAUDE.md && git commit -m "feat: captured response pool component [ai-assisted]"`
