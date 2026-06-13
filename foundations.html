@@ -511,7 +511,7 @@ details.reveal[open] .reveal-body{animation:revealFade 180ms ease-out;}
 <script>
 
 const TIME_MAP = {
-  p1m1:'35 min',p1m2:'35 min',p1m3:'22 min',
+  p1m1:'35 min',p1m2:'35 min',p1m3:'30 min',
   p2m1:'28 min',p2m2:'32 min',p2m3:'25 min',p2m4:'24 min',
   p3m1:'28 min',p3m2:'26 min',p3m3:'24 min',
   p4m1:'26 min',p4m2:'30 min',p4m3:'22 min',
@@ -856,35 +856,113 @@ content:`
 </ul>
 `},
 
-{id:'p1m3',phase:1,phaseName:'The Honest Reckoning',num:'1.3',title:'What "Working on a Team" Actually Requires',navTitle:'What Teams Actually Require',
-lead:"Teams have standards, reviews, and accountability. This module makes those expectations concrete so you know exactly what you're building toward.",
+{id:'p1m3',phase:1,phaseName:'The Honest Reckoning',num:'1.3',title:'What "Working on a Team" Actually Requires',navTitle:'Working on a Team',
+lead:"The professional bar for your work is not whether it runs. It is whether a stranger can pick it up, trust it, and build on it without you in the room.",
 content:`
-<p>Solo projects are forgiving. If the code is messy, only you pay the price. On a team, every line you merge is debt or dividend for everyone. Understanding the team contract before you join one is how you avoid the most common failure mode: the developer who ships fast but leaves messes others have to clean up.</p>
-<h3>What You&apos;ll Be Expected to Do</h3>
-<table class="tbl">
-  <tr><th>Activity</th><th>What it requires from you</th></tr>
-  <tr><td>Submit a PR</td><td>Code that&apos;s tested, documented at the diff level, and explainable line by line</td></tr>
-  <tr><td>Receive a review</td><td>Understand every piece of feedback &mdash; no &ldquo;Claude wrote it&rdquo; as a response</td></tr>
-  <tr><td>Review someone else&apos;s PR</td><td>Evaluate logic correctness, not just whether it looks clean</td></tr>
-  <tr><td>Debug a bug in your code</td><td>Trace the failure path in the code itself, not re-prompt Claude</td></tr>
-  <tr><td>Discuss approach in standup</td><td>Explain what you built and why &mdash; in your own words</td></tr>
-  <tr><td>On-call / incident response</td><td>Read logs, trace errors, fix production issues often without AI scaffolding</td></tr>
-</table>
-<div class="callout danger">
-  <div class="callout-label">The Accountability Test</div>
-  <p>&ldquo;Claude Code wrote it&rdquo; is not a valid answer in any of these situations. The moment you merge code into a shared repository, you are its author. Full stop. Your name is on the commit. You own it.</p>
-</div>
-<h3>The Good News</h3>
-<p>You don&apos;t need to be able to write all of this from scratch. You need to be able to <strong>read, verify, explain, and debug it</strong>. That&apos;s a different &mdash; and achievable &mdash; bar. The rest of this course builds exactly that literacy.</p>
+<p>The title of this module is a small lie, and clearing it up is the whole point.</p>
+<p>"Working on a team" sounds like it's about other people: standups, reviewers, the politics of a shared codebase. If you're learning alone in a side project, or you don't have a team yet, the honest temptation is to skip this one and get to the JavaScript.</p>
+<p>Don't. Because the thing this module is actually about isn't teams. It's a single shift in standard, and it applies to you whether you have colleagues or not:</p>
+<p><strong>The bar for your work is no longer "does it run." It's "can someone else pick this up, trust it, and build on it without you in the room."</strong></p>
+<p>That someone else is sometimes a teammate. But it is just as often:</p>
+<ul>
+  <li><strong>Your future self</strong>, opening this code in three months with no memory of why you did any of it.</li>
+  <li><strong>An interviewer</strong>, sliding a laptop across the table and saying "walk me through this."</li>
+  <li><strong>A hiring manager</strong>, judging your public repository cold, before they've ever spoken to you.</li>
+  <li><strong>Claude Code itself, in your next session</strong>, which (you learned this in 1.2) remembers nothing and can only work from what you wrote down.</li>
+</ul>
+<p>Every one of those is a handoff. A team just makes the handoff loud and immediate by putting a human reviewer in the path. The standard is identical with or without them. This module installs that standard, because Phase 2 is about to teach you to read and write code, and you need to know what you're aiming for before you start aiming.</p>
+<p>This is the end of the Honest Reckoning. 1.1 measured the gap. 1.2 explained the tool. 1.3 names the target: work that survives handoff.</p>
+
+<h3>Two Ways Code Can Be "Done"</h3>
+<p>You met a version of this in 1.1, with the two kinds of "it works." Here's its grown-up sibling, and it's the hinge of the whole module.</p>
+<p><strong>Done-for-me:</strong> the code produces the right result when I run it, right now, on my machine, with the inputs I happened to try. I understand it well enough to have gotten it working. If it breaks later, I'll figure it out then.</p>
+<p><strong>Done-for-handoff:</strong> someone with no access to my head can read this, understand what it does and why, trust that it handles more than the one case I tried, and change it safely. The reasoning is on the page, not in my memory.</p>
+<p>Almost everyone learning with AI tools ships done-for-me and calls it done. It feels finished because <em>to you, at that moment,</em> it is. You have the context. You remember why the function is shaped that way, what you were worried about, which input you tested. All of that lives in your head, invisibly propping up code that looks complete.</p>
+<p>The cruelty of done-for-me is that the propping is invisible <em>to you</em>. You can't see the context you're supplying, the same way you can't see your own blind spot. The code looks self-explanatory because you're explaining it to yourself without noticing. Then three months pass, or a reviewer arrives, or you paste it into a fresh Claude Code session, and the prop is gone, and what's left standing on its own is a lot less than you thought.</p>
+<p>Handoff is simply the test that removes the prop. Everything else in this module is a technique for passing that test on purpose instead of discovering you fail it at the worst moment.</p>
+
+<h3>The Future-Self Handoff</h3>
+<p>If you have no team, you have the hardest handoff target of all, and you can't see it coming.</p>
+<p>A teammate reviewing your code is a <em>fresh</em> mind. They have no illusions about understanding your intent, so they ask. Your future self is worse, because future-you arrives <em>believing</em> they'll remember, and they won't. The memory of why you chose this approach decays far faster than you expect. Code you wrote last month reads like a stranger's by next quarter, except you don't get the stranger's healthy skepticism. You get false familiarity, which is slower and more dangerous than honest confusion.</p>
+<p>So the most selfish, individual, non-team reason to learn handoff discipline is this: <strong>you are the teammate you hand off to most often, and you are the one least equipped to do it well</strong>, because you'll trust a past self who left you nothing to work with.</p>
+<p>And there's an immediate, mechanical payoff you can feel this week, straight out of 1.2: Claude Code starts every session with no memory. When you write code and comments and commit messages clearly enough that <em>a stranger</em> could pick them up, you are also writing them clearly enough that <strong>your next Claude Code session</strong> can pick them up. Handoff discipline isn't team etiquette you're adopting on faith for some future job. It's the thing that makes your collaboration with your own tool work across time. Every clear comment is a note to the next session. Every honest commit message is context that survives the context window emptying.</p>
+<p>That's the reframe in full: handoff discipline pays the solo learner first, the team second.</p>
+
+<h3>The Pull Request: Where Handoff Becomes Concrete</h3>
+<p>When code is handed off on a team, it usually travels in a <strong>pull request</strong> (a PR: the bundle of changes you propose, packaged for someone else to review before it joins the shared codebase; you met this term in 1.1). Even if you never work on a team, the PR is worth understanding, because it's the most refined handoff artifact the industry has produced, and its anatomy is a checklist for handing anything off well, including to your future self.</p>
+<p>A PR is two things at once: a set of code changes, and <strong>an argument that those changes are safe to accept.</strong> New developers focus entirely on the first and ignore the second. The argument is where handoff lives.</p>
+<p>A handoff-grade PR answers three questions without the author present:</p>
+<p><strong>What changed?</strong> Not a restatement of the diff (the reviewer can read the diff). A plain-language summary of the actual change in behavior. "Users can now reset their password by email" tells the reviewer what to verify. "Updated auth.js and added a route" tells them nothing they couldn't see.</p>
+<p><strong>Why this way?</strong> The decision and its tradeoff. "Chose email reset over security questions because we already have email infrastructure and security questions are a known weak point." This is the single most valuable sentence in any handoff, and it's exactly the sentence done-for-me code never contains, because the reasoning never left your head. It's also, not coincidentally, the answer to 1.1's "why did you structure it this way?" review question. A PR that states the why is a PR that already passed that test.</p>
+<p><strong>How do I verify it?</strong> What the reviewer (or future-you) should do to confirm it works. "Test by requesting a reset for a known account; check the email arrives and the link expires after one hour." This converts "trust me" into "check for yourself," which is the entire difference between done-for-me and done-for-handoff.</p>
+<p>You can write all three for a solo project with no reviewer. When you do, you're not performing team theater. You're leaving your future self the argument that your past self actually thought this through.</p>
+
+<h3>Smaller Is Not a Style Preference</h3>
+<p>Here is one of the most consistent findings in all of software engineering, and it's the rare place where the research gives a real number.</p>
+<p>Review quality collapses as a change gets bigger. Industry research, including a widely cited study by SmartBear at Cisco, found that defect detection is strongest when a single review covers roughly 200 to 400 lines of changed code, and drops off sharply beyond that. Google's internal guidance targets even smaller, around 200 lines. Past about 400 lines, reviewers stop genuinely reviewing and start skimming for style, and review time grows faster than the size does, not in step with it. Oversized changes routinely come back with zero substantive comments, not because they were perfect, but because no human could hold the whole thing in their head at once.</p>
+<p>The takeaway is not a bureaucratic line count. It's a fact about handoff: <strong>a change small enough to fully understand can be genuinely reviewed; a change too big to hold in your head gets rubber-stamped.</strong> When you hand off something enormous, you don't get a real check. You get a tired approval, and the bugs ride along.</p>
+<p>One honest caveat: line count is an imperfect proxy. Renaming one function across forty files might touch four hundred lines and review in two minutes, because it's mechanical and uniform. A subtle thirty-line change to payment logic might deserve an hour. The real target is <em>cognitive size</em>: how much a reviewer has to actually think about. Lines of code are a rough stand-in for that, useful precisely because they're easy to see when the real thing isn't. Aim small, and when something genuinely can't be small, make it mechanical and uniform so it's easy to think about even when it's long.</p>
+<p>This connects forward: a huge fraction of AI-assisted work goes wrong precisely because the tool can generate an enormous change in seconds, far faster than any human can review it. The discipline of keeping changes small is partly a discipline of not letting the tool's speed outrun your ability to hand off what it produced. Phase 5 turns this into a working habit.</p>
+
+<h3>Receiving Review</h3>
+<p>If you do work with a reviewer, a hard moment is coming, and it's worth naming now so it doesn't blindside you: someone is going to comment on your code, and it's going to sting.</p>
+<p>It stings because of everything 1.1 established. You feel more capable than you are, the tool produced output you didn't fully understand, and now a person is pointing at it. The instinct is to defend, or to feel exposed, or to quietly assume the reviewer is being difficult.</p>
+<p>The reframe that makes review survivable, and then valuable: <strong>the review is about the code, not about you, and the reviewer is doing your future self a favor for free.</strong> Every issue caught in review is an issue that doesn't reach production with your name on it. A reviewer who says nothing is not being kind. They're withholding the most useful thing a colleague can give you.</p>
+<p>A few concrete moves that separate people teams trust from people teams tolerate:</p>
+<ul>
+  <li><strong>Read the comment as a question about the code, not a verdict on you.</strong> "Why isn't this handling the empty case?" is information, not an attack. Answer it from the code (1.1's first skill), or fix it.</li>
+  <li><strong>Distinguish the blocking from the optional.</strong> Mature reviewers signal severity, often with prefixes: a comment marked BLOCKING must be addressed before the change can be accepted; SUGGESTION or NIT is an improvement you can take or leave. Learn to tell "this is broken" from "I'd have done it differently," and don't treat preferences as mandates or mandates as preferences.</li>
+  <li><strong>When you disagree, disagree with a reason, not a feeling.</strong> "I chose this because X" is a conversation. "It works though" is the done-for-me reflex talking, and it's the answer that marks someone who hasn't made the shift this module is about.</li>
+</ul>
+<p>And here's the part that pays the solo learner: you can run review on yourself. Before you call anything done, read it as if a stranger wrote it and you have to approve it. Ask the three PR questions out loud. The gap between what you can answer and what you can't is your own private review, and it catches a startling amount before anyone else has to.</p>
+
+<h3>What This Means Before Phase 2</h3>
+<p>You now have the target. Phase 2 starts teaching you to read and write JavaScript, and it would be easy to learn those skills aimed only at done-for-me: code that runs for you, today. This module exists so you aim higher from the first line.</p>
+<p>As you go through everything that follows, one question converts ordinary practice into professional practice, and you can ask it of any code, your own or Claude's:</p>
+<p><strong>Could a stranger pick this up, trust it, and build on it without me here to explain?</strong></p>
+<p>If yes, it's done. If no, it runs, but it isn't finished, and the gap is exactly the work this whole course is teaching you to close. The stranger is usually hypothetical. Sometimes it's a teammate. Often it's future-you. And at least once per session, it's literally Claude Code, opening your project fresh, with nothing to go on but what you left behind.</p>
+
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 1.3 &mdash; The Standup Simulation</div>
-  <h4>Explain your code out loud</h4>
-  <p>Pick something you built recently with Claude Code. Record a 2-minute voice memo explaining: what it does, why you structured it the way you did, and what would break if the input data changed unexpectedly.</p>
+  <div class="floor-test-label">Floor Test 1.3 &mdash; The Handoff Test, Run on Real Code</div>
+  <p><strong>What you'll do:</strong> A roughly 20-minute exercise needing only a browser. You'll produce a piece of code, then subject it to the handoff test from both sides: as the author, and as the stranger.</p>
+  <p><strong>Why this test exists:</strong> Every prior floor test built a reading or prediction habit. This one builds the handoff habit, by making you feel the gap between done-for-me and done-for-handoff on a piece of code that is, briefly, your own.</p>
+  <h4>Part 1: Generate something slightly too big (5 minutes)</h4>
+  <p>Ask Claude for a small but real piece of code. Use the prompt below.</p>
+  <div class="code-block" style="margin-top:0.625rem;margin-bottom:0.125rem">
+    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">PROMPT</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre style="white-space:pre-wrap">Write a JavaScript function called validatePassword that checks whether a password meets these rules: at least 8 characters, contains a number, contains an uppercase letter. It should return an object saying whether the password passed and, if not, which rules it failed. Include three example calls showing different outcomes.</pre>
+  </div>
+  <p>Read what comes back, but do not study it to memorization. Glance at it the way you'd glance at code you wrote a month ago and half-remember.</p>
+  <h4>Part 2: Write the handoff argument (7 minutes)</h4>
+  <p>Without re-reading the code line by line, answer the three PR questions about it. Write real sentences, not notes.</p>
+  <div id="pred-ft3-pr-mount"></div>
+  <ol>
+    <li><strong>What does this code do?</strong> In plain language, the behavior, not the syntax.</li>
+    <li><strong>Why is it shaped this way?</strong> Name one decision the code makes (for example: how it reports failures, the order it checks rules, what it returns) and why that's a reasonable choice.</li>
+    <li><strong>How would someone verify it works?</strong> Describe the specific check, including at least one input you did NOT see in the three examples.</li>
+  </ol>
+  <p>If you found question 2 hard, that's the lesson landing. "Why is it shaped this way" is the question done-for-me never has to answer, and the one a stranger most needs answered.</p>
+  <h4>Part 3: Become the stranger (8 minutes)</h4>
+  <p>Now find the gap. Look back at the code and answer these by reading, not remembering.</p>
+  <div id="pred-ft3-gaps-mount"></div>
+  <ol>
+    <li>Pick one input you're genuinely unsure about. For example: what does it do with an empty string? A password that's 8 characters but all lowercase numbers? Something that isn't a string at all? Predict the behavior, then test it by asking Claude to run that exact case, or by reasoning it out from the code.</li>
+    <li>Is there anything the code does that a stranger could NOT figure out from the code alone, with no comment explaining it? If yes, that's a handoff gap: a place where the code is leaning on context that only lives in someone's head.</li>
+    <li>One sentence: if you handed this exact code to your future self in three months, what's the first thing they'd have to re-figure-out that a single comment could have saved them?</li>
+  </ol>
   <div class="pass-criteria">
     <div class="pass-label">Pass criteria</div>
-    <p>You can complete the explanation without referencing &ldquo;Claude suggested&rdquo; or &ldquo;I&apos;m not sure why but it works.&rdquo; If you can&apos;t, those exact gaps are your curriculum for Phase 2 and 3.</p>
+    <p>You wrote real sentences for all three PR questions in Part 2, and you identified at least one handoff gap in Part 3 (or made an honest case that there are none, which for most generated code is the wrong answer and worth being suspicious of). As always, the failure mode is skipping the thinking, not getting a "wrong" answer. There are no wrong answers here, only handoffs that would succeed and handoffs that would fail.</p>
   </div>
 </div>
+
+<h3>Further Reading</h3>
+<ul>
+  <li><a href="https://google.github.io/eng-practices/review/" target="_blank" rel="noopener noreferrer"><strong>Google Engineering Practices: Code Review&#x2197;</strong></a>: Google's public, widely adopted guide to what review is for and how small changes should be; the source behind much of this module's standard</li>
+  <li><a href="https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/" target="_blank" rel="noopener noreferrer"><strong>SmartBear: Best Practices for Code Review&#x2197;</strong></a>: the practitioner write-up of the Cisco study behind the 200 to 400 line finding</li>
+  <li><a href="https://www.conventionalcommits.org/" target="_blank" rel="noopener noreferrer"><strong>Conventional Commits&#x2197;</strong></a>: a simple, machine-readable standard for commit messages; a concrete handoff tool you'll meet again in Phase 5</li>
+  <li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests" target="_blank" rel="noopener noreferrer"><strong>GitHub Docs: About Pull Requests&#x2197;</strong></a>: the official mechanics of the PR, for when you make your first one</li>
+</ul>
 `},
 
 {id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
@@ -1730,14 +1808,18 @@ p1m2:[
   {q:"In Floor Test 1.2 Part 2, the model's arithmetic might come back correct. Why does the module say the lesson holds either way?",opts:["Correct arithmetic proves the model used a hidden calculation tool","Your certainty came from the deterministic check, not from the model's confident tone","The multiplication is designed so that models always get it wrong","A correct answer on one run guarantees correct answers on future runs"],correct:1,explanation:"If the answer was wrong, you watched confidence wrap a wrong answer. If it was right, you still did not know that until the verifier finished. Either way the certainty was produced by the deterministic backstop, which is the working relationship this course builds: the model proposes, something deterministic confirms."}
 ],
 p1m3:[
-  {q:"A senior dev asks 'why did you use async/await here instead of promise chaining?' What is the correct response from a team-ready developer?",opts:["Claude Code generated it that way and it seemed cleaner","I can look into it and get back to you","async/await makes sequential flow easier to read and error handling more explicit","They are equivalent, so the choice doesn't matter"],correct:2,explanation:"A team-ready developer can explain every structural choice in their code. This requires understanding the code at the level of design decisions, not just functionality."},
-  {q:"Which of these activities does NOT appear on the list of what teams expect you to do?",opts:["Submit a pull request with explainable code","Stand in a code review and justify every line","Have Claude Code write all code so you don't need to understand it","Debug a bug in your code by tracing the failure path"],correct:2,explanation:"Every item on the team expectations list requires independent competence: reading, explaining, debugging, and justifying code. Using AI to replace that competence is not a team-ready approach."},
-  {q:"Why is 'Claude Code wrote it' not an acceptable answer during a PR review?",opts:["Teams do not allow AI-assisted development","The moment you merge code, you become its author regardless of how it was produced","AI-written code is automatically suspect and must be rewritten","PR reviewers cannot evaluate AI-generated code accurately"],correct:1,explanation:"Authorship is conferred by merging, not by writing. Your name on the commit means you are accountable for every line in it. The tool used to produce it is irrelevant to that accountability."},
-  {q:"What is the difference between writing code from scratch and the bar this course sets?",opts:["There is no meaningful difference; both require the same skills","This course requires you to write faster than hand-coding","This course requires you to read, verify, explain, and debug code, not necessarily write it all from scratch","This course only requires you to review others' code, not generate any yourself"],correct:2,explanation:"The goal is code literacy, not code authorship. Reading accurately, verifying correctness, explaining design choices, and debugging independently are achievable skills distinct from writing everything from scratch."},
-  {q:"On-call incident response is listed as a team expectation. What does this specifically require?",opts:["The ability to use Claude Code to fix production bugs quickly","Reading logs, tracing errors, and fixing production issues often without AI assistance","Alerting the team that Claude Code needs to regenerate the affected code","Documenting the incident for Claude Code to learn from"],correct:1,explanation:"Production incident response requires you to work directly in the running system: read logs, trace the failure, fix it. AI assistance may not be available, fast enough, or appropriate in a production incident."},
-  {q:"The Standup Simulation floor test asks you to explain your code on camera. What does struggling with this test specifically reveal?",opts:["That you need better presentation skills","That your code has a bug","The exact gaps in your comprehension: where you cannot explain, you do not understand","That Claude Code produced code that is too complex"],correct:2,explanation:"Struggling with verbal explanation maps directly to comprehension gaps. Where you reach for 'Claude suggested this' or 'I'm not sure but it works,' those are the exact topics your learning should focus on."},
-  {q:"Why does this module describe the team developer bar as 'achievable' despite seeming demanding?",opts:["Because Claude Code does most of the work for you","Because reading, verifying, and debugging has a lower threshold than inventing entire systems from scratch","Because teams have low expectations for developers who use AI tools","Because the skills described are only needed for senior roles"],correct:1,explanation:"Understanding code you review is a lower threshold than inventing novel systems. The bar is genuine, but it is achievable through deliberate reading practice, not mastery of every framework and algorithm."},
-  {q:"Which scenario best illustrates the problem this course is solving?",opts:["A developer who writes slow but correct code and wants to be faster","A developer who ships features quickly with Claude Code but cannot explain, review, or debug that code on a team","A developer who understands code well but wants to learn AI tools","A developer who uses Claude Code and also understands everything it produces"],correct:1,explanation:"The gap this course closes is between shipping speed (which Claude enables) and team-required comprehension (reading, explaining, debugging). Both must coexist in a professional context."}
+  {q:"The module says its title, 'Working on a Team,' is 'a small lie.' What does it actually argue the module is about?",opts:["The communication skills needed to succeed in a workplace","A shift in standard from 'does it run' to 'can someone else pick it up and build on it'","The specific tools and rituals teams use to coordinate work","Why solo developers should join a team as soon as possible"],correct:1,explanation:"The module reframes team practices as the most visible instance of a universal standard: handoff. The bar shifts from code that works for you right now to code a stranger can trust and extend without you present. That standard applies with or without a team, which is why the title is a small lie."},
+  {q:"What is the difference between 'done-for-me' and 'done-for-handoff' code?",opts:["Done-for-me code has bugs; done-for-handoff code has been tested","Done-for-me works for you now with the reasoning in your head; done-for-handoff puts the reasoning on the page so a stranger can trust and change it","Done-for-me is written by hand; done-for-handoff is generated by AI","Done-for-me is for prototypes; done-for-handoff is for production only"],correct:1,explanation:"Both can run correctly. The difference is where the supporting context lives. Done-for-me leans on what you happen to remember; done-for-handoff externalizes the reasoning so someone without access to your head can understand, trust, and safely modify it."},
+  {q:"Why does the module call the 'propping' in done-for-me code invisible?",opts:["The code hides its dependencies in external files","You supply the missing context from your own memory without noticing you're doing it","The bugs only appear under production load","AI-generated code deliberately obscures its own logic"],correct:1,explanation:"When you understand a piece of code, you explain it to yourself automatically, so it looks self-explanatory. You can't see the context you're adding, the way you can't see your own blind spot. The prop only becomes visible when it's removed: by time, a reviewer, or a fresh Claude Code session."},
+  {q:"The module argues the teamless learner should care about handoff discipline 'most.' What is the core reason?",opts:["Solo developers write more code and therefore more bugs","You hand off to your future self most often, and you're least equipped to do it well because you trust a past self who left you nothing","Employers only hire developers who have worked on teams","Working alone makes it impossible to catch your own mistakes"],correct:1,explanation:"A teammate is a fresh mind that knows to ask. Future-you arrives believing the memory survived, and it didn't, so you get false familiarity instead of a stranger's healthy skepticism. That makes the self-handoff the hardest target, and the teamless learner faces it constantly."},
+  {q:"How does the module connect handoff discipline to something you learned in Module 1.2?",opts:["Non-determinism means handoffs can never be fully reliable","Because Claude Code has no memory across sessions, code clear enough for a stranger is also clear enough for your next session","The context window limits how much code you can hand off at once","The training cutoff means handoff documentation goes stale quickly"],correct:1,explanation:"Module 1.2 established that Claude Code starts each session blind, knowing only what's written down. So writing clearly for a hypothetical stranger is the same act as writing clearly for your next session. Handoff discipline is what makes collaboration with your own tool work across time, an immediate payoff the solo learner feels this week."},
+  {q:"The module describes a pull request as two things at once. What are they?",opts:["A code change and a record of who approved it","A set of code changes and an argument that those changes are safe to accept","A feature branch and a merge into the main codebase","A diff and an automated test report"],correct:1,explanation:"New developers focus on the code and ignore the argument. The argument, the case that the change is safe and correct, is where handoff actually lives, because it's what lets someone accept the change without the author present."},
+  {q:"According to the module, which of the three PR questions is the single most valuable sentence in a handoff, and the one done-for-me code never contains?",opts:["What changed, in plain language","Why the change was made this way, with its tradeoff","How to verify the change works","Who reviewed the change and when"],correct:1,explanation:"The 'why this way' sentence captures the reasoning that otherwise never leaves the author's head, and it's the direct answer to 1.1's 'why did you structure it this way?' review question. Done-for-me code omits it precisely because the reasoning stayed internal."},
+  {q:"What does the research on pull request size actually show, according to the module?",opts:["Pull requests should always be under exactly 200 lines, with no exceptions","Review quality is strongest around 200 to 400 lines of changed code and drops off sharply beyond that","Larger pull requests get more thorough reviews because reviewers spend more time","Pull request size has no measurable effect on how many bugs are caught"],correct:1,explanation:"Industry research, including a well-known SmartBear study at Cisco, found defect detection peaks roughly in the 200 to 400 line range and falls off past it; Google targets even smaller. Beyond about 400 lines, reviewers skim rather than review, and oversized changes often return with no substantive comments at all."},
+  {q:"Why does the module say line count is 'an imperfect proxy' for the right PR size?",opts:["Different programming languages count lines differently","What matters is cognitive size, how much a reviewer must think about; a mechanical 400-line rename reviews in minutes while a subtle 30-line change may not","Modern tools can review any size of change automatically","Line counts can be inflated by comments and whitespace"],correct:1,explanation:"The real target is how much a reviewer has to actually reason about. Lines are a rough, easy-to-see stand-in for that. A uniform mechanical change can be large yet trivial to review; a small subtle change can demand deep attention. Aim small, and when size is unavoidable, make the change mechanical and uniform."},
+  {q:"The module connects PR size discipline to AI-assisted work specifically. What is the connection?",opts:["AI tools automatically split large changes into smaller pull requests","The tool can generate an enormous change in seconds, faster than any human can review it, so keeping changes small keeps them handoff-able","AI-generated code is always too small to need review","Reviewers trust AI-generated changes more, so they can be larger"],correct:1,explanation:"AI assistance makes it trivially easy to produce a huge change instantly, far faster than a human can genuinely review. Keeping changes small is partly the discipline of not letting the tool's generation speed outrun your ability to hand off what it produced in a reviewable form."},
+  {q:"The module distinguishes a BLOCKING review comment from a SUGGESTION or NIT. Why does it say this distinction matters?",opts:["Blocking comments are written by senior reviewers and suggestions by junior ones","So you don't treat a preference as a mandate or a mandate as a preference","Suggestions can be ignored, so they're not worth reading","Blocking comments indicate the reviewer dislikes the author's approach"],correct:1,explanation:"A BLOCKING comment must be resolved before the change is accepted; a SUGGESTION or NIT is optional. Telling them apart is how you address what's actually broken without getting paralyzed by stylistic preferences, and without dismissing a real problem as mere opinion."},
+  {q:"What 'private review' does the module say a solo learner can run with no reviewer present?",opts:["Running an automated linter over the code before committing","Reading your own code as if a stranger wrote it and asking the three PR questions out loud","Asking Claude Code to approve the change before merging","Waiting three months and re-reading the code with fresh eyes"],correct:1,explanation:"Before calling anything done, you read it as a stranger and ask what it does, why it's shaped that way, and how to verify it. The gap between what you can answer and what you can't is your own review, and it catches a surprising amount before anyone else is involved. (Waiting three months would work but isn't a practical workflow.)"}
 ],
 p2m1:[
   {q:"What is the key difference between var, let, and const in JavaScript?",opts:["var is for numbers, let for strings, const for objects","var is function-scoped; let and const are block-scoped; const cannot be reassigned","const values can never change even within objects; let and var can","They are interchangeable in modern JavaScript"],correct:1,explanation:"var is function-scoped (legacy), let is block-scoped and reassignable, const is block-scoped and cannot be reassigned. Understanding this helps you catch when Claude changes scoping without reason."},
@@ -2808,6 +2890,20 @@ function showModule(id) {
       mountPredictionBox(document.getElementById('pred-ft2-p3-mount'), {
         id: 'ft2-p3',
         prompt: 'Your prediction:'
+      });
+    }, 150);
+  }
+  if (id === 'p1m3') {
+    setTimeout(function() {
+      mountPredictionBox(document.getElementById('pred-ft3-pr-mount'), {
+        id: 'ft3-pr',
+        prompt: 'Your handoff argument (what / why / how to verify):',
+        minHeightRem: 9
+      });
+      mountPredictionBox(document.getElementById('pred-ft3-gaps-mount'), {
+        id: 'ft3-gaps',
+        prompt: "What a stranger couldn't tell from this code alone:",
+        minHeightRem: 7
       });
     }, 150);
   }
