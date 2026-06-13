@@ -24,6 +24,10 @@ All options within roughly 25% of each other's character length. Distractors are
 
 Floor-test steps that ask the learner to predict, write down, or answer in a sentence get a `mountPredictionBox(containerEl, config)` instance with a namespaced `adf_pred_{id}` storage key. Never instruct a learner to write something down without giving them a place to write it. IDs follow the pattern `ft{module}-{part}` (e.g., `ft2-p1a`). Mount points are `<div id="pred-{id}-mount"></div>` placed immediately after the instruction. Course reset clears all `adf_pred_*` keys.
 
+## Captured response pools
+
+Real Claude outputs for fixed floor-test prompts are stored as `<script type="text/plain" data-pool="{poolId}" data-idx="{n}">` tags at the end of the HTML file, grouped under a `<!-- CAPTURED RESPONSE POOLS -->` comment. To add a captured run: copy a tag, bump `data-idx`, paste the raw response between the tags. No escaping needed; the only string a response may not contain is `</script>`. Never present pools as live generation; keep all three framing-header honesty lines intact (`rpool-header` div: captured-not-live statement, capturedNote with date, personalization caveat). Pool config lives in the `RESPONSE_POOLS` JS const. Mounting: `mountResponsePool(el, poolId)` inside the module's `showModule` setTimeout block.
+
 ## Spec-driven commits
 
 When a spec defines multiple commits, produce exactly those commits; never combine spec steps into a single commit.
