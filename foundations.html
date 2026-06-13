@@ -2489,8 +2489,8 @@ function mountPredictionBox(containerEl, config) {
 
 // ── RESPONSE POOLS ──
 var RESPONSE_POOLS = {
-  'ft2-motivational': {mode:'compare', capturedNote:'Real Claude outputs, captured June 2026', prompt:'Write a JavaScript function that returns a motivational message for a developer, choosing from five messages you invent. Show the function and one example of its output.'},
-  'ft3-validate':     {mode:'single',  capturedNote:'Real Claude outputs, captured June 2026', prompt:'Write a JavaScript function called validatePassword that checks whether a password meets these rules: at least 8 characters, contains a number, contains an uppercase letter. It should return an object saying whether the password passed and, if not, which rules it failed. Include three example calls showing different outcomes.'}
+  'ft2-motivational': {mode:'compare', capturedNote:'Real Claude outputs, captured June 2026 (Claude Opus 4.8, High)', prompt:'Write a JavaScript function that returns a motivational message for a developer, choosing from five messages you invent. Show the function and one example of its output.'},
+  'ft3-validate':     {mode:'single',  capturedNote:'Real Claude outputs, captured June 2026 (Claude Opus 4.8, High)', prompt:'Write a JavaScript function called validatePassword that checks whether a password meets these rules: at least 8 characters, contains a number, contains an uppercase letter. It should return an object saying whether the password passed and, if not, which rules it failed. Include three example calls showing different outcomes.'}
 };
 var _rpoolLastDraw = {};
 
@@ -3368,100 +3368,788 @@ initPanel();
 
 </script>
 <!-- CAPTURED RESPONSE POOLS: replace PLACEHOLDER content with real captured Claude runs; copy a tag and bump data-idx to add more. Do not present as live generation. -->
-<script type="text/plain" data-pool="ft2-motivational" data-idx="0">
-PLACEHOLDER — replace with a real captured Claude response for the motivational message prompt.
+<!-- ============================================================
+     CAPTURED RESPONSE POOL: ft2-motivational
+     Real Claude outputs, captured June 2026, model: Claude Opus 4.8 (High),
+     style: Default / baseline (no custom instructions).
+     12 runs of the Module 1.2 Part 1 motivational-message prompt.
+     To add more: copy a <script> block, bump data-idx, paste a raw run.
+     Do NOT present as live generation.
+     ============================================================ -->
 
-One example of what Claude might produce.
+<script type="text/plain" data-pool="ft2-motivational" data-idx="0">
+Here's a simple function that picks a random motivational message from five options:
+
+```javascript
+function getDeveloperMotivation() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That code you're stuck on? You're one focused hour away from the breakthrough.",
+    "Clean code isn't written, it's rewritten. You're allowed to improve it.",
+    "The best developers aren't the ones who never get stuck, they're the ones who keep going.",
+    "Ship it. Done and shipped beats perfect and imaginary every time."
+  ];
+
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+}
+
+// Example usage
+console.log(getDeveloperMotivation());
+```
+
+Example output:
+
+```
+That code you're stuck on? You're one focused hour away from the breakthrough.
+```
+
+The function builds an array of five messages, generates a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that position. Each call gives you a fresh pick, so the output above is just one of the five possibilities.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="1">
+Here's a simple function that picks one of five messages at random:
 
 ```javascript
 function getMotivationalMessage() {
   const messages = [
-    "Every bug you fix makes you a better developer.",
-    "Ship it, then improve it.",
-    "Reading code is a skill. You are building it.",
-    "Done is better than perfect, and understood is better than done.",
-    "The best code is code you can explain to someone else."
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That function you're stuck on? You're one good night's sleep away from solving it.",
+    "Clean code isn't written, it's rewritten—and you're already on draft two.",
+    "The best developers aren't the ones who never get stuck; they're the ones who keep going.",
+    "Ship it imperfect today, refactor it brilliant tomorrow. Momentum beats perfection."
   ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Usage
+console.log(getMotivationalMessage());
+```
+
+Example output (one possible run):
+
+```
+Clean code isn't written, it's rewritten—and you're already on draft two.
+```
+
+Since the message is chosen with `Math.random()`, you'll get a different one of the five on most runs. If you'd like it to avoid repeating the previous message, or to cycle through all five in order before reshuffling, that's a small tweak I can add.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="2">
+Here's a simple function that picks a random message from five options:
+
+```javascript
+function getDevMotivation() {
+  const messages = [
+    "Every bug you squash makes you sharper than you were yesterday.",
+    "That function you're stuck on? You're one good break away from cracking it.",
+    "Clean code is a love letter to the developer who maintains it next — often future you.",
+    "You've solved harder problems than this. Trust the version of you that figured those out.",
+    "Ship it imperfect, then make it better. Momentum beats perfection every time."
+  ];
+
   return messages[Math.floor(Math.random() * messages.length)];
+}
+
+console.log(getDevMotivation());
+```
+
+Example output:
+
+```
+That function you're stuck on? You're one good break away from cracking it.
+```
+
+The function uses `Math.random()` to generate a number between 0 and 1, scales it to the array length, and floors it to get a valid index. Each call returns one of the five messages at random.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="3">
+Here's a simple function that picks one of five messages at random:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That feature felt impossible an hour ago. Now look at it running.",
+    "Clean code isn't written, it's rewritten. You're allowed a messy first draft.",
+    "The hard problem you're stuck on is exactly the one worth solving.",
+    "Ship it, learn from it, improve it. Progress beats perfection."
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Example usage
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+That feature felt impossible an hour ago. Now look at it running.
+```
+
+The actual line printed will vary each run since the index is chosen randomly. If you'd rather have it cycle through predictably or accept a "mood" parameter (e.g., calm vs. high-energy messages), that's an easy tweak.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="4">
+Here's a simple function that picks one of five messages at random:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "You don't have to know everything—you just have to know how to find out. And you do.",
+    "That feature felt impossible right up until the moment you shipped it.",
+    "Clean code is a love letter to the developer who maintains it next. Today, that's a gift you're giving.",
+    "Stuck is just the feeling right before a breakthrough. Keep going."
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Example usage
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+That feature felt impossible right up until the moment you shipped it.
+```
+
+Since it uses `Math.random()`, each call may return a different message. If you'd like it to never repeat until all five have been shown, or to pick based on the day of the week, I can adjust it.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="5">
+Here's a simple function that picks a random message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That tricky function will make sense once you step away and come back with fresh eyes.",
+    "Clean code is a gift to your future self—and you're getting better at giving it.",
+    "You don't have to know everything; you just have to know how to figure things out. And you do.",
+    "Shipping beats perfect. Get it working, then make it shine."
+  ];
+
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
 }
 
 console.log(getMotivationalMessage());
 ```
 
-This placeholder content should be replaced with actual Claude output before publishing.
-</script>
-<script type="text/plain" data-pool="ft2-motivational" data-idx="1">
-PLACEHOLDER — replace with a second real captured Claude response for the motivational message prompt.
+Example output:
 
-A second variation showing non-deterministic output.
-
-```javascript
-function motivate() {
-  const quotes = [
-    "Debug with curiosity, not frustration.",
-    "Every senior engineer was once confused by this exact thing.",
-    "Readable code is a gift to your future self.",
-    "Start small, verify early, ship often.",
-    "The codebase gets better one commit at a time."
-  ];
-  return quotes[Math.floor(Math.random() * quotes.length)];
-}
-
-console.log(motivate());
+```
+That tricky function will make sense once you step away and come back with fresh eyes.
 ```
 
-This placeholder content should be replaced with actual Claude output before publishing.
+The function builds an array of five messages, generates a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that position. Each call gives you a randomly selected one.
 </script>
-<script type="text/plain" data-pool="ft3-validate" data-idx="0">
-PLACEHOLDER — replace with a real captured Claude response for the validatePassword prompt.
 
-One example of what Claude might produce.
+<script type="text/plain" data-pool="ft2-motivational" data-idx="6">
+Here's a simple function that picks a random message from five I've written:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That function you're stuck on? You're one good idea away from cracking it.",
+    "Clean code isn't written, it's rewritten — and you're doing the rewriting.",
+    "The hard problems are the ones worth solving. Lucky you, here's one now.",
+    "Ship it. You can always refactor, but you can't improve what doesn't exist."
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+The hard problems are the ones worth solving. Lucky you, here's one now.
+```
+
+The actual message will vary each run since `Math.random()` selects a different index. If you'd like, I can extend this to avoid repeating the same message twice in a row, or accept the developer's name to personalize it.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="7">
+Here's a simple function that picks a random motivational message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper developer.",
+    "That tricky feature? You're closer to solving it than you think.",
+    "Clean code today saves you a headache tomorrow. Keep going.",
+    "Even the best engineers Google the basics. You're doing great.",
+    "Ship it, learn from it, improve it. Progress beats perfection."
+  ];
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+}
+
+// Example usage
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+Clean code today saves you a headache tomorrow. Keep going.
+```
+
+The exact message will vary each time you call it, since `Math.random()` picks a different index on each run. Want me to add anything, like avoiding repeats on consecutive calls or letting the caller pass in their own message list?
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="8">
+Here's a function that picks a random motivational message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "Your code doesn't have to be perfect today—it just has to be better than the blank file you started with.",
+    "Stuck for an hour? That's not wasted time; that's your brain building the intuition you'll use for years.",
+    "The best developers aren't the ones who never get errors—they're the ones who never stop debugging.",
+    "Ship it, learn from it, improve it. Progress beats perfection every single time."
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+Stuck for an hour? That's not wasted time; that's your brain building the intuition you'll use for years.
+```
+
+Since it picks randomly, each call can return a different message. If you'd prefer it to cycle through them in order, or take a developer's name to personalize the message, that's an easy tweak.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="9">
+Here's a function that picks a random motivational message from a set of five:
+
+```javascript
+function getDevMotivation() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That code you're stuck on? Future-you will read it and think 'I actually figured this out.'",
+    "Shipping imperfect code beats perfecting code that never ships. Keep moving.",
+    "You don't need to know everything—you just need to know how to find the next answer.",
+    "The hard problem you're avoiding is the exact one that'll level you up. Open the file."
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Example usage
+console.log(getDevMotivation());
+```
+
+Example output:
+
+```
+That code you're stuck on? Future-you will read it and think 'I actually figured this out.'
+```
+
+Since the message is chosen randomly with `Math.random()`, each call may return a different one of the five. If you'd like it to avoid repeating the previous message, or to accept a developer's name to personalize the output, that's an easy tweak.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="10">
+Here's a simple function that picks a random message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer.",
+    "Your future self will thank you for writing that comment.",
+    "Clean code today saves a debugging marathon tomorrow.",
+    "You don't have to know everything — you just have to know how to find it.",
+    "That feature you're stuck on? You're closer than you think.",
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+Clean code today saves a debugging marathon tomorrow.
+```
+
+The function builds an array of five messages, generates a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that position. Each call gives you a fresh pick.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="11">
+Here's a simple function that picks a random motivational message from a set of five:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper developer.",
+    "Your code doesn't have to be perfect today—it just has to be better than yesterday.",
+    "The hardest problems make the most satisfying solutions. Keep going.",
+    "You've debugged worse than this. Trust your past self.",
+    "Great software is built one small commit at a time.",
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+The hardest problems make the most satisfying solutions. Keep going.
+```
+
+The function builds an array of five messages, picks a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that index. Each call gives you one of the five at random.
+</script>
+<!-- ============================================================
+     CAPTURED RESPONSE POOL: ft3-validate
+     Real Claude outputs, captured June 2026, model: Claude Opus 4.8 (High),
+     style: Default / baseline (no custom instructions).
+     9 runs of the Module 1.3 validatePassword prompt.
+     Note: idx 4 contains a real self-correction (the model wrote a wrong
+     comment, then corrected it) — preserved intentionally as a specimen of
+     the model erring and self-correcting. Do not "clean" it.
+     To add more: copy a <script> block, bump data-idx, paste a raw run.
+     Do NOT present as live generation.
+     ============================================================ -->
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="0">
+This is a small, self-contained function, so I'll give it to you inline rather than as a file.
 
 ```javascript
 function validatePassword(password) {
-  const result = { passed: true, failures: [] };
+  const failed = [];
+
   if (password.length < 8) {
-    result.passed = false;
-    result.failures.push("at least 8 characters");
+    failed.push("Must be at least 8 characters long");
   }
-  if (!/\d/.test(password)) {
-    result.passed = false;
-    result.failures.push("contains a number");
+  if (!/[0-9]/.test(password)) {
+    failed.push("Must contain a number");
   }
   if (!/[A-Z]/.test(password)) {
-    result.passed = false;
-    result.failures.push("contains an uppercase letter");
+    failed.push("Must contain an uppercase letter");
   }
-  return result;
+
+  return {
+    passed: failed.length === 0,
+    failedRules: failed,
+  };
 }
 
-console.log(validatePassword("hello"));
+// Example 1: passes all rules
 console.log(validatePassword("Hello123"));
-console.log(validatePassword("hello123"));
+// { passed: true, failedRules: [] }
+
+// Example 2: too short and no number
+console.log(validatePassword("Abc"));
+// { passed: false, failedRules: [
+//     "Must be at least 8 characters long",
+//     "Must contain a number"
+//   ] }
+
+// Example 3: long enough with a number, but no uppercase
+console.log(validatePassword("lowercase99"));
+// { passed: false, failedRules: ["Must contain an uppercase letter"] }
 ```
 
-This placeholder content should be replaced with actual Claude output before publishing.
-</script>
-<script type="text/plain" data-pool="ft3-validate" data-idx="1">
-PLACEHOLDER — replace with a second real captured Claude response for the validatePassword prompt.
+A few notes on the design:
 
-A second variation showing how Claude structures this problem.
+The function returns `passed` (a boolean) plus `failedRules` (an array of human-readable strings), so a caller can both branch on success and show the user exactly what to fix. When the password is valid, `failedRules` is empty.
+
+Each check is independent, so a password can fail multiple rules at once, as in example 2. If you'd rather have machine-readable keys than display strings (e.g. for translating messages or styling individual requirements in a UI), you could push codes like `"length"`, `"number"`, `"uppercase"` instead, or return an object mapping each rule name to a boolean. Let me know if you'd like that variant.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="1">
+Here's a `validatePassword` function that checks all three rules and reports which ones failed:
 
 ```javascript
-function validatePassword(pw) {
-  const issues = [];
-  if (pw.length < 8) issues.push("at least 8 characters");
-  if (!/[0-9]/.test(pw)) issues.push("contains a number");
-  if (!/[A-Z]/.test(pw)) issues.push("contains an uppercase letter");
-  return { passed: issues.length === 0, failed: issues };
+function validatePassword(password) {
+  const failedRules = [];
+
+  if (password.length < 8) {
+    failedRules.push("Must be at least 8 characters");
+  }
+  if (!/[0-9]/.test(password)) {
+    failedRules.push("Must contain a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failedRules.push("Must contain an uppercase letter");
+  }
+
+  return {
+    passed: failedRules.length === 0,
+    failedRules: failedRules,
+  };
 }
 
-console.log(validatePassword("abc"));
-console.log(validatePassword("Secure1Password"));
-console.log(validatePassword("secure1"));
+// Example 1: passes all rules
+console.log(validatePassword("Hello123"));
+// { passed: true, failedRules: [] }
+
+// Example 2: too short and no number
+console.log(validatePassword("Hey"));
+// { passed: false, failedRules: ["Must be at least 8 characters", "Must contain a number"] }
+
+// Example 3: long enough with a number, but no uppercase
+console.log(validatePassword("password99"));
+// { passed: false, failedRules: ["Must contain an uppercase letter"] }
 ```
 
-This placeholder content should be replaced with actual Claude output before publishing.
+A few notes on how it works:
+
+The function collects failures in an array as it goes, then `passed` is simply whether that array ended up empty. This keeps the logic flat and easy to extend. The regex tests use character classes: `[0-9]` for any digit, `[A-Z]` for any uppercase letter, and `.test()` returns a boolean.
+
+If you'd rather have the failures keyed by rule name (e.g. `{ length: false, number: true, uppercase: true }`) instead of a list of messages, that's an easy swap. Let me know if you want that shape or any additional rules like special characters.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="2">
+Here's a `validatePassword` function that checks all three rules and reports which ones failed:
+
+```javascript
+function validatePassword(password) {
+  const failures = [];
+
+  if (password.length < 8) {
+    failures.push("Must be at least 8 characters long");
+  }
+  if (!/[0-9]/.test(password)) {
+    failures.push("Must contain a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failures.push("Must contain an uppercase letter");
+  }
+
+  return {
+    passed: failures.length === 0,
+    failedRules: failures,
+  };
+}
+
+// Example 1: passes all rules
+console.log(validatePassword("Hello123"));
+// { passed: true, failedRules: [] }
+
+// Example 2: too short and missing a number
+console.log(validatePassword("Hey"));
+// { passed: false, failedRules: [
+//     "Must be at least 8 characters long",
+//     "Must contain a number"
+//   ] }
+
+// Example 3: long enough with a number, but no uppercase letter
+console.log(validatePassword("lowercase99"));
+// { passed: false, failedRules: ["Must contain an uppercase letter"] }
+```
+
+A few notes on how it works:
+
+The function collects every failed rule into a `failures` array rather than stopping at the first problem, so the caller gets a complete picture of what's wrong in a single pass. It returns an object with `passed` (a boolean) and `failedRules` (the list of human-readable messages, empty when the password is valid).
+
+The regex tests are simple character-class checks: `/[0-9]/` for any digit, `/[A-Z]/` for any uppercase letter. If you'd prefer machine-readable codes instead of sentences (e.g. `"MIN_LENGTH"`, `"NO_NUMBER"`, `"NO_UPPERCASE"`), that's an easy swap; just let me know.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="3">
+Here's a `validatePassword` function that checks all three rules and reports which ones failed:
+
+```javascript
+function validatePassword(password) {
+  const failed = [];
+
+  if (password.length < 8) {
+    failed.push("at least 8 characters");
+  }
+  if (!/[0-9]/.test(password)) {
+    failed.push("contains a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failed.push("contains an uppercase letter");
+  }
+
+  return {
+    passed: failed.length === 0,
+    failedRules: failed,
+  };
+}
+
+// Example 1: passes all rules
+console.log(validatePassword("Hello123"));
+// { passed: true, failedRules: [] }
+
+// Example 2: too short and no uppercase
+console.log(validatePassword("ab1"));
+// { passed: false, failedRules: [ 'at least 8 characters', 'contains an uppercase letter' ] }
+
+// Example 3: long enough and has uppercase, but no number
+console.log(validatePassword("Password"));
+// { passed: false, failedRules: [ 'contains a number' ] }
+```
+
+How it works: each rule is checked independently and any failures get collected into the `failedRules` array. The `passed` flag is simply `true` when that array is empty. The regexes `/[0-9]/` and `/[A-Z]/` test for the presence of at least one digit and one uppercase letter respectively.
+
+If you'd rather have the result keyed by rule name (e.g. `{ length: true, number: false, uppercase: true }`) instead of a list of failure messages, that's an easy swap to make.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="4">
+Here's a clean implementation:
+
+```javascript
+function validatePassword(password) {
+  const failedRules = [];
+
+  if (password.length < 8) {
+    failedRules.push("at least 8 characters");
+  }
+  if (!/[0-9]/.test(password)) {
+    failedRules.push("contains a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failedRules.push("contains an uppercase letter");
+  }
+
+  return {
+    passed: failedRules.length === 0,
+    failedRules: failedRules,
+  };
+}
+```
+
+The function builds up a list of any rules the password fails, then reports `passed: true` only when that list is empty.
+
+Three example calls showing different outcomes:
+
+```javascript
+console.log(validatePassword("Secur3Pass"));
+// { passed: true, failedRules: [] }
+
+console.log(validatePassword("short1A"));
+// { passed: false, failedRules: ["at least 8 characters"] }
+
+console.log(validatePassword("alllowercase"));
+// { passed: false, failedRules: ["at least 8 characters" is NOT failed here... ] }
+```
+
+Let me correct that third comment — `"alllowercase"` is 12 characters, so it passes the length rule but fails the other two:
+
+```javascript
+console.log(validatePassword("alllowercase"));
+// { passed: false, failedRules: ["contains a number", "contains an uppercase letter"] }
+```
+
+A couple of notes in case they're useful: the `failedRules` strings are human-readable, which is handy for displaying messages directly, but if you'd rather match on them in code you could use short keys like `"length"`, `"number"`, `"uppercase"` instead. And `/[A-Z]/` only matches ASCII uppercase letters, so accented capitals like `É` wouldn't count — let me know if you need Unicode-aware matching.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="5">
+Here's a clean implementation:
+
+```javascript
+function validatePassword(password) {
+  const failedRules = [];
+
+  if (password.length < 8) {
+    failedRules.push("Must be at least 8 characters");
+  }
+  if (!/[0-9]/.test(password)) {
+    failedRules.push("Must contain a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failedRules.push("Must contain an uppercase letter");
+  }
+
+  return {
+    passed: failedRules.length === 0,
+    failedRules,
+  };
+}
+```
+
+Three example calls showing different outcomes:
+
+```javascript
+// Passes all rules
+console.log(validatePassword("Hello123"));
+// { passed: true, failedRules: [] }
+
+// Fails one rule (no number)
+console.log(validatePassword("Password"));
+// { passed: false, failedRules: ["Must contain a number"] }
+
+// Fails multiple rules (too short, no number, no uppercase)
+console.log(validatePassword("abc"));
+// { passed: false, failedRules: [
+//     "Must be at least 8 characters",
+//     "Must contain a number",
+//     "Must contain an uppercase letter"
+//   ] }
+```
+
+A few notes on the design:
+
+The function collects every failed rule rather than stopping at the first one, so the caller can show the user all the problems at once instead of making them fix issues one at a time. The `passed` flag is just derived from whether the `failedRules` array is empty, which keeps the two pieces of the result consistent.
+
+The regex checks use `.test()`, which returns a boolean directly. `/[0-9]/` looks for any digit anywhere in the string, and `/[A-Z]/` looks for any uppercase letter—neither is anchored, so position doesn't matter.
+
+If you want to extend this, a common next step is adding a special-character rule like `/[^A-Za-z0-9]/.test(password)`. Want me to add that or adjust the messages?
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="6">
+Here's a clean implementation:
+
+```javascript
+function validatePassword(password) {
+  const failed = [];
+
+  if (password.length < 8) {
+    failed.push("at least 8 characters");
+  }
+  if (!/[0-9]/.test(password)) {
+    failed.push("contains a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failed.push("contains an uppercase letter");
+  }
+
+  return {
+    passed: failed.length === 0,
+    failedRules: failed,
+  };
+}
+```
+
+The function collects every failed rule rather than stopping at the first one, so the caller sees all the problems at once. `failedRules` is just an empty array when the password passes.
+
+Three example calls with different outcomes:
+
+```javascript
+console.log(validatePassword("Abcd1234"));
+// { passed: true, failedRules: [] }
+
+console.log(validatePassword("abcd1234"));
+// { passed: false, failedRules: [ 'contains an uppercase letter' ] }
+
+console.log(validatePassword("aB1"));
+// { passed: false, failedRules: [ 'at least 8 characters' ] }
+```
+
+The first passes all three rules. The second is long enough and has a number but no uppercase letter. The third has both a number and an uppercase letter but is too short.
+
+A couple of things worth noting: `password.length` assumes a string is always passed in, so if you want to guard against `null` or non-string input you could add a check at the top. Also, the regexes here only count ASCII digits and `A`–`Z`; if you need to support Unicode letters or digits, you'd swap in `\p{Lu}` and `\p{Nd}` with the `u` flag.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="7">
+Here's a `validatePassword` function that checks all three rules and reports which ones failed:
+
+```javascript
+function validatePassword(password) {
+  const failed = [];
+
+  if (password.length < 8) {
+    failed.push("at least 8 characters");
+  }
+  if (!/[0-9]/.test(password)) {
+    failed.push("contains a number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failed.push("contains an uppercase letter");
+  }
+
+  return {
+    passed: failed.length === 0,
+    failedRules: failed,
+  };
+}
+
+// Example 1: passes all rules
+console.log(validatePassword("Hello123"));
+// { passed: true, failedRules: [] }
+
+// Example 2: too short and no number
+console.log(validatePassword("Hey"));
+// { passed: false, failedRules: ["at least 8 characters", "contains a number"] }
+
+// Example 3: long enough with a number, but no uppercase
+console.log(validatePassword("password99"));
+// { passed: false, failedRules: ["contains an uppercase letter"] }
+```
+
+How it works: each rule is checked independently, and any failures get collected into the `failedRules` array. The `passed` flag is simply whether that array is empty, so a password only passes when it satisfies every rule.
+
+A couple of things worth noting:
+
+* `/[0-9]/.test(...)` checks for at least one digit anywhere in the string; `/[A-Z]/` does the same for uppercase letters. The `.test()` method returns a boolean, which is handy here.
+* The `failedRules` strings are human-readable, so you could display them directly to a user. If you'd rather have machine-friendly codes (like `"length"`, `"number"`, `"uppercase"`) for handling each case in code, that's an easy swap—just let me know.
+</script>
+
+<script type="text/plain" data-pool="ft3-validate" data-idx="8">
+This is a plain utility function — no UI involved — so it's a short conversational answer rather than a file.
+
+```javascript
+function validatePassword(password) {
+  const failedRules = [];
+
+  if (password.length < 8) {
+    failedRules.push("Must be at least 8 characters long");
+  }
+  if (!/[0-9]/.test(password)) {
+    failedRules.push("Must contain at least one number");
+  }
+  if (!/[A-Z]/.test(password)) {
+    failedRules.push("Must contain at least one uppercase letter");
+  }
+
+  return {
+    passed: failedRules.length === 0,
+    failedRules: failedRules,
+  };
+}
+```
+
+Three example calls showing different outcomes:
+
+```javascript
+// Passes all rules
+console.log(validatePassword("Hello123"));
+// { passed: true, failedRules: [] }
+
+// Fails one rule (no uppercase letter)
+console.log(validatePassword("hello123"));
+// { passed: false, failedRules: ["Must contain at least one uppercase letter"] }
+
+// Fails multiple rules (too short, no number, no uppercase)
+console.log(validatePassword("abc"));
+// {
+//   passed: false,
+//   failedRules: [
+//     "Must be at least 8 characters long",
+//     "Must contain at least one number",
+//     "Must contain at least one uppercase letter"
+//   ]
+// }
+```
+
+A couple of notes on choices I made: `failedRules` is always an array (empty when the password passes), which keeps the return shape consistent and easy to check. The regex `/[A-Z]/` matches ASCII uppercase only — if you need to support accented or non-Latin uppercase characters, you'd want `/\p{Lu}/u` instead. Want me to add a strength score or special-character requirement on top of this?
 </script>
 </body>
 </html>
