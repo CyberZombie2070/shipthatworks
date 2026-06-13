@@ -2826,7 +2826,14 @@ function goHome() {
 
 function scrollTop() {
   var main = document.getElementById('main');
-  if (main) main.scrollTop = 0;
+  var doReset = function() {
+    if (main) main.scrollTop = 0;
+    window.scrollTo(0, 0);
+  };
+  doReset();
+  requestAnimationFrame(function() {
+    requestAnimationFrame(doReset);
+  });
 }
 
 // ── PANEL ──
