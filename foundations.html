@@ -511,7 +511,7 @@ details.reveal[open] .reveal-body{animation:revealFade 180ms ease-out;}
 <script>
 
 const TIME_MAP = {
-  p1m1:'35 min',p1m2:'20 min',p1m3:'22 min',
+  p1m1:'35 min',p1m2:'35 min',p1m3:'22 min',
   p2m1:'28 min',p2m2:'32 min',p2m3:'25 min',p2m4:'24 min',
   p3m1:'28 min',p3m2:'26 min',p3m3:'24 min',
   p4m1:'26 min',p4m2:'30 min',p4m3:'22 min',
@@ -717,43 +717,133 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 `},
 
 {id:'p1m2',phase:1,phaseName:'The Honest Reckoning',num:'1.2',title:'How Claude Code Actually Works (No More Illusions)',navTitle:'How Claude Code Works',
-lead:'Understanding the mechanism removes the magic &mdash; and the magical thinking that gets you into trouble.',
+lead:'Module 1.1 measured the gap between what you ship and what you understand. This module closes the first piece of it, and it has nothing to do with JavaScript.',
 content:`
-<p>Claude Code is a large language model connected to your filesystem and a shell. It has no understanding of your codebase. It has no memory between sessions. It predicts what code should come next based on patterns in its training data and the context you give it. That&apos;s it.</p>
-<h3>The Contractor Mental Model</h3>
-<p>Imagine a supremely skilled contractor who:</p>
+<p>It's about the tool itself.</p>
+<p>Most frustration with Claude Code, and most of the damage people do with it, traces back to a wrong mental model of what it actually is. People treat it like a search engine over their codebase, or a compiler that's also psychic, or a colleague who remembers last Tuesday. It is none of those things. And when your mental model is wrong, your prompts are wrong, your trust is calibrated wrong, and your surprises arrive at the worst possible time.</p>
+<p>By the end of this module you'll know what Claude Code actually is, the four facts about it that explain almost every confusing thing it will ever do, and the loop it runs every time you give it a task. None of this requires a single line of code. All of it will change how you use the tool tomorrow.</p>
+
+<h3>What Claude Code Actually Is</h3>
+<p>Strip the magic away and Claude Code is two components working together:</p>
+<p><strong>A model that reasons.</strong> A large language model, the same family of technology behind the Claude you can chat with in a browser. Its job is to read, understand, plan, and decide.</p>
+<p><strong>Tools that act.</strong> A set of capabilities the model can invoke: read a file, edit a file, search the project, run a command in your terminal, run your tests.</p>
+<p>Claude Code itself is the harness around those two things. It runs in your terminal, feeds the model your instructions and the relevant parts of your project, lets the model call tools, and shows you the results. Anthropic's own documentation describes it exactly this way: models that reason, tools that act, and Claude Code as the agentic harness connecting them.</p>
+<p>Why this matters to you: every strength and every failure of the tool comes from one of those two components or the handoff between them. When the output is wrong, it's almost never random. The model reasoned from missing or stale information, or a tool returned something the model misread, or the plan was fine and a single step went sideways. Once you know the parts, failures stop being mysterious and start being diagnosable. That's the difference, from Module 1.1, between debugging independently and re-prompting in the dark.</p>
+<p>Equally important is what Claude Code is <strong>not</strong>:</p>
 <ul>
-  <li>Has read millions of codebases but has never worked in yours specifically</li>
-  <li>Forgets everything at the end of each session</li>
-  <li>Will do <em>exactly</em> what you say, including things that are wrong</li>
-  <li>Will also helpfully do things you didn&apos;t ask for, because they seem related</li>
-  <li>Cannot know your business rules, your team standards, or your production constraints unless you tell them explicitly</li>
+  <li><strong>Not a database of your code.</strong> It doesn't permanently "know" your project. It looks at what it needs, when it needs it, within limits you'll learn below.</li>
+  <li><strong>Not a search engine with opinions.</strong> It doesn't look up verified answers. It generates them, which is a profoundly different thing.</li>
+  <li><strong>Not a colleague with memory.</strong> By default, each session starts fresh. It does not remember what you did together yesterday unless that knowledge was written down somewhere it reads. (Module 5 covers exactly where to write it down.)</li>
 </ul>
-<div class="callout warning">
-  <div class="callout-label">What this means for you specifically</div>
-  <p>Every time you&apos;ve gotten output you couldn&apos;t evaluate, you were accepting work from a contractor you couldn&apos;t inspect. The work might be perfect. It might have a subtle flaw that only surfaces under a specific condition three months from now. You had no way to know which.</p>
-</div>
-<h3>The Context Window &mdash; Why Sessions Drift</h3>
-<p>Claude Code works within a fixed context window &mdash; a limited amount of text it can hold in working memory at once. In a long session:</p>
+
+<h3>The Model, In Plain Words</h3>
+<p>You don't need the math, but you need one sentence of honesty about what a large language model is:</p>
+<p><strong>It is a system trained on an enormous amount of text and code to predict what text should come next, and it has gotten so good at that prediction that the output is frequently indistinguishable from understanding.</strong></p>
+<p>Frequently. Not always. Everything strange about AI-assisted development lives in the gap between those two words.</p>
+<p>Because the model generates rather than retrieves, four facts follow. These four facts are the load-bearing mental models of this entire course. Every workflow rule you'll learn in later phases exists because of one of them.</p>
+<h4>Fact 1: Its working memory is finite</h4>
+<p>Everything the model "knows" during a task lives in something called the <strong>context window</strong>: a fixed-size working memory measured in tokens (roughly, fragments of words). Your instructions, the files it has read, the output of commands it has run, its own previous responses in the session, all of it has to fit in that window.</p>
+<p>The window is large, but your project is larger. A single substantial source file can run thousands of tokens. A real codebase runs millions. So the model never holds your whole project in mind. It holds a curated slice, and the harness plus the model decide what's in the slice.</p>
+<p>What this explains:</p>
 <ul>
-  <li><strong>Early:</strong> Full fidelity. Every instruction is fresh and weighted.</li>
-  <li><strong>Mid:</strong> Subtle drift. Earlier constraints get less weight.</li>
-  <li><strong>Late:</strong> Real risk. The model may contradict its own earlier output or revert to generic patterns from training.</li>
+  <li>Why the tool sometimes "forgets" something from earlier in a long session. The window filled, and older content got compressed or dropped.</li>
+  <li>Why it can confidently change a function while missing the second place that function is called. The second place wasn't in the slice.</li>
+  <li>Why long, sprawling sessions degrade. The further the session runs, the more the window fills with the model's own earlier output, and the model starts weighting its own recent statements over your original facts. Drift compounds quietly.</li>
 </ul>
-<p>This is why &ldquo;just keep prompting until it works&rdquo; is a dangerous habit. You may be in a degraded session without knowing it, producing output that quietly violates earlier decisions.</p>
-<div class="callout info">
-  <div class="callout-label">Rule</div>
-  <p>One logical unit of work per session. Commit it. Start fresh. Context integrity is more valuable than session momentum.</p>
-</div>
+<p>What you do about it, starting now: keep sessions scoped to one task (this was item 15 on your baseline assessment), and when you notice the model contradicting something established earlier, re-anchor it explicitly: state the original fact again and say this is the truth to work from. You'll formalize both habits in Phase 5.</p>
+<h4>Fact 2: It is non-deterministic</h4>
+<p>Run the same prompt twice and you can get different results. Different wording, different structure, sometimes different conclusions. This is not a malfunction. It is how the technology works.</p>
+<p>The professional consequence is bigger than it sounds: <strong>anything that must be reliable and repeatable needs a deterministic backstop.</strong> A test that passes or fails. A validator that checks the number. A command whose output doesn't depend on mood. You never build a process on "the model will do the same thing it did last time," because it might not.</p>
+<p>This single fact is why the entire discipline you'll learn in this course leans so heavily on tests, checklists, and verification steps. They aren't bureaucracy. They are the deterministic skeleton that makes a non-deterministic tool safe to build with.</p>
+<h4>Fact 3: Its knowledge has a cutoff</h4>
+<p>The model learned about the world up to its training date. It does not automatically know what was released last month. Unless it is given current information, or uses a tool to go fetch it, it will write code against the version of a library it learned, with total confidence, even if that version is years stale.</p>
+<p>The trap inside this fact: outdated output is often <strong>syntactically valid and runs</strong>. Nothing looks wrong. The pattern was correct once. You'll meet this again in the failure-modes module as one of the three ways AI output goes bad, and it's the sneakiest of the three precisely because no error fires.</p>
+<p>What you do about it: when work involves a specific library or framework version, current documentation gets into the session, either by you providing it or by the tool fetching it. "The model probably knows this framework" is a guess, not a verification.</p>
+<h4>Fact 4: Confidence is not correctness</h4>
+<p>Claude Code's output arrives polished. Clean headings, tidy code blocks, assured explanations. From a human colleague, that polish would be a signal: someone careful did this work.</p>
+<p>From a model, it signals nothing. Formatting is the default presentation style. The model produces the same confident polish when it's right and when it's inventing a method that doesn't exist. Module 1.1 showed you how AI tools decouple the signals of competence from competence itself; this is the mechanism up close. The polish is part of the prediction.</p>
+<p>The habit this builds: evaluate the substance and ignore the costume. A beautifully formatted answer gets exactly the same scrutiny as a messy one. The three skills from Module 1.1 (read it, explain it, debug it) are how you scrutinize; the polish is what tries to talk you out of bothering.</p>
+
+<h3>The Loop: How a Task Actually Gets Done</h3>
+<p>When you give Claude Code a task, it doesn't generate one answer and stop. It works through a loop that Anthropic's documentation describes in three phases:</p>
+<p><strong>Gather context.</strong> It searches and reads the parts of your project relevant to the task: the files, the structure, sometimes the docs or the git history.</p>
+<p><strong>Take action.</strong> It makes changes: edits files, creates files, runs commands.</p>
+<p><strong>Verify results.</strong> It checks its own work where it can: runs the tests, runs the build, reads the output, and reacts to what it finds.</p>
+<p>These phases blend and repeat. A simple question might only need context gathering. A bug fix can cycle through all three several times. A bigger task can chain dozens of actions, course-correcting along the way based on what each step revealed. This loop is why Claude Code feels less like autocomplete and more like a junior engineer who goes away and works: it runs your code and reads the output, then adjusts.</p>
+<p>Two things about the loop matter enormously for you.</p>
+<p><strong>First: you are part of it.</strong> You can interrupt at any point, redirect, supply missing context, or stop an approach you don't like. The tool works autonomously but stays responsive. The people who get the best results treat the loop as supervised work, not as a vending machine. Watch what it's doing, especially in the gather-context phase, because that's where the slice of your project gets chosen, and a wrong slice poisons everything downstream.</p>
+<p><strong>Second: every phase can fail, and each fails differently.</strong> Bad context gathering produces confident changes built on a misreading of your project. Bad action produces the wrong edit. Bad verification produces the most dangerous outcome of all: the claim that work is done when it isn't. Hold onto that last one. "Done" coming out of the loop is a claim, not a fact, and a later module is devoted entirely to what you do about that.</p>
+<h4>The permission prompts are your control point</h4>
+<p>While the loop runs, Claude Code asks permission before consequential actions: editing files, running commands. It is genuinely tempting to start approving these reflexively, because most of them are fine and the asking feels like friction.</p>
+<p>Resist that, and here's the reframe that makes it stick: <strong>those prompts are the moments the loop pauses and hands you the accountability you already own.</strong> You learned in Module 1.1 that you own every line you merge. The permission prompt is the cheapest place in the entire workflow to exercise that ownership: a few seconds of "what is it about to do, and does that match what I asked?" Approving without reading is choosing to ship the gap between producing and understanding, one click at a time. A later module covers the safety side of this in depth; for now, the rule is simply that approvals are read, not rhythm.</p>
+
+<h3>What Claude Code Cannot Do</h3>
+<p>The capabilities are real, so the limits deserve equal precision. Four things stay yours no matter how good the tool gets:</p>
+<p><strong>It cannot know your intent.</strong> It knows what you typed. The gap between what you typed and what you meant is filled by the model's assumptions, and left to guess, models tend toward the lower-effort interpretation. Stating constraints explicitly (item 13 on your baseline assessment) is how you close that gap. Phase 5 turns this into a craft.</p>
+<p><strong>It cannot judge business correctness.</strong> It can verify that code runs and tests pass. It cannot know that a 150% discount is nonsense for your store, that this customer field is regulated data, or that the deadline behavior you described contradicts what your team actually wants. Real-world sense lives with the human. You proved this yourself in Floor Test 1.1 with a negative price that executed flawlessly.</p>
+<p><strong>It does not remember across sessions by default.</strong> Each session starts fresh. Project knowledge persists only where it's written down in files the tool reads, which is exactly what the CLAUDE.md file is for, and Phase 5 teaches you to wield it. Until then, know that "we discussed this yesterday" means nothing to a new session unless yesterday got written down.</p>
+<p><strong>It cannot accept accountability.</strong> When the merged code fails, the post-mortem will not accept "the agent did it," and it shouldn't. This was the unifying trait from Module 1.1, and now you can see the mechanical reason behind it: a system that generates plausible output, within a finite window, non-deterministically, from possibly stale knowledge, is a powerful instrument. Instruments don't carry responsibility. Operators do.</p>
+
+<h3>What This Changes About Tomorrow</h3>
+<p>You now hold the mental model that Phases 2 through 6 build on. Before the floor test makes it concrete, notice what each piece already implies about how you'll work:</p>
+<p>Finite memory implies scoped sessions and written-down project knowledge. Non-determinism implies tests and validators instead of trust. The training cutoff implies current docs in the session for version-sensitive work. Confidence-as-costume implies substance-only evaluation. The loop implies supervision, especially of context gathering. And the permission prompt implies that the cheapest review you'll ever do is the one before the action happens.</p>
+<p>Every one of those will become a drilled habit later. Today they just need to be true in your head.</p>
+
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 1.2 &mdash; Context Audit</div>
-  <h4>Find evidence of drift in your own history</h4>
-  <p>Look at a multi-session Claude Code project. Find one place where output from a later session quietly contradicts or ignores a decision from an earlier session. It might be a naming convention, an error handling pattern, or an architectural choice.</p>
+  <div class="floor-test-label">Floor Test 1.2 &mdash; See the Four Facts With Your Own Eyes</div>
+  <h4>Three short experiments, about 20 minutes total, requiring only a browser. You'll use Claude in the browser (free at <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">claude.ai&#x2197;</a>) and the code runner below. If you have Claude Code installed, you can use it instead for any step.</h4>
+  <p><strong>Why this test exists:</strong> Module 1.1's floor test taught you to predict before running. This one points that habit at the tool itself. You are about to observe non-determinism, test confidence against a deterministic check, and probe the knowledge cutoff, with predictions written down first.</p>
+  <h4>Part 1: Non-determinism, observed (7 minutes)</h4>
+  <ol>
+    <li>Open two separate new chats with Claude (two browser tabs work).</li>
+    <li><strong>Predict first:</strong> will the two responses to an identical prompt be identical? Write your prediction down.</li>
+    <li>Paste exactly this prompt into both chats:
+    <div class="code-block" style="margin-top:0.625rem;margin-bottom:0.125rem">
+      <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">PROMPT</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <pre style="white-space:pre-wrap">Write a JavaScript function that returns a motivational message for a developer, choosing from five messages you invent. Show the function and one example of its output.</pre>
+    </div>
+    </li>
+    <li>Compare the two responses side by side. Look at the function names chosen, the five messages invented, the code structure, the explanation around it.</li>
+  </ol>
+  <p>Identical prompts. Different output. Nothing malfunctioned. Now connect it: if the same prompt produces different code twice, what does that mean for any workflow where you need the same result every time? Write one sentence answering that. (You just derived Fact 2's professional consequence yourself.)</p>
+  <h4>Part 2: Confidence vs. a deterministic check (7 minutes)</h4>
+  <ol>
+    <li>In one of your chats, paste exactly this:
+    <div class="code-block" style="margin-top:0.625rem;margin-bottom:0.125rem">
+      <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">PROMPT</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <pre style="white-space:pre-wrap">Without using any tools, code, or calculator, compute 847293 multiplied by 612847 in your head and give me the single number you arrive at. State it confidently as one line.</pre>
+    </div>
+    </li>
+    <li><strong>Predict first:</strong> will the answer be correct? Write your prediction down. Notice how the answer <em>looks</em>: stated cleanly, confidently, formatted well.</li>
+    <li>Now verify with a deterministic tool. In the runner below, press <strong>Run</strong>:</li>
+  </ol>
+  <div id="ft2-multiply-mount"></div>
+  <p>Compare. Two outcomes are possible, and <strong>both teach the same lesson</strong>. If the model was wrong: you just watched perfect confidence wrapped around a wrong answer, which is Fact 4 in the wild. If the model was right: notice that you did not know it was right until the deterministic check finished. Either way, your certainty came from the verifier, not from the model's tone. That is the entire point.</p>
+  <h4>Part 3: The knowledge cutoff, probed (6 minutes)</h4>
+  <ol>
+    <li>In a fresh chat, ask:
+    <div class="code-block" style="margin-top:0.625rem;margin-bottom:0.125rem">
+      <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">PROMPT</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <pre style="white-space:pre-wrap">Without searching the web, answer from your own knowledge only: what is the current LTS version of Node.js, and when was it released?</pre>
+    </div>
+    </li>
+    <li><strong>Predict first:</strong> will this answer reflect today, or some point in the past? Write it down.</li>
+    <li>Check the real answer at <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org&#x2197;</a>.</li>
+    <li>Three outcomes are possible. The answer is stale: that's the cutoff, visible. The answer is current: the model's training is recent enough for this question today, and it won't stay that way. The model declines or offers to search: you just watched a tool compensating for its cutoff, which is exactly the compensation you'll demand in version-sensitive work.</li>
+  </ol>
   <div class="pass-criteria">
     <div class="pass-label">Pass criteria</div>
-    <p>You can identify at least one example of drift and explain what context was missing in the session that produced it.</p>
+    <p>Every prediction was written before its check, and you wrote the one-sentence consequence in Part 1. As before, wrong predictions aren't failure; they're calibration. The only way to fail is to run the checks without predicting.</p>
   </div>
 </div>
+
+<h3>Further Reading</h3>
+<ul>
+  <li><a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener noreferrer"><strong>How Claude Code Works (Anthropic)&#x2197;</strong></a>: the official description of the agentic loop, the built-in tools, and the harness; this module's loop section is grounded in it</li>
+  <li><a href="https://docs.claude.com/en/docs/claude-code/overview" target="_blank" rel="noopener noreferrer"><strong>Claude Code Documentation (Anthropic)&#x2197;</strong></a>: the broader official docs, including configuration topics this course reaches in Phase 5</li>
+  <li><a href="https://docs.claude.com/en/docs/build-with-claude/context-windows" target="_blank" rel="noopener noreferrer"><strong>Anthropic: Context Windows&#x2197;</strong></a>: the official explanation of the finite working memory behind Fact 1</li>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps" target="_blank" rel="noopener noreferrer"><strong>MDN Web Docs: JavaScript First Steps&#x2197;</strong></a>: continuing reference as Phase 2 approaches</li>
+</ul>
 `},
 
 {id:'p1m3',phase:1,phaseName:'The Honest Reckoning',num:'1.3',title:'What "Working on a Team" Actually Requires',navTitle:'What Teams Actually Require',
@@ -1616,14 +1706,18 @@ p1m1:[
   {q:"What is the only way to fail Floor Test 1.1?",opts:["Answering fewer than three of the four reading questions correctly","Running the code without writing your predictions down first","Using the click-to-reveal code instead of prompting Claude yourself","Taking longer than the suggested twenty minutes to finish"],correct:1,explanation:"Wrong predictions are the point; they map exactly what the next modules must teach you. The reveal fallback and the time estimate are conveniences, not requirements. The test measures honesty of process, and skipping the prediction step is the trial-and-error habit this course exists to replace."}
 ],
 p1m2:[
-  {q:"What does Claude Code fundamentally do, stripped of all mystique?",opts:["Understands your codebase architecture and generates optimal code","Predicts what code should come next based on training patterns and the context you provide","Learns your preferences over time and improves its suggestions","Analyzes runtime behavior to generate safer code"],correct:1,explanation:"Claude Code is a large language model that predicts likely code given context. It has no understanding of your codebase, no persistent memory, and no runtime awareness."},
-  {q:"Using the contractor mental model, what happens when you give Claude Code an instruction that is subtly wrong?",opts:["Claude refuses to execute instructions it knows to be wrong","Claude corrects the instruction before executing it","Claude executes exactly what you said, including the error","Claude asks clarifying questions before proceeding"],correct:2,explanation:"Like a skilled contractor who has never worked in your specific business, Claude executes your instructions precisely. If the instruction is wrong, the output is wrong."},
-  {q:"What is the context window and why does it cause session drift?",opts:["The file size limit for Claude Code to process; larger files cause errors","The fixed amount of working memory Claude holds; earlier instructions lose weight in long sessions","The number of prompts allowed per session before Claude resets","The maximum number of files Claude can modify in one session"],correct:1,explanation:"The context window is the finite working memory of the model. As a session grows long, early instructions receive less relative weight, causing Claude to drift from earlier decisions."},
-  {q:"A developer is 3 hours into a session and Claude starts ignoring the error handling pattern established at the start. What is happening?",opts:["Claude Code has a bug that causes it to forget rules","The context window is filling up; earlier constraints are getting less weight","The developer's instructions were not specific enough","Claude Code intentionally simplifies patterns in long sessions"],correct:1,explanation:"This is context drift. In a long session, the relative weight of early instructions decreases, and Claude may revert to generic training-data patterns instead of your established conventions."},
-  {q:"What is the recommended session discipline to prevent context drift?",opts:["Save and reload sessions every hour to refresh context","Run the same prompts at the start of each session","One logical unit of work per session, commit it, then start fresh","Use longer, more detailed prompts to maintain context throughout"],correct:2,explanation:"One unit of work per session, commit when done, then start fresh. This maintains context integrity and ensures each session starts with full fidelity rather than accumulated drift."},
-  {q:"What does it mean that Claude Code 'will also helpfully do things you didn't ask for'?",opts:["A feature that makes Claude Code more useful by anticipating your needs","A risk: Claude sometimes modifies code outside the scope of your request, bypassing review","A sign that Claude Code understands your project deeply","Evidence that Claude learns from previous sessions"],correct:1,explanation:"Helpfulness without scope awareness is a risk. Claude may 'clean up' adjacent code, refactor things you didn't ask about, or make 'improvements' that are outside your intended change and bypass your review."},
-  {q:"Why is 'just keep prompting until it works' described as a dangerous habit?",opts:["It wastes API credits and slows development","You may be in a degraded, drifted session producing output that violates earlier decisions without you knowing","Claude Code penalizes sessions with too many iterations","It produces code that is harder to maintain"],correct:1,explanation:"In a long, drifted session, continued prompting may produce output that silently contradicts earlier architectural decisions. You have no way to detect which iteration introduced a violation."},
-  {q:"According to the contractor mental model, what is one thing Claude Code fundamentally cannot know unless you tell it explicitly?",opts:["How to write syntactically correct code","Your business rules, team standards, and production constraints","How to use common libraries and frameworks","The difference between good and bad code patterns"],correct:1,explanation:"Like a contractor working for the first time in your business, Claude has no access to your domain rules, team conventions, or production environment unless you provide them explicitly in your prompt or CLAUDE.md."}
+  {q:"The module describes Claude Code as two components plus a harness. What are the two components?",opts:["A code database and a search engine over your project","A model that reasons and tools that act","A terminal interface and a cloud-hosted compiler","A planning engine and a permanent project memory"],correct:1,explanation:"The model reads, understands, plans, and decides; the tools read files, edit files, run commands. Claude Code is the harness that connects them, feeding the model context and letting it invoke tools. Every strength and failure of the tool traces to one of those parts or the handoff between them, which is what makes failures diagnosable instead of mysterious."},
+  {q:"Why does the module insist Claude Code is not \"a search engine with opinions\"?",opts:["It cannot access the internet from the terminal","It generates answers rather than retrieving verified ones","Its search across project files is slower than a real index","It only consults documentation when explicitly instructed to"],correct:1,explanation:"A search engine retrieves things that exist. A language model predicts what text should come next, producing output that is frequently, but not always, indistinguishable from verified knowledge. The entire discipline of this course lives in the gap between \"frequently\" and \"always.\""},
+  {q:"A long session starts contradicting facts you established near the beginning. Based on Fact 1, what most likely happened?",opts:["The model's training data conflicts with your project's conventions","The context window filled, older content was compressed or dropped, and the model is weighting its own recent output","The non-deterministic sampling produced an unlucky response","A tool returned an error that silently ended the session's memory"],correct:1,explanation:"Everything the model knows during a task must fit in a finite working memory. As a session grows, earlier content gets compressed or dropped and the model increasingly trusts its own recent statements over the original facts. The remedies are scoped sessions and explicit re-anchoring of the source of truth."},
+  {q:"What is the professional consequence the module draws from non-determinism (Fact 2)?",opts:["Important prompts should be run twice and the outputs compared","Anything that must be reliable needs a deterministic backstop such as a test or validator","Model settings should be tuned until outputs become repeatable","Identical results require keeping every task inside one session"],correct:1,explanation:"Running a prompt twice and comparing helps you observe the property, but it is not a reliability strategy: the third run can differ again. The professional move is structural: build processes on deterministic checks (tests, validators, commands) rather than on the expectation that the model will repeat itself."},
+  {q:"Why does the module call outdated patterns (from Fact 3, the training cutoff) especially sneaky?",opts:["They only appear in older programming languages","The code is often valid and runs, so nothing visibly signals that the approach is stale","They cause crashes that are difficult to reproduce locally","Documentation sites rarely mark which patterns are deprecated"],correct:1,explanation:"A model writes the version of a library it learned, with full confidence. The output frequently compiles and executes, because the pattern was correct once. No error fires, which connects this directly to the silent-failure category from Module 1.1: wrongness that produces every signal of success."},
+  {q:"According to Fact 4, what does the polish of Claude Code's output (clean formatting, assured tone) actually indicate?",opts:["The model verified its work before presenting it","Nothing about correctness; it is the default presentation style either way","The task fit comfortably inside the context window","The response drew on documentation rather than training alone"],correct:1,explanation:"From a human, polish signals care. From a model, the same polish wraps correct answers and invented ones identically, because formatting is part of the prediction. The habit this fact builds: evaluate substance and ignore the costume, applying the same scrutiny to beautiful output as to messy output."},
+  {q:"What are the three phases of the loop Claude Code works through on a task?",opts:["Plan, generate, format","Gather context, take action, verify results","Read instructions, ask permission, commit changes","Search, summarize, suggest"],correct:1,explanation:"The phases blend and repeat: a question might need only context gathering, while a bug fix cycles through all three multiple times, chaining actions and course-correcting. Knowing the phases matters because each fails differently, and diagnosing which phase failed is the start of debugging the tool's work instead of just re-prompting."},
+  {q:"The module says the gather-context phase deserves your closest supervision. Why?",opts:["It is the slowest phase and benefits most from human shortcuts","The slice of your project chosen there shapes everything downstream; a wrong slice poisons later phases","Permission prompts only appear during context gathering","It is the only phase where the model can read files you didn't mention"],correct:1,explanation:"The model acts on the project slice it gathered. If that slice misreads your codebase or misses the second place a function is called, the subsequent actions are built on a false picture, executed confidently. Watching what the tool chooses to read is the cheapest early check on the whole task."},
+  {q:"How does the module reframe Claude Code's permission prompts?",opts:["As a safety feature designed mainly to prevent destructive commands","As the moments the loop pauses and hands you the accountability you already own","As friction worth disabling once a project's conventions are stable","As the tool's request for additional context before proceeding"],correct:1,explanation:"Most prompts are fine, which is exactly what makes reflexive approval tempting. But you own every line you merge, and the permission prompt is the cheapest place in the workflow to exercise that ownership: a few seconds of \"does this match what I asked?\" before the action happens rather than after."},
+  {q:"Which of the following does the module list as something Claude Code CANNOT do?",opts:["Run your test suite and react to failures it finds","Judge whether code is correct for your real-world business rules","Chain dozens of actions on a single task without stopping","Edit several files in the same task"],correct:1,explanation:"The tool verifies that code runs and tests pass; it cannot know that a negative price is nonsense for your store or that a field is regulated data. Real-world sense stays with the human, which is exactly what Floor Test 1.1's discount function demonstrated."},
+  {q:"A teammate says \"Claude Code knows our project; we built half of it together last month.\" What does the module say is wrong with that statement?",opts:["Models cannot retain code patterns, only natural language","Sessions start fresh by default; project knowledge persists only where it is written into files the tool reads","Last month's knowledge predates the model's training cutoff","Knowledge from prior sessions is kept but becomes unreliable over time"],correct:1,explanation:"There is no default memory across sessions. What feels like the tool \"knowing\" a project is either the current session's context or knowledge captured in files like CLAUDE.md that get read each time. Phase 5 teaches you to write that file deliberately; until then, yesterday means nothing to a new session unless yesterday got written down."},
+  {q:"In Floor Test 1.2 Part 2, the model's arithmetic might come back correct. Why does the module say the lesson holds either way?",opts:["Correct arithmetic proves the model used a hidden calculation tool","Your certainty came from the deterministic check, not from the model's confident tone","The multiplication is designed so that models always get it wrong","A correct answer on one run guarantees correct answers on future runs"],correct:1,explanation:"If the answer was wrong, you watched confidence wrap a wrong answer. If it was right, you still did not know that until the verifier finished. Either way the certainty was produced by the deterministic backstop, which is the working relationship this course builds: the model proposes, something deterministic confirms."}
 ],
 p1m3:[
   {q:"A senior dev asks 'why did you use async/await here instead of promise chaining?' What is the correct response from a team-ready developer?",opts:["Claude Code generated it that way and it seemed cleaner","I can look into it and get back to you","async/await makes sequential flow easier to read and error handling more explicit","They are equivalent, so the choice doesn't matter"],correct:2,explanation:"A team-ready developer can explain every structural choice in their code. This requires understanding the code at the level of design decisions, not just functionality."},
@@ -2636,6 +2730,15 @@ function showModule(id) {
         id: 'ft1-discount',
         starterCode: 'function applyDiscount(price, discountPercent) {\n  const discount = price * (discountPercent / 100);\n  return price - discount;\n}\n\nconsole.log(applyDiscount(50, 20));',
         heightRem: 10
+      });
+    }, 150);
+  }
+  if (id === 'p1m2') {
+    setTimeout(function() {
+      mountRunner(document.getElementById('ft2-multiply-mount'), {
+        id: 'ft2-multiply',
+        starterCode: '// The deterministic backstop: arithmetic that comes out\n// the same every single time.\nconsole.log(847293 * 612847);',
+        heightRem: 8
       });
     }, 150);
   }
