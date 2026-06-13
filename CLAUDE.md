@@ -19,3 +19,7 @@ Floor test code exercises use the in-page sandboxed runner via `mountRunner(cont
 ## Quiz bank standards
 
 All options within roughly 25% of each other's character length. Distractors are plausible misconceptions or true-sounding statements that miss the lesson's core point, never absurd throwaways. The correct answer must not be reliably the longest or most qualified option.
+
+## Spec-driven commits
+
+When a spec defines multiple commits, produce exactly those commits; never combine spec steps into a single commit.

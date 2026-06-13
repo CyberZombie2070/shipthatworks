@@ -334,6 +334,11 @@ pre .comment{color:#4a5570;}pre .key{color:#5b8ff9;}pre .val{color:#e8c547;}pre 
 .lesson-pane a[href]:not([class]){color:var(--accent-blue);text-decoration:underline;text-underline-offset:0.125rem;}
 .lesson-pane a[href]:not([class]):hover{filter:brightness(1.25);}
 .lesson-pane a[href]:not([class]):visited{color:var(--accent-blue);}
+/* ── QUIZ RESULT ACTIONS ── */
+.qr-actions{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:0.75rem;}
+.btn-primary.done{background:rgba(63,185,80,.1);color:var(--success);border:1px solid var(--success);cursor:default;pointer-events:none;}
+.btn-primary.done:hover{background:rgba(63,185,80,.1);transform:none;box-shadow:none;}
+@media(max-width:480px){.qr-actions{flex-direction:column;align-items:stretch;}}
 </style>
 </head>
 <body>
@@ -563,6 +568,11 @@ function refreshProgressDisplays(courseId) {
       var isDone = _completedSet.has(currentMod);
       btn.textContent = isDone ? '✓ Complete' : 'Mark Complete';
       btn.classList.toggle('done', isDone);
+    }
+    var qrCbtn = document.getElementById('qr-cbtn-' + currentMod);
+    if (qrCbtn && _completedSet.has(currentMod)) {
+      qrCbtn.textContent = '✓ Completed';
+      qrCbtn.classList.add('done');
     }
   }
   var homeView = document.getElementById('homeView');
@@ -988,11 +998,15 @@ function showQuizResults(modId) {
       '<div class="rv-exp">' + q.explanation + '</div></div>';
   });
   if (passed) {
+    var isDone = _completedSet.has(modId);
     wrap.innerHTML =
       '<div class="quiz-result">' +
         '<div class="qr-score pass">' + nCorrect + '/4 ✓ PASS</div>' +
-        '<div class="qr-msg">Quiz passed! You can mark this module complete.</div>' +
-        '<button class="btn btn-secondary" style="font-size:0.75rem;margin-bottom:0.75rem" onclick="toggleReview(' + sq + modId + sq + ')">Review Answers</button>' +
+        '<div class="qr-msg">Quiz passed!</div>' +
+        '<div class="qr-actions">' +
+          '<button class="btn btn-primary' + (isDone ? ' done' : '') + '" id="qr-cbtn-' + modId + '" onclick="toggleComplete(' + sq + modId + sq + ')">' + (isDone ? '&#10003; Completed' : 'Mark Complete') + '</button>' +
+          '<button class="btn btn-secondary" onclick="toggleReview(' + sq + modId + sq + ')">Review Answers</button>' +
+        '</div>' +
         '<div class="qr-review" id="qr-review-' + modId + '" style="display:none">' + reviewHtml + '</div>' +
       '</div>';
   } else {
