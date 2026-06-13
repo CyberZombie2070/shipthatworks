@@ -679,7 +679,9 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
     <li>What is the name of the function?</li>
     <li>What does the function take in?</li>
     <li>What does the function give back?</li>
-    <li><strong>Predict before you run it:</strong> what will happen if you call the function with <em>no</em> name at all? Write your prediction down. Then add the line <code>console.log(greet());</code> at the bottom of the editor and press Run again. Was your prediction right?</li>
+    <li><strong>Predict before you run it:</strong> what will happen if you call the function with <em>no</em> name at all? Write your prediction down. Then add the line <code>console.log(greet());</code> at the bottom of the editor and press Run again. Was your prediction right?
+    <div id="pred-ft1-greet-mount"></div>
+    </li>
   </ol>
   <details class="reveal">
     <summary>Ran it? Click to compare notes.</summary>
@@ -698,6 +700,7 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
     <li>What does <code>applyDiscount(50, 150)</code> return? Predict, then run. Is that a price a real store should ever charge?</li>
     <li>In one or two plain sentences: this function "works," so what is actually wrong with it?</li>
   </ol>
+  <div id="pred-ft1-discount-mount"></div>
   <p>There&#39;s no code to write and no fix required. Module 2 will give you the tools for that. The skill being built right now is the <em>question-asking:</em> looking at working code and probing what happens beyond the one happy case the demo showed.</p>
   <h4>Optional team extension: if you have access to a real codebase</h4>
   <p>Ask a teammate (or Claude Code, pointed at your repo) to show you the <strong>smallest, simplest function in the project,</strong> five to ten lines. Apply the same four questions from Part 2 to it: name, inputs, output, behavior with missing input. Write your answers down, then verify them with a teammate or by testing. Do not pick something complex; the win condition is <em>fully</em> understanding something small, not partially understanding something big.</p>
@@ -796,7 +799,9 @@ content:`
   <h4>Part 1: Non-determinism, observed (7 minutes)</h4>
   <ol>
     <li>Open two separate new chats with Claude (two browser tabs work).</li>
-    <li><strong>Predict first:</strong> will the two responses to an identical prompt be identical? Write your prediction down.</li>
+    <li><strong>Predict first:</strong> will the two responses to an identical prompt be identical? Write your prediction down.
+    <div id="pred-ft2-p1a-mount"></div>
+    </li>
     <li>Paste exactly this prompt into both chats:
     <div class="code-block" style="margin-top:0.625rem;margin-bottom:0.125rem">
       <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">PROMPT</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
@@ -806,6 +811,7 @@ content:`
     <li>Compare the two responses side by side. Look at the function names chosen, the five messages invented, the code structure, the explanation around it.</li>
   </ol>
   <p>Identical prompts. Different output. Nothing malfunctioned. Now connect it: if the same prompt produces different code twice, what does that mean for any workflow where you need the same result every time? Write one sentence answering that. (You just derived Fact 2's professional consequence yourself.)</p>
+  <div id="pred-ft2-p1b-mount"></div>
   <h4>Part 2: Confidence vs. a deterministic check (7 minutes)</h4>
   <ol>
     <li>In one of your chats, paste exactly this:
@@ -814,7 +820,9 @@ content:`
       <pre style="white-space:pre-wrap">Without using any tools, code, or calculator, compute 847293 multiplied by 612847 in your head and give me the single number you arrive at. State it confidently as one line.</pre>
     </div>
     </li>
-    <li><strong>Predict first:</strong> will the answer be correct? Write your prediction down. Notice how the answer <em>looks</em>: stated cleanly, confidently, formatted well.</li>
+    <li><strong>Predict first:</strong> will the answer be correct? Write your prediction down. Notice how the answer <em>looks</em>: stated cleanly, confidently, formatted well.
+    <div id="pred-ft2-p2-mount"></div>
+    </li>
     <li>Now verify with a deterministic tool. In the runner below, press <strong>Run</strong>:</li>
   </ol>
   <div id="ft2-multiply-mount"></div>
@@ -827,7 +835,9 @@ content:`
       <pre style="white-space:pre-wrap">Without searching the web, answer from your own knowledge only: what is the current LTS version of Node.js, and when was it released?</pre>
     </div>
     </li>
-    <li><strong>Predict first:</strong> will this answer reflect today, or some point in the past? Write it down.</li>
+    <li><strong>Predict first:</strong> will this answer reflect today, or some point in the past? Write it down.
+    <div id="pred-ft2-p3-mount"></div>
+    </li>
     <li>Check the real answer at <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org&#x2197;</a>.</li>
     <li>Three outcomes are possible. The answer is stale: that's the cutoff, visible. The answer is current: the model's training is recent enough for this question today, and it won't stay that way. The model declines or offers to search: you just watched a tool compensating for its cutoff, which is exactly the compensation you'll demand in version-sensitive work.</li>
   </ol>
@@ -1919,6 +1929,7 @@ var ASSESS_NARRATIVE_QS = [
 ];
 var assessStates = {};
 var narrativeTimers = {};
+var predTimers = {};
 
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -2346,6 +2357,38 @@ function runnerSave(id, code) {
   }, 500);
 }
 
+// ── PREDICTION BOX ──
+function predSave(id, value) {
+  clearTimeout(predTimers[id]);
+  predTimers[id] = setTimeout(function() {
+    try { localStorage.setItem('adf_pred_' + id, value); } catch(e) {}
+    var savedEl = document.getElementById('pred-saved-' + id);
+    if (savedEl) { savedEl.classList.add('show'); setTimeout(function(){ savedEl.classList.remove('show'); }, 1500); }
+  }, 500);
+}
+
+function mountPredictionBox(containerEl, config) {
+  if (!containerEl) return;
+  var id = config.id;
+  var prompt = config.prompt || null;
+  var minHStyle = config.minHeightRem ? ' style="min-height:' + config.minHeightRem + 'rem"' : '';
+  var saved = '';
+  try { saved = localStorage.getItem('adf_pred_' + id) || ''; } catch(e) {}
+  var html = '<div class="narrative-wrap">';
+  if (prompt) {
+    html += '<div class="narrative-q-label" style="margin-bottom:0.375rem">' + prompt + '</div>';
+  }
+  html += '<textarea id="pred-ta-' + id + '" class="narrative-ta"' + minHStyle + ' placeholder="Type your prediction here…"></textarea>';
+  html += '<span class="narrative-saved" id="pred-saved-' + id + '">Saved</span>';
+  html += '</div>';
+  containerEl.innerHTML = html;
+  var ta = document.getElementById('pred-ta-' + id);
+  if (ta) {
+    ta.value = saved;
+    ta.addEventListener('input', function() { predSave(id, this.value); });
+  }
+}
+
 // ── STATE ──
 var sq = String.fromCharCode(39);
 var panelOpen = false;
@@ -2500,6 +2543,7 @@ function doReset() {
   localStorage.removeItem('adf_assess_final');
   Object.keys(localStorage).filter(function(k) { return k.indexOf('adf_notes_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
   Object.keys(localStorage).filter(function(k) { return k.indexOf('adf_runner_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
+  Object.keys(localStorage).filter(function(k) { return k.indexOf('adf_pred_') === 0; }).forEach(function(k) { localStorage.removeItem(k); });
   location.reload();
 }
 
@@ -2731,6 +2775,15 @@ function showModule(id) {
         starterCode: 'function applyDiscount(price, discountPercent) {\n  const discount = price * (discountPercent / 100);\n  return price - discount;\n}\n\nconsole.log(applyDiscount(50, 20));',
         heightRem: 10
       });
+      mountPredictionBox(document.getElementById('pred-ft1-greet-mount'), {
+        id: 'ft1-greet',
+        prompt: 'Your prediction:'
+      });
+      mountPredictionBox(document.getElementById('pred-ft1-discount-mount'), {
+        id: 'ft1-discount',
+        prompt: 'Your predictions (all four):',
+        minHeightRem: 8
+      });
     }, 150);
   }
   if (id === 'p1m2') {
@@ -2739,6 +2792,22 @@ function showModule(id) {
         id: 'ft2-multiply',
         starterCode: '// The deterministic backstop: arithmetic that comes out\n// the same every single time.\nconsole.log(847293 * 612847);',
         heightRem: 8
+      });
+      mountPredictionBox(document.getElementById('pred-ft2-p1a-mount'), {
+        id: 'ft2-p1a',
+        prompt: 'Your prediction:'
+      });
+      mountPredictionBox(document.getElementById('pred-ft2-p1b-mount'), {
+        id: 'ft2-p1b',
+        prompt: 'Your one-sentence consequence:'
+      });
+      mountPredictionBox(document.getElementById('pred-ft2-p2-mount'), {
+        id: 'ft2-p2',
+        prompt: 'Your prediction:'
+      });
+      mountPredictionBox(document.getElementById('pred-ft2-p3-mount'), {
+        id: 'ft2-p3',
+        prompt: 'Your prediction:'
       });
     }, 150);
   }

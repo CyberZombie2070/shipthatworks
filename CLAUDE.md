@@ -20,6 +20,10 @@ Floor test code exercises use the in-page sandboxed runner via `mountRunner(cont
 
 All options within roughly 25% of each other's character length. Distractors are plausible misconceptions or true-sounding statements that miss the lesson's core point, never absurd throwaways. The correct answer must not be reliably the longest or most qualified option.
 
+## Prediction boxes in floor tests
+
+Floor-test steps that ask the learner to predict, write down, or answer in a sentence get a `mountPredictionBox(containerEl, config)` instance with a namespaced `adf_pred_{id}` storage key. Never instruct a learner to write something down without giving them a place to write it. IDs follow the pattern `ft{module}-{part}` (e.g., `ft2-p1a`). Mount points are `<div id="pred-{id}-mount"></div>` placed immediately after the instruction. Course reset clears all `adf_pred_*` keys.
+
 ## Spec-driven commits
 
 When a spec defines multiple commits, produce exactly those commits; never combine spec steps into a single commit.
