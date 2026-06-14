@@ -1,0 +1,356 @@
+<!-- ============================================================
+     CAPTURED RESPONSE POOL: ft2-motivational
+     Real Claude outputs, captured June 2026, model: Claude Opus 4.8 (High),
+     style: Default / baseline (no custom instructions).
+     12 runs of the Module 1.2 Part 1 motivational-message prompt.
+     To add more: copy a <script> block, bump data-idx, paste a raw run.
+     Do NOT present as live generation.
+     ============================================================ -->
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="0">
+Here's a simple function that picks a random motivational message from five options:
+
+```javascript
+function getDeveloperMotivation() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That code you're stuck on? You're one focused hour away from the breakthrough.",
+    "Clean code isn't written, it's rewritten. You're allowed to improve it.",
+    "The best developers aren't the ones who never get stuck, they're the ones who keep going.",
+    "Ship it. Done and shipped beats perfect and imaginary every time."
+  ];
+
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+}
+
+// Example usage
+console.log(getDeveloperMotivation());
+```
+
+Example output:
+
+```
+That code you're stuck on? You're one focused hour away from the breakthrough.
+```
+
+The function builds an array of five messages, generates a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that position. Each call gives you a fresh pick, so the output above is just one of the five possibilities.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="1">
+Here's a simple function that picks one of five messages at random:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That function you're stuck on? You're one good night's sleep away from solving it.",
+    "Clean code isn't written, it's rewritten—and you're already on draft two.",
+    "The best developers aren't the ones who never get stuck; they're the ones who keep going.",
+    "Ship it imperfect today, refactor it brilliant tomorrow. Momentum beats perfection."
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Usage
+console.log(getMotivationalMessage());
+```
+
+Example output (one possible run):
+
+```
+Clean code isn't written, it's rewritten—and you're already on draft two.
+```
+
+Since the message is chosen with `Math.random()`, you'll get a different one of the five on most runs. If you'd like it to avoid repeating the previous message, or to cycle through all five in order before reshuffling, that's a small tweak I can add.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="2">
+Here's a simple function that picks a random message from five options:
+
+```javascript
+function getDevMotivation() {
+  const messages = [
+    "Every bug you squash makes you sharper than you were yesterday.",
+    "That function you're stuck on? You're one good break away from cracking it.",
+    "Clean code is a love letter to the developer who maintains it next — often future you.",
+    "You've solved harder problems than this. Trust the version of you that figured those out.",
+    "Ship it imperfect, then make it better. Momentum beats perfection every time."
+  ];
+
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
+console.log(getDevMotivation());
+```
+
+Example output:
+
+```
+That function you're stuck on? You're one good break away from cracking it.
+```
+
+The function uses `Math.random()` to generate a number between 0 and 1, scales it to the array length, and floors it to get a valid index. Each call returns one of the five messages at random.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="3">
+Here's a simple function that picks one of five messages at random:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That feature felt impossible an hour ago. Now look at it running.",
+    "Clean code isn't written, it's rewritten. You're allowed a messy first draft.",
+    "The hard problem you're stuck on is exactly the one worth solving.",
+    "Ship it, learn from it, improve it. Progress beats perfection."
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Example usage
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+That feature felt impossible an hour ago. Now look at it running.
+```
+
+The actual line printed will vary each run since the index is chosen randomly. If you'd rather have it cycle through predictably or accept a "mood" parameter (e.g., calm vs. high-energy messages), that's an easy tweak.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="4">
+Here's a simple function that picks one of five messages at random:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "You don't have to know everything—you just have to know how to find out. And you do.",
+    "That feature felt impossible right up until the moment you shipped it.",
+    "Clean code is a love letter to the developer who maintains it next. Today, that's a gift you're giving.",
+    "Stuck is just the feeling right before a breakthrough. Keep going."
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Example usage
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+That feature felt impossible right up until the moment you shipped it.
+```
+
+Since it uses `Math.random()`, each call may return a different message. If you'd like it to never repeat until all five have been shown, or to pick based on the day of the week, I can adjust it.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="5">
+Here's a simple function that picks a random message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That tricky function will make sense once you step away and come back with fresh eyes.",
+    "Clean code is a gift to your future self—and you're getting better at giving it.",
+    "You don't have to know everything; you just have to know how to figure things out. And you do.",
+    "Shipping beats perfect. Get it working, then make it shine."
+  ];
+
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+That tricky function will make sense once you step away and come back with fresh eyes.
+```
+
+The function builds an array of five messages, generates a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that position. Each call gives you a randomly selected one.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="6">
+Here's a simple function that picks a random message from five I've written:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That function you're stuck on? You're one good idea away from cracking it.",
+    "Clean code isn't written, it's rewritten — and you're doing the rewriting.",
+    "The hard problems are the ones worth solving. Lucky you, here's one now.",
+    "Ship it. You can always refactor, but you can't improve what doesn't exist."
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+The hard problems are the ones worth solving. Lucky you, here's one now.
+```
+
+The actual message will vary each run since `Math.random()` selects a different index. If you'd like, I can extend this to avoid repeating the same message twice in a row, or accept the developer's name to personalize it.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="7">
+Here's a simple function that picks a random motivational message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper developer.",
+    "That tricky feature? You're closer to solving it than you think.",
+    "Clean code today saves you a headache tomorrow. Keep going.",
+    "Even the best engineers Google the basics. You're doing great.",
+    "Ship it, learn from it, improve it. Progress beats perfection."
+  ];
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+}
+
+// Example usage
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+Clean code today saves you a headache tomorrow. Keep going.
+```
+
+The exact message will vary each time you call it, since `Math.random()` picks a different index on each run. Want me to add anything, like avoiding repeats on consecutive calls or letting the caller pass in their own message list?
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="8">
+Here's a function that picks a random motivational message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "Your code doesn't have to be perfect today—it just has to be better than the blank file you started with.",
+    "Stuck for an hour? That's not wasted time; that's your brain building the intuition you'll use for years.",
+    "The best developers aren't the ones who never get errors—they're the ones who never stop debugging.",
+    "Ship it, learn from it, improve it. Progress beats perfection every single time."
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+Stuck for an hour? That's not wasted time; that's your brain building the intuition you'll use for years.
+```
+
+Since it picks randomly, each call can return a different message. If you'd prefer it to cycle through them in order, or take a developer's name to personalize the message, that's an easy tweak.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="9">
+Here's a function that picks a random motivational message from a set of five:
+
+```javascript
+function getDevMotivation() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer than you were yesterday.",
+    "That code you're stuck on? Future-you will read it and think 'I actually figured this out.'",
+    "Shipping imperfect code beats perfecting code that never ships. Keep moving.",
+    "You don't need to know everything—you just need to know how to find the next answer.",
+    "The hard problem you're avoiding is the exact one that'll level you up. Open the file."
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+// Example usage
+console.log(getDevMotivation());
+```
+
+Example output:
+
+```
+That code you're stuck on? Future-you will read it and think 'I actually figured this out.'
+```
+
+Since the message is chosen randomly with `Math.random()`, each call may return a different one of the five. If you'd like it to avoid repeating the previous message, or to accept a developer's name to personalize the output, that's an easy tweak.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="10">
+Here's a simple function that picks a random message from five options:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper engineer.",
+    "Your future self will thank you for writing that comment.",
+    "Clean code today saves a debugging marathon tomorrow.",
+    "You don't have to know everything — you just have to know how to find it.",
+    "That feature you're stuck on? You're closer than you think.",
+  ];
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+Clean code today saves a debugging marathon tomorrow.
+```
+
+The function builds an array of five messages, generates a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that position. Each call gives you a fresh pick.
+</script>
+
+<script type="text/plain" data-pool="ft2-motivational" data-idx="11">
+Here's a simple function that picks a random motivational message from a set of five:
+
+```javascript
+function getMotivationalMessage() {
+  const messages = [
+    "Every bug you squash makes you a sharper developer.",
+    "Your code doesn't have to be perfect today—it just has to be better than yesterday.",
+    "The hardest problems make the most satisfying solutions. Keep going.",
+    "You've debugged worse than this. Trust your past self.",
+    "Great software is built one small commit at a time.",
+  ];
+
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
+}
+
+console.log(getMotivationalMessage());
+```
+
+Example output:
+
+```
+The hardest problems make the most satisfying solutions. Keep going.
+```
+
+The function builds an array of five messages, picks a random index with `Math.floor(Math.random() * messages.length)`, and returns the message at that index. Each call gives you one of the five at random.
+</script>
