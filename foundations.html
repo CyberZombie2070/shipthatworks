@@ -1234,66 +1234,117 @@ content:`
 <p>You came in able to operate the magic box and unable to say what it was building. You leave with the map: JavaScript the language, Node the server runtime, React the screen-builder, TypeScript the type layer, and the shape of the app that connects them. That map is not trivia. It is the thing that turns "code Claude wrote" into "backend Node code touching the database, which I should check carefully." Placement is the first move of evaluation. From here, Phase 2 teaches you to read the language itself, starting with the patterns Claude gets wrong most quietly. You now know where you are standing. Next, you learn to read what is in front of you.</p>
 `},
 
-{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
-lead:"You don't need to write JS fluently. You need to read it accurately. These are the patterns that appear constantly in Node.js and React code.",
+{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'Reading JavaScript',
+lead:"You don't need to write JavaScript. You need to read it well enough to catch Claude in a lie. This module teaches the minimum: the shapes in every file and the reading move that catches the quietest scope bug.",
 content:`
-<h3>Variables and Scope &mdash; Why This Matters for Code Review</h3>
-<p>When Claude Code refactors code, it often changes how variables are scoped. Getting this wrong causes bugs that only appear under certain conditions &mdash; the hardest kind to catch.</p>
+<p>You do not need to write JavaScript to take this course. You need to read it well enough to catch Claude in a lie. That is a much smaller skill than "learn JavaScript," and it is the one that actually protects you. This module teaches the minimum: the handful of shapes you will see in every file Claude produces, and the specific reading move that catches the bug it introduces most quietly, a change in scope you did not notice.</p>
+<div class="section-eyebrow">How to Read This Module</div>
+<h3>Reading, not writing</h3>
+<p>Every other JavaScript resource teaches you to write it. This one teaches you to read it, because reading is the skill your accountability actually requires. When Claude hands you forty lines, nobody is going to ask you to have written them. They are going to ask whether they are right, and answering that means reading the code and knowing what it does before you run it. So as you go through this, resist the urge to memorize syntax for producing code. Build instead the ability to look at a line and say what it does. That is the literacy that lets you evaluate, and evaluation is the job.</p>
+<p>We will cover variables and scope (where the silent bugs live), then the core syntax shapes you will see constantly, then the one reading exercise that ties it together.</p>
+<div class="section-eyebrow">The Three Declarations</div>
+<h3>var, let, and const: what each one promises</h3>
+<p>Almost every line of JavaScript starts by naming something. There are three words for it, and the differences matter because Claude chooses between them and the choice changes behavior.</p>
+<p><code>const</code> declares a name whose binding cannot be reassigned. <code>const total = 5;</code> means <code>total</code> will not be pointed at a different value later; try it and the code errors. This is the one you want to see most, because it is a promise: this name is stable.</p>
+<p><code>let</code> declares a name that CAN be reassigned. <code>let count = 0;</code> followed later by <code>count = count + 1;</code> is fine. Use it when the value genuinely changes.</p>
+<p><code>var</code> is the old way, from before <code>let</code> and <code>const</code> existed. It mostly works like <code>let</code> with one dangerous difference covered below. When you see <code>var</code> in modern code, it is a small flag: either old code, or Claude reaching for an older pattern.</p>
+<div class="callout info">
+  <div class="callout-label">The Reading Move</div>
+  <p>When you see a declaration, read what it promises. <code>const</code> says this name is stable. <code>let</code> says it changes. <code>var</code> says watch out, this is old or scoped strangely. The declaration word is the first thing the code tells you about a value, before you read another character.</p>
+</div>
+<div class="section-eyebrow">Scope</div>
+<h3>Scope: where a name lives, and where it doesn't</h3>
+<p>Scope is the single most important reading skill in this module, because scope bugs are invisible. A scope bug does not error. It just makes the code do the wrong thing quietly, which is the silent-failure category from Module 1.1, now in concrete form.</p>
+<p>Scope is simply this: where in the code a name is usable. A name declared inside a block, the curly braces of an <code>if</code>, a loop, a function, lives only inside that block. Outside it, the name does not exist.</p>
+<p>Read this:</p>
 <div class="code-block">
-  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">scope-patterns.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-  <pre><span class="comment">// const &mdash; value set once, cannot be reassigned</span>
-<span class="key">const</span> <span class="val">userId</span> = <span class="str">'abc123'</span>;
-
-<span class="comment">// let &mdash; value can change, scoped to the block { }</span>
-<span class="key">let</span> <span class="val">isLoading</span> = <span class="key">false</span>;
-<span class="key">if</span> (condition) {
-  <span class="val">isLoading</span> = <span class="key">true</span>; <span class="comment">// fine &mdash; changing let</span>
+  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">scope-broken.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+  <pre><span class="key">function</span> <span class="val">check</span>(score) {
+  <span class="key">if</span> (score &gt; <span class="num">50</span>) {
+    <span class="key">const</span> <span class="val">result</span> = <span class="str">"pass"</span>;
+  }
+  <span class="key">return</span> <span class="val">result</span>; <span class="comment">// ReferenceError: result is not defined</span>
+}</pre>
+</div>
+<p>This is broken, and it does not look broken. <code>result</code> is declared inside the <code>if</code> block, so it lives only there. The <code>return result;</code> line is outside that block, where <code>result</code> does not exist. This errors. But here is the part that matters for evaluating Claude: a slightly different version fails SILENTLY.</p>
+<div class="code-block">
+  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">scope-fixed.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+  <pre><span class="key">function</span> <span class="val">check</span>(score) {
+  <span class="key">let</span> <span class="val">result</span> = <span class="str">"fail"</span>;
+  <span class="key">if</span> (score &gt; <span class="num">50</span>) {
+    <span class="val">result</span> = <span class="str">"pass"</span>;
+  }
+  <span class="key">return</span> <span class="val">result</span>;
+}</pre>
+</div>
+<p>This one is correct. <code>result</code> is declared in the function's scope, set to a default, and reassigned inside the <code>if</code>. The difference between the broken version and the correct one is <em>where the name is declared</em> (one line, easy to miss), and the broken kind is exactly what Claude produces when it refactors and moves a declaration into a block without noticing it is read outside.</p>
+<div class="section-eyebrow">The var Trap</div>
+<h3>Why var is the one to watch</h3>
+<p><code>var</code> has a specific, dangerous property: it is NOT block-scoped. A <code>var</code> declared inside an <code>if</code> or a loop leaks out into the whole surrounding function. This is the one behavioral difference that bites.</p>
+<div class="code-block">
+  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">var-leak.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+  <pre><span class="key">function</span> <span class="val">demo</span>() {
+  <span class="key">if</span> (<span class="key">true</span>) {
+    <span class="key">var</span> <span class="val">x</span> = <span class="num">1</span>;
+  }
+  <span class="key">return</span> <span class="val">x</span>;   <span class="comment">// returns 1 &mdash; var leaked out of the if block</span>
+}</pre>
+</div>
+<p>With <code>let</code> or <code>const</code>, <code>x</code> would not exist at the <code>return</code> and this would error, telling you something is wrong. With <code>var</code>, it silently works, which sounds good until the leak causes a name collision or a loop variable behaves unexpectedly. The lesson for evaluation: when Claude uses <code>var</code>, slow down. It is either old code or a pattern with surprising scope, and both deserve a second read.</p>
+<div class="callout warning">
+  <div class="callout-label">What Claude Gets Wrong Here</div>
+  <p>The predictable scope mistakes Claude makes in refactors: it moves a <code>const</code> or <code>let</code> declaration into a block where it is read outside (breaks loudly, easy to catch), OR it leaves a <code>var</code> whose leak the new code accidentally depends on (works now, breaks later, hard to catch). When you review a refactor, the scope question is always: did any name's declaration move into or out of a block? That single question catches most of this category.</p>
+</div>
+<div class="section-eyebrow">The Shapes You Will See Everywhere</div>
+<h3>Core syntax: reading the common shapes</h3>
+<p>Beyond declarations, a small set of shapes appears in nearly every file. You do not need to write them; you need to recognize them on sight so they stop slowing you down.</p>
+<p><strong>Arrow functions.</strong> <code>const add = (a, b) => a + b;</code> is a function. The <code>=></code> is the giveaway. It takes <code>a</code> and <code>b</code> and returns <code>a + b</code>. The long form <code>function add(a, b) { return a + b; }</code> does the same thing. When you see <code>=></code>, read "function."</p>
+<p><strong>Template literals.</strong> Backtick strings with <code>&#36;{}</code> inside: <code>&#96;Hello, &#36;{name}!&#96;</code> builds a string with <code>name</code>'s value dropped in. You met this in Phase 1's greet function. When you see backticks, read "a string being assembled."</p>
+<p><strong>Destructuring.</strong> <code>const { id, email } = user;</code> pulls the <code>id</code> and <code>email</code> properties out of <code>user</code> into their own names. <code>const [first, second] = list;</code> does the same for array positions. When you see <code>{ } =</code> or <code>[ ] =</code> on the left of an <code>=</code>, read "unpacking values out of a thing."</p>
+<p><strong>Spread and rest.</strong> <code>...</code> means either "spread this out" (<code>[...a, ...b]</code> combines two arrays) or "gather the rest" (<code>function f(...args)</code> collects all arguments into <code>args</code>). When you see <code>...</code>, read "expanding or collecting."</p>
+<p><strong>Ternary.</strong> <code>const label = score > 50 ? "pass" : "fail";</code> is a compact if/else: condition, then <code>?</code>, then the value-if-true, then <code>:</code>, then the value-if-false. When you see <code>? :</code>, read "inline if/else."</p>
+<p><strong>Optional chaining.</strong> <code>user?.profile?.name</code> safely reads nested properties; if <code>user</code> or <code>profile</code> is missing, it yields <code>undefined</code> instead of crashing. When you see <code>?.</code>, read "read this carefully, it might not be there."</p>
+<div class="callout truth">
+  <div class="callout-label">The Whole Skill</div>
+  <p>You are not memorizing syntax to write it. You are building instant recognition so that reading Claude's code is fluent enough that you can spend your attention on whether it is RIGHT, not on what it says. Recognition is the floor; judgment is the goal.</p>
+</div>
+<div class="section-eyebrow">Hands On</div>
+<h3>Floor test: read the refactor, then run it</h3>
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 2.2 &mdash; Read the Refactor</div>
+  <p>Below is a function Claude was asked to refactor. Read the "after" version and predict what it returns when called with <code>getTier(75)</code>, BEFORE you run it. Predict even if you are unsure, because being wrong here is how the lesson works. The original worked correctly. The refactor introduced a scope bug. Read carefully: did any declaration move into a block where it is read outside?</p>
+  <div id="pred-p2m1-scope-mount"></div>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">get-tier.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="key">function</span> <span class="val">getTier</span>(score) {
+  <span class="key">if</span> (score &gt;= <span class="num">90</span>) {
+    <span class="key">const</span> <span class="val">tier</span> = <span class="str">"gold"</span>;
+  } <span class="key">else if</span> (score &gt;= <span class="num">70</span>) {
+    <span class="key">const</span> <span class="val">tier</span> = <span class="str">"silver"</span>;
+  } <span class="key">else</span> {
+    <span class="key">const</span> <span class="val">tier</span> = <span class="str">"bronze"</span>;
+  }
+  <span class="key">return</span> <span class="val">tier</span>;
 }
 
-<span class="comment">// WHY THIS MATTERS: if Claude changes const to let or vice versa
-// without reason, that&apos;s a signal to ask why</span></pre>
-</div>
-<h3>Functions &mdash; The Three Forms You&apos;ll See</h3>
-<div class="code-block">
-  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">function-forms.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-  <pre><span class="comment">// Form 1: Named function declaration</span>
-<span class="key">function</span> <span class="val">getUser</span>(id) { <span class="key">return</span> db.find(id); }
-
-<span class="comment">// Form 2: Arrow function (most common in modern code)</span>
-<span class="key">const</span> <span class="val">getUser</span> = (id) =&gt; { <span class="key">return</span> db.find(id); };
-
-<span class="comment">// Form 3: Shorthand arrow (implicit return)</span>
-<span class="key">const</span> <span class="val">getUser</span> = (id) =&gt; db.find(id);
-
-<span class="comment">// All three do the same thing here.
-// Ask why if Claude changes a function that uses &apos;this&apos; keyword.</span></pre>
-</div>
-<h3>Destructuring &mdash; What Claude Code Does All The Time</h3>
-<div class="code-block">
-  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">destructuring.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-  <pre><span class="comment">// Old way &mdash; Claude Code will often refactor this:</span>
-<span class="key">const</span> <span class="val">name</span> = user.name;
-<span class="key">const</span> <span class="val">email</span> = user.email;
-
-<span class="comment">// New way &mdash; destructuring</span>
-<span class="key">const</span> { <span class="val">name</span>, <span class="val">email</span> } = user;
-
-<span class="comment">// Risk: if &apos;user&apos; could be null/undefined, both will throw.
-// Look for optional chaining: user?.name</span></pre>
-</div>
-<div class="callout warning">
-  <div class="callout-label">The Null Check Pattern</div>
-  <p>Whenever you see destructuring in a diff, ask: <em>what happens if the object is null?</em> This is one of the most common sources of silent bugs in Claude Code output.</p>
-</div>
-<div class="floor-test">
-  <div class="floor-test-label">Floor Test 2.2 &mdash; Read 20 Lines</div>
-  <h4>No running, no AI help</h4>
-  <p>Open a JS file Claude Code produced. Find a function of 15&ndash;25 lines. Without running it, answer: What does it take in? What does it return? What happens if the first argument is undefined?</p>
+console.log(<span class="val">getTier</span>(<span class="num">75</span>));</pre>
+  </div>
+  <div id="runner-p2m1-scope-mount"></div>
+  <div class="callout danger">
+    <div class="callout-label">The Reveal</div>
+    <p>This throws a ReferenceError: tier is not defined. Each <code>const tier</code> is declared inside its own block (the if, the else-if, the else), so none of them exist at the <code>return tier;</code> line outside those blocks. The fix is to declare <code>tier</code> once in the function scope (<code>let tier;</code>) and assign it inside each branch, or return directly from each branch. This is the exact refactor mistake from the warning above: a declaration moved into a block where it is read outside. You just caught it by reading scope, which a week ago you could not do.</p>
+  </div>
+  <p>Here is what just happened, pictured: the general scope principle, with <code>tier</code> as the example you just saw.</p>
+  <figure class="course-figure">
+    <img src="/images/scope-nested-boxes.png" loading="lazy" alt="Variable scope as nested boxes: const tier declared inside the inner block cannot be reached by the return statement in the outer function scope; let tier in the function scope can.">
+    <figcaption>A name lives only inside its box; code outside the box cannot see in.</figcaption>
+  </figure>
   <div class="pass-criteria">
     <div class="pass-label">Pass criteria</div>
-    <p>You can answer all three for any function in the file.</p>
+    <p>You can look at the buggy <code>getTier</code> and explain, before running it, exactly why it throws and where the fix goes. Reading scope, not running code, is the skill.</p>
   </div>
 </div>
+<p>You came in able to run JavaScript without reading it. You leave able to read the part that matters: what each declaration promises, where a name lives, and the shapes that appear in every file, with one real scope bug caught by your own reading. That is the minimum viable literacy, and it is enough to start catching Claude's quietest mistakes. Next, 2.3 takes the single pattern that causes more silent production failures than any other: async and await, where the bug is not where a name lives but WHEN the code actually runs.</p>
 `},
 
 {id:'p2m2',phase:2,phaseName:'JavaScript You Must Know',num:'2.3',title:'Async/Await — The Pattern You See Everywhere',navTitle:'Async/Await Fundamentals',
@@ -2100,14 +2151,18 @@ p2m0:[
   {q:"What is the core problem with treating all Claude-generated code as undifferentiated 'code that Claude wrote'?",opts:["It makes the code harder to read because you have not organized it by language or framework","You cannot match your scrutiny to the stakes, so a database write looks the same as a CSS color change","It prevents you from asking Claude follow-up questions about what the code does","It slows down review because you have to check every line for both visual and data bugs"],correct:1,explanation:"Without placing code on the map, you cannot know whether you are approving a low-stakes frontend tweak (wrong at worst) or a high-stakes server change that could corrupt production data or expose secrets. Matching scrutiny to stakes is the whole payoff of placement: a CSS change gets a glance, a database write gets a careful read. The magic-box user gives everything the same shallow treatment."}
 ],
 p2m1:[
-  {q:"What is the key difference between var, let, and const in JavaScript?",opts:["var is for numbers, let for strings, const for objects","var is function-scoped; let and const are block-scoped; const cannot be reassigned","const values can never change even within objects; let and var can","They are interchangeable in modern JavaScript"],correct:1,explanation:"var is function-scoped (legacy), let is block-scoped and reassignable, const is block-scoped and cannot be reassigned. Understanding this helps you catch when Claude changes scoping without reason."},
-  {q:"Claude Code refactors code from separate variable assignments to destructuring. When should you flag this as a potential risk?",opts:["Always; destructuring is more error-prone than property access","When the object being destructured could potentially be null or undefined","When more than two properties are being destructured at once","Never; destructuring and property access are always equivalent"],correct:1,explanation:"Destructuring throws a TypeError if the source is null or undefined. When Claude refactors to destructuring, verify there's a null guard (optional chaining or early return) before the destructuring statement."},
-  {q:"What does the shorthand arrow function form 'const fn = x => x * 2' do differently from 'const fn = x => { return x * 2; }'?",opts:["The first form returns undefined; only the second form returns a value","They are functionally equivalent; the first uses implicit return","The first only works with primitive values","The first is faster at runtime"],correct:1,explanation:"Both forms return x * 2. The first uses implicit return (the expression is automatically returned). Understanding this prevents misreading arrow functions as void functions."},
-  {q:"A function in a diff begins 'const getUser = async (id) =>'. What does the async keyword tell you about this function?",opts:["It will run on a separate thread, not blocking the main process","It returns a Promise; any await inside it will pause execution of the function until that operation resolves","It requires special handling by the caller and cannot be used normally","It will automatically retry if the operation fails"],correct:1,explanation:"async marks a function as returning a Promise. await inside it pauses that function's execution until the awaited promise resolves. The caller must also await the function or chain .then()."},
-  {q:"You see 'const { name, role = 'user' } = profile' in a diff. What does role = 'user' mean here?",opts:["role is assigned the string 'user' regardless of profile.role","role defaults to 'user' only if profile.role is undefined or not present","This is a syntax error; defaults cannot be set in destructuring","role is compared to 'user' and will throw if they don't match"],correct:1,explanation:"In destructuring, = sets a default value for the case where the property is undefined. If profile.role exists (even if false or 0), the actual value is used. Only undefined triggers the default."},
-  {q:"The floor test asks you to read a 15-25 line function without running it. What three questions must you be able to answer?",opts:["What language is it written in, what framework does it use, and is the syntax correct","What does it take in, what does it return, and what happens if the first argument is undefined","How fast will it run, how much memory will it use, and does it have tests","What dependencies does it use, can it be refactored, and does it follow best practices"],correct:1,explanation:"The three core reading questions: inputs (what comes in), outputs (what goes out), and failure modes (what happens with bad input). These three questions reveal whether you understand the function's contract."},
-  {q:"Why does it matter when Claude Code changes a function that uses the 'this' keyword from a regular function to an arrow function?",opts:["Arrow functions cannot use the 'this' keyword at all","Arrow functions inherit 'this' from the enclosing scope rather than having their own binding, which changes behavior in class methods and event handlers","Arrow functions run slower when using 'this'","There is no practical difference for 'this' usage"],correct:1,explanation:"Arrow functions do not have their own 'this' — they capture 'this' from the enclosing lexical scope. Regular functions have their own 'this' determined by call site. Converting class methods to arrows can break 'this' binding."},
-  {q:"What is the minimum viable JavaScript literacy goal of this course?",opts:["Write complex JavaScript patterns from memory","Pass a JavaScript certification exam","Read JavaScript accurately enough to evaluate whether Claude Code output is correct","Rewrite any JavaScript function in a more efficient way"],correct:2,explanation:"The goal is reading accuracy, not writing fluency. Being able to evaluate whether Claude's output is correct, identify risks, and explain the code in a review is the target competency."}
+  {q:"The module says you do not need to write JavaScript for this course, but you do need to read it well enough to do what?",opts:["Reproduce Claude's code from memory in a review","Catch Claude in a mistake before the code runs","Pass a technical interview on JavaScript syntax","Rewrite any function Claude produces in a cleaner style"],correct:1,explanation:"The module is explicit that reading, not writing, is the skill accountability requires. The job is to look at code Claude produced and know whether it is right, which means reading it and predicting its behavior before running, not producing it yourself."},
+  {q:"What does declaring a name with const promise the reader?",opts:["The value can never change in any way","The name's binding will not be reassigned to a different value","The name is available everywhere in the file","The value is calculated only once for performance"],correct:1,explanation:"const means the binding will not be reassigned. The module frames the declaration word as the first thing the code tells you about a value: const signals a stable name, which is why it is the one you most want to see."},
+  {q:"Why does the module call var 'the one to watch' when reading code?",opts:["It is slower than let and const at runtime","It is not block-scoped, so it leaks out of the if or loop it is declared in","It cannot be used inside functions","It always indicates a bug that must be fixed"],correct:1,explanation:"var's dangerous property is that it is function-scoped, not block-scoped: a var declared inside an if or loop leaks into the whole surrounding function. That silent leak can cause collisions or surprising behavior, which is why var signals 'slow down and read carefully.'"},
+  {q:"A function declares `const result` inside an if block and then has `return result;` outside that block. What happens, and why does it matter for evaluating Claude?",opts:["It returns undefined, a silent failure to watch for","It throws a ReferenceError because result does not exist outside the block, and this is exactly the refactor bug Claude introduces","It works because const is available everywhere","It returns the string 'result' as a literal"],correct:1,explanation:"A name declared with const or let inside a block lives only in that block, so reading it outside throws a ReferenceError. The module flags this as precisely what Claude produces when it refactors and moves a declaration into a block without noticing the name is read outside it."},
+  {q:"The module shows a broken version (const inside the if) and a correct version of the same function. What single difference makes one correct?",opts:["The correct version uses var instead of const","The correct version declares the name once in the function scope and reassigns it inside the if","The correct version removes the if statement entirely","The correct version returns inside the if block"],correct:1,explanation:"The correct version declares result in the function's scope with a default and reassigns it inside the if, so it exists at the return. The difference is one line, where the name is declared, which is exactly the kind of easy-to-miss detail that separates working refactors from broken ones."},
+  {q:"When you see `=>` in a line of code, what should you read it as?",opts:["A comparison between two values","A function","An assignment of one variable to another","A loop over a collection"],correct:1,explanation:"The => is the giveaway for an arrow function. `const add = (a, b) => a + b;` is a function that takes a and b and returns their sum; reading => as 'function' is the recognition move the module teaches."},
+  {q:"What does destructuring like `const { id, email } = user;` do?",opts:["Creates a new user object with only id and email","Pulls the id and email properties out of user into their own names","Deletes all other properties from user","Checks whether user has id and email properties"],correct:1,explanation:"Destructuring unpacks values out of a thing: this pulls user.id and user.email into standalone id and email names. Seeing { } = or [ ] = on the left of an = should read as 'unpacking values out of a thing.'"},
+  {q:"How should you read the ternary `score > 50 ? \"pass\" : \"fail\"`?",opts:["A loop that runs while score is over 50","An inline if/else: condition, value-if-true, value-if-false","A comparison that returns true or false","A function call with two arguments"],correct:1,explanation:"The ternary is a compact if/else: the condition before the ?, the value-if-true between ? and :, and the value-if-false after the :. Reading ? : as 'inline if/else' is the recognition the module builds."},
+  {q:"What does optional chaining (`user?.profile?.name`) protect against?",opts:["Reassigning a const value","Crashing when user or profile is missing, yielding undefined instead","Reading a property that does not exist on a defined object","Mutating the user object accidentally"],correct:1,explanation:"Optional chaining safely reads nested properties: if user or profile is null or undefined, the expression yields undefined rather than throwing. The ?. should read as 'this might not be there, read it carefully.'"},
+  {q:"The module says scope bugs are especially dangerous compared to other errors. Why?",opts:["They always crash the entire application","They are invisible: the code often does the wrong thing quietly rather than erroring","They only appear in production, never in testing","They corrupt the database when triggered"],correct:1,explanation:"Scope bugs are the silent-failure category from Module 1.1 made concrete. Some scope mistakes error loudly, but the dangerous ones make the code do the wrong thing quietly with no error, which is exactly the wrongness-that-looks-like-success the course keeps warning about."},
+  {q:"In the floor test, getTier(75) was expected to return 'silver' but the refactored code threw a ReferenceError. What was the actual cause?",opts:["75 is not a valid score for any tier","Each `const tier` was declared inside its own branch block, so none existed at the return statement outside them","The function was missing a return statement","The else-if condition was written incorrectly"],correct:1,explanation:"Each const tier lived only inside its own if/else-if/else block, so at the return tier line, outside all of them, tier did not exist and the code threw. The fix is to declare tier once in the function scope and assign it in each branch, or return directly from each branch."},
+  {q:"What single question does the module say catches most of Claude's scope mistakes when reviewing a refactor?",opts:["Did the function's name change?","Did any name's declaration move into or out of a block?","Were any new dependencies added?","Did the number of lines increase?"],correct:1,explanation:"The module gives one reading move for the whole category: when reviewing a refactor, ask whether any name's declaration moved into or out of a block. That single question catches both the breaks-loudly case (const moved into a block read outside) and the breaks-later case (a var leak the new code depends on)."}
 ],
 p2m2:[
   {q:"What is the most common async/await bug that Claude Code introduces?",opts:["Using async without a corresponding return statement","Forgetting to add the await keyword before an async operation, causing the variable to hold a Promise instead of the resolved value","Using too many awaits in sequence when parallel execution would be faster","Not declaring the function as async before using await inside it"],correct:1,explanation:"The missing await bug: without await, the variable receives a Promise object (unresolved), not the result. Any property access on it returns undefined. This is one of the most frequent silent bugs in async code."},
@@ -3318,6 +3373,19 @@ function showModule(id) {
       mountPredictionBox(document.getElementById('pred-ft4-place4-mount'), {
         id: 'ft4-place4',
         prompt: 'Your prediction: browser or server? Is there a type layer?'
+      });
+    }, 150);
+  }
+  if (id === 'p2m1') {
+    setTimeout(function() {
+      mountPredictionBox(document.getElementById('pred-p2m1-scope-mount'), {
+        id: 'ft-p2m1-scope',
+        prompt: 'What will getTier(75) return or do? Predict before running.'
+      });
+      mountRunner(document.getElementById('runner-p2m1-scope-mount'), {
+        id: 'ft-p2m1-scope-run',
+        starterCode: 'function getTier(score) {\n  if (score >= 90) {\n    const tier = "gold";\n  } else if (score >= 70) {\n    const tier = "silver";\n  } else {\n    const tier = "bronze";\n  }\n  return tier;\n}\n\nconsole.log(getTier(75));',
+        heightRem: 12
       });
     }, 150);
   }
