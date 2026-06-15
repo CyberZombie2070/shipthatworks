@@ -1237,83 +1237,127 @@ content:`
 {id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'Reading JavaScript',
 lead:"You don't need to write JavaScript. You need to read it well enough to catch Claude in a lie. This module teaches the minimum: the shapes in every file and the reading move that catches the quietest scope bug.",
 content:`
-<p>You do not need to write JavaScript to take this course. You need to read it well enough to catch Claude in a lie. That is a much smaller skill than "learn JavaScript," and it is the one that actually protects you. This module teaches the minimum: the handful of shapes you will see in every file Claude produces, and the specific reading move that catches the bug it introduces most quietly, a change in scope you did not notice.</p>
+<p>You do not need to write JavaScript to take this course. You need to read it well enough to catch Claude in a mistake. That is a much smaller skill than "learn JavaScript," and it is the one that actually protects you. This module teaches the minimum: the handful of shapes you will see in every file Claude produces, and the one reading move that catches the bug it introduces most quietly, a change in scope you did not notice.</p>
 <div class="section-eyebrow">How to Read This Module</div>
 <h3>Reading, not writing</h3>
-<p>Every other JavaScript resource teaches you to write it. This one teaches you to read it, because reading is the skill your accountability actually requires. When Claude hands you forty lines, nobody is going to ask you to have written them. They are going to ask whether they are right, and answering that means reading the code and knowing what it does before you run it. So as you go through this, resist the urge to memorize syntax for producing code. Build instead the ability to look at a line and say what it does. That is the literacy that lets you evaluate, and evaluation is the job.</p>
-<p>We will cover variables and scope (where the silent bugs live), then the core syntax shapes you will see constantly, then the one reading exercise that ties it together.</p>
-<div class="section-eyebrow">The Three Declarations</div>
-<h3>var, let, and const: what each one promises</h3>
-<p>Almost every line of JavaScript starts by naming something. There are three words for it, and the differences matter because Claude chooses between them and the choice changes behavior.</p>
-<p><code>const</code> declares a name whose binding cannot be reassigned. <code>const total = 5;</code> means <code>total</code> will not be pointed at a different value later; try it and the code errors. This is the one you want to see most, because it is a promise: this name is stable.</p>
-<p><code>let</code> declares a name that CAN be reassigned. <code>let count = 0;</code> followed later by <code>count = count + 1;</code> is fine. Use it when the value genuinely changes.</p>
-<p><code>var</code> is the old way, from before <code>let</code> and <code>const</code> existed. It mostly works like <code>let</code> with one dangerous difference covered below. When you see <code>var</code> in modern code, it is a small flag: either old code, or Claude reaching for an older pattern.</p>
+<p>Every other JavaScript resource teaches you to write it. This one teaches you to read it, because reading is what your accountability requires. When Claude hands you forty lines, no one will ask whether you wrote them. They will ask whether they are right, and answering that means reading the code and knowing what it does before you run it. So do not try to memorize syntax for producing code. Build instead the ability to look at a line and say what it does. That is the literacy that lets you evaluate, and evaluation is the job.</p>
+<p>We will cover the three ways code names things (and the promise each one makes), then scope (where the silent bugs live), then the shapes you will see everywhere, and finish by catching a real bug in a real situation.</p>
+<div class="section-eyebrow">Naming Things</div>
+<h3>const, let, and var: three words, three promises</h3>
+<p>Almost every line of JavaScript begins by naming something. There are three words for it, and the difference between them is not trivia: Claude chooses between them, and the choice changes how the code behaves.</p>
+<p><code>const</code> is short for <strong>constant</strong>. A constant is something that does not change. So <code>const</code> declares a name you are promising not to reassign. <code>const taxRate = 0.08;</code> says: taxRate is 0.08, and it will not be pointed at a different value later. If code tries to reassign it, the program errors. That is the point of const: it is a promise, written into the code, that this name is stable. It is the one you want to see most, because a stable name is one less thing that can change behind your back.</p>
+<p><code>let</code> declares a name that <strong>can</strong> change. <code>let count = 0;</code> followed later by <code>count = count + 1;</code> is fine and expected. You use let when the value genuinely needs to move over the life of the function. Hold onto this fact, because it is about to do real work: <strong>let means this value is allowed to change.</strong></p>
+<p><code>var</code> is the old way, from before let and const existed. It mostly behaves like let, with one dangerous difference we will get to. For now, treat var as a small flag: when you see it in modern code, it means either old code or Claude reaching for an older habit (the training-cutoff issue from Module 1.2).</p>
+<div class="section-eyebrow">Seen in Real Code</div>
+<h3>Each one, earning its keep</h3>
+<p>Descriptions fade; seeing them at work sticks. Here is each declaration doing a real job:</p>
+<div class="code-block">
+  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">store-example.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+  <pre><span class="key">const</span> <span class="val">API_URL</span> = <span class="str">"https://api.store.com"</span>;   <span class="comment">// never changes &mdash; const is right</span>
+<span class="key">let</span> <span class="val">itemsInCart</span> = <span class="num">0</span>;                        <span class="comment">// changes as the user shops &mdash; let is right</span>
+<span class="val">itemsInCart</span> = <span class="val">itemsInCart</span> + <span class="num">1</span>;              <span class="comment">// reassigning let: fine</span>
+
+<span class="key">const</span> <span class="val">TAX_RATE</span> = <span class="num">0.08</span>;                      <span class="comment">// a fixed rate &mdash; const</span>
+<span class="key">let</span> <span class="val">runningTotal</span> = <span class="num">0</span>;                       <span class="comment">// accumulates as we add items &mdash; let</span></pre>
+</div>
+<p>Read the choice as information. <code>const API_URL</code> tells you the address is fixed; if you later saw code trying to change it, you would know something is wrong. <code>let runningTotal</code> tells you this value is meant to move; that is expected, not suspicious. The declaration word is the first thing the code tells you about a value, before you read another character.</p>
 <div class="callout info">
   <div class="callout-label">The Reading Move</div>
-  <p>When you see a declaration, read what it promises. <code>const</code> says this name is stable. <code>let</code> says it changes. <code>var</code> says watch out, this is old or scoped strangely. The declaration word is the first thing the code tells you about a value, before you read another character.</p>
+  <p>When you see a declaration, read the promise. const (constant) says this name is stable and will not be reassigned. let says this value is allowed to change. var says watch out, this is old or scoped strangely. You know something true about the value before you have read what it holds.</p>
 </div>
-<div class="section-eyebrow">Scope</div>
-<h3>Scope: where a name lives, and where it doesn't</h3>
-<p>Scope is the single most important reading skill in this module, because scope bugs are invisible. A scope bug does not error. It just makes the code do the wrong thing quietly, which is the silent-failure category from Module 1.1, now in concrete form.</p>
-<p>Scope is simply this: where in the code a name is usable. A name declared inside a block, the curly braces of an <code>if</code>, a loop, a function, lives only inside that block. Outside it, the name does not exist.</p>
-<p>Read this:</p>
+<div class="section-eyebrow">The Concept Behind the Silent Bugs</div>
+<h3>Scope: where a name lives (let us build this slowly)</h3>
+<p>Scope is the single most important idea in this module, because scope bugs are the quiet kind: they often do not announce themselves, they just make the code do the wrong thing. We are going to build this from nothing, because if you do not already have the idea of scope, no example will make sense. So forget code for a moment.</p>
+<p><strong>Picture a building with rooms.</strong> If you set something down inside a room, anyone else in that room can pick it up. But the moment you step out into the hallway, you can no longer reach what you left inside, the wall is between you and it. The thing still existed while you were in the room; once you leave, it is out of reach.</p>
+<p>That is scope. <strong>A name created inside a space can only be used by code in that same space.</strong> Step outside the space, and the name is not reachable from there.</p>
+<p><strong>Now, what counts as a "room" in code?</strong> A room is a pair of curly braces <code>{ }</code>. A function has braces, so a function is a room. An <code>if</code> statement has its <em>own</em> braces, nested inside the function, so an if is a smaller room <em>inside</em> the bigger room. Rooms inside rooms. Keep that picture, we are about to walk through real code with it.</p>
+<div class="section-eyebrow">Walk It Line by Line</div>
+<h3>The bug, as the computer sees it</h3>
+<p>Here is a function. Read it with the rooms picture in mind. The comments walk through what is happening to the name <code>result</code> at each step.</p>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">scope-broken.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-  <pre><span class="key">function</span> <span class="val">check</span>(score) {
-  <span class="key">if</span> (score &gt; <span class="num">50</span>) {
-    <span class="key">const</span> <span class="val">result</span> = <span class="str">"pass"</span>;
-  }
-  <span class="key">return</span> <span class="val">result</span>; <span class="comment">// ReferenceError: result is not defined</span>
-}</pre>
+  <pre><span class="key">function</span> <span class="val">check</span>(score) {       <span class="comment">// Room 1 opens (the function)</span>
+  <span class="key">if</span> (score &gt; <span class="num">50</span>) {           <span class="comment">// Room 2 opens (a smaller room inside Room 1)</span>
+    <span class="key">const</span> <span class="val">result</span> = <span class="str">"pass"</span>;    <span class="comment">// 'result' is created INSIDE Room 2</span>
+  }                           <span class="comment">// Room 2 closes &mdash; whatever was created in it is now gone</span>
+  <span class="key">return</span> <span class="val">result</span>;              <span class="comment">// back in Room 1, asking for 'result'</span>
+}                             <span class="comment">// Room 1 closes</span></pre>
 </div>
-<p>This is broken, and it does not look broken. <code>result</code> is declared inside the <code>if</code> block, so it lives only there. The <code>return result;</code> line is outside that block, where <code>result</code> does not exist. This errors. But here is the part that matters for evaluating Claude: a slightly different version fails SILENTLY.</p>
+<p>Walk it the way the computer does. <code>result</code> is created inside Room 2, the if. When Room 2's closing brace is reached, Room 2 is gone, and <code>result</code>, which only ever existed inside Room 2, is gone with it. Then <code>return result;</code> runs out in Room 1, asking for a name that lived in a room that has already closed. The computer's answer is literally: there is no <code>result</code> out here. That is a ReferenceError.</p>
+<p>Sit with what the error is and is not. It is not that <code>result</code> has the wrong value. It is that <code>result</code> <strong>does not exist</strong> at the spot where you asked for it. You are standing in the hallway reaching for something left in a room whose door has shut.</p>
+<div class="callout warning">
+  <div class="callout-label">The Lucky Case</div>
+  <p>The version above errors loudly, and that is the LUCKY case: the computer caught the mistake for you. The truly dangerous version of this fails with no error at all, just a wrong answer that ships to production. We will see exactly that in a moment, once we have met the one declaration that causes it. Hold the thought: an error you can see is a gift; the bug that hides is the one that hurts.</p>
+</div>
+<div class="section-eyebrow">Now the Fix</div>
+<h3>The same function, corrected, walked line by line</h3>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">scope-fixed.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-  <pre><span class="key">function</span> <span class="val">check</span>(score) {
-  <span class="key">let</span> <span class="val">result</span> = <span class="str">"fail"</span>;
-  <span class="key">if</span> (score &gt; <span class="num">50</span>) {
-    <span class="val">result</span> = <span class="str">"pass"</span>;
-  }
-  <span class="key">return</span> <span class="val">result</span>;
-}</pre>
+  <pre><span class="key">function</span> <span class="val">check</span>(score) {       <span class="comment">// Room 1 opens</span>
+  <span class="key">let</span> <span class="val">result</span> = <span class="str">"fail"</span>;        <span class="comment">// 'result' is created HERE, in Room 1 itself</span>
+  <span class="key">if</span> (score &gt; <span class="num">50</span>) {           <span class="comment">// Room 2 opens</span>
+    <span class="val">result</span> = <span class="str">"pass"</span>;          <span class="comment">// NOT a new name &mdash; reaching out to change the Room 1 'result'</span>
+  }                           <span class="comment">// Room 2 closes &mdash; but 'result' lives in Room 1, so it survives</span>
+  <span class="key">return</span> <span class="val">result</span>;              <span class="comment">// back in Room 1, asking for the Room 1 'result' &mdash; it is right here</span>
+}                             <span class="comment">// Room 1 closes</span></pre>
 </div>
-<p>This one is correct. <code>result</code> is declared in the function's scope, set to a default, and reassigned inside the <code>if</code>. The difference between the broken version and the correct one is <em>where the name is declared</em> (one line, easy to miss), and the broken kind is exactly what Claude produces when it refactors and moves a declaration into a block without noticing it is read outside.</p>
+<p>Only one thing changed: <code>result</code> is now created in <strong>Room 1</strong> instead of Room 2. Because it lives in the big room, it is still there when <code>return</code> asks for it at the end.</p>
+<p>And here is the load-bearing detail, stated right where you need it: <strong>remember that <code>let</code> means the value is allowed to change.</strong> That is exactly why this works. We create <code>result</code> and set it to <code>"fail"</code> as a starting point. Then, inside the if, the line <code>result = "pass";</code> does not create a second name, it reaches into the existing Room 1 <code>result</code> and changes it from "fail" to "pass". (Room 2 can see <em>out</em> into Room 1, the same way you can see into the hallway from inside a room. What you cannot do is see <em>into</em> a room whose door has closed.) So the function starts every customer at "fail" and upgrades them to "pass" only if they clear the bar. If we had used <code>const</code> here, the line <code>result = "pass";</code> would error, because const forbids exactly that change. The choice of <code>let</code> is not incidental; it is what makes the upgrade legal.</p>
+<div class="callout truth">
+  <div class="callout-label">The Whole Bug, in One Line</div>
+  <p>The difference between the broken function and the working one is a single thing: WHERE the name is created. Created inside the if (Room 2), it is gone before the return can use it. Created in the function (Room 1), it survives. When you review one of Claude's refactors, the question that catches this entire family of bug is: did any name's declaration move into or out of a set of braces?</p>
+</div>
 <div class="section-eyebrow">The var Trap</div>
 <h3>Why var is the one to watch</h3>
-<p><code>var</code> has a specific, dangerous property: it is NOT block-scoped. A <code>var</code> declared inside an <code>if</code> or a loop leaks out into the whole surrounding function. This is the one behavioral difference that bites.</p>
+<p>Now the var difference, and the rooms picture makes it simple. <code>var</code> ignores the walls of the inner room. A <code>var</code> created inside an if or a loop does not stay in that smaller room, it leaks out into the whole surrounding function.</p>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">var-leak.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
   <pre><span class="key">function</span> <span class="val">demo</span>() {
   <span class="key">if</span> (<span class="key">true</span>) {
-    <span class="key">var</span> <span class="val">x</span> = <span class="num">1</span>;
+    <span class="key">var</span> <span class="val">x</span> = <span class="num">1</span>;       <span class="comment">// created in the inner room...</span>
   }
-  <span class="key">return</span> <span class="val">x</span>;   <span class="comment">// returns 1 &mdash; var leaked out of the if block</span>
+  <span class="key">return</span> <span class="val">x</span>;          <span class="comment">// ...but var leaked out, so this returns 1 instead of erroring</span>
 }</pre>
 </div>
-<p>With <code>let</code> or <code>const</code>, <code>x</code> would not exist at the <code>return</code> and this would error, telling you something is wrong. With <code>var</code>, it silently works, which sounds good until the leak causes a name collision or a loop variable behaves unexpectedly. The lesson for evaluation: when Claude uses <code>var</code>, slow down. It is either old code or a pattern with surprising scope, and both deserve a second read.</p>
-<div class="callout warning">
-  <div class="callout-label">What Claude Gets Wrong Here</div>
-  <p>The predictable scope mistakes Claude makes in refactors: it moves a <code>const</code> or <code>let</code> declaration into a block where it is read outside (breaks loudly, easy to catch), OR it leaves a <code>var</code> whose leak the new code accidentally depends on (works now, breaks later, hard to catch). When you review a refactor, the scope question is always: did any name's declaration move into or out of a block? That single question catches most of this category.</p>
+<p>With let or const, <code>x</code> would be gone at the return and the code would error. With var, it silently works because the name leaked out of the inner room. That sounds convenient. It is the trap.</p>
+<p>Here is the silent failure I promised you earlier, the dangerous version. Read it with the rooms picture, and watch what happens on the second call:</p>
+<div class="code-block">
+  <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">apply-discount.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+  <pre><span class="key">function</span> <span class="val">applyDiscount</span>(price, isMember) {
+  <span class="key">if</span> (isMember) {
+    <span class="key">var</span> <span class="val">discount</span> = <span class="num">0.1</span>;            <span class="comment">// 10% off, but only set inside this room</span>
+  }
+  <span class="key">return</span> price - (price * <span class="val">discount</span>);
+}
+
+<span class="val">applyDiscount</span>(<span class="num">100</span>, <span class="key">true</span>);          <span class="comment">// 90  &mdash; member: discount was set, math works</span>
+<span class="val">applyDiscount</span>(<span class="num">100</span>, <span class="key">false</span>);         <span class="comment">// NaN &mdash; non-member: and nobody warned you</span></pre>
 </div>
+<p>Walk both calls. For a member, the if runs, <code>discount</code> becomes 0.1, and the return computes 100 - (100 * 0.1) = 90. Correct. For a non-member, the if never runs, so <code>discount</code> is never given a value, but because var leaks out of the room, the name <code>discount</code> still EXISTS at the return line. It just holds nothing, the value <code>undefined</code>. And <code>100 - (100 * undefined)</code> is <code>NaN</code>, "not a number." The function returns garbage.</p>
+<p>Now follow it all the way to the customer, because "returns NaN" does not sound like a disaster until you see where it lands. That return value is the price the checkout page shows. So a non-member adds a $100 item, goes to pay, and the total reads "$NaN." The "Pay" button, asked to charge an amount that is not a number, either does nothing when clicked or throws an error deep in the payment step. The customer cannot check out. They try again, refresh, give up, and leave. Every non-member, every order, silently unable to buy anything. The store does not find out from an error log, because there was no error; it finds out from a day of mysteriously collapsed sales.</p>
+<p>That is why this one is the dangerous kind. There was no crash, nothing turned red. In testing with a member it returned 90 and looked perfect, so it shipped. Had <code>discount</code> been declared with <code>let</code> inside the if, the non-member path would have thrown a loud ReferenceError the moment it ran, the computer catching the bug before it ever reached a customer. Because it is <code>var</code>, that catchable error became a silent wrong answer that rode all the way to the checkout screen. The very thing that makes var feel convenient, that the name still exists outside its room, is exactly what let a scope mistake become lost revenue. This is the whole reason reading scope by eye matters: the loud bugs announce themselves, but this kind only shows up in the sales numbers, and only you, reading the code before you commit it, could have caught it.</p>
+<p>The takeaway for reading Claude's code: when you see var, slow down. It is either old code or a pattern whose scope does not follow the room walls, and as you just saw, that is precisely where a loud, catchable error turns into a silent one that reaches users.</p>
 <div class="section-eyebrow">The Shapes You Will See Everywhere</div>
-<h3>Core syntax: reading the common shapes</h3>
-<p>Beyond declarations, a small set of shapes appears in nearly every file. You do not need to write them; you need to recognize them on sight so they stop slowing you down.</p>
-<p><strong>Arrow functions.</strong> <code>const add = (a, b) => a + b;</code> is a function. The <code>=></code> is the giveaway. It takes <code>a</code> and <code>b</code> and returns <code>a + b</code>. The long form <code>function add(a, b) { return a + b; }</code> does the same thing. When you see <code>=></code>, read "function."</p>
-<p><strong>Template literals.</strong> Backtick strings with <code>&#36;{}</code> inside: <code>&#96;Hello, &#36;{name}!&#96;</code> builds a string with <code>name</code>'s value dropped in. You met this in Phase 1's greet function. When you see backticks, read "a string being assembled."</p>
-<p><strong>Destructuring.</strong> <code>const { id, email } = user;</code> pulls the <code>id</code> and <code>email</code> properties out of <code>user</code> into their own names. <code>const [first, second] = list;</code> does the same for array positions. When you see <code>{ } =</code> or <code>[ ] =</code> on the left of an <code>=</code>, read "unpacking values out of a thing."</p>
-<p><strong>Spread and rest.</strong> <code>...</code> means either "spread this out" (<code>[...a, ...b]</code> combines two arrays) or "gather the rest" (<code>function f(...args)</code> collects all arguments into <code>args</code>). When you see <code>...</code>, read "expanding or collecting."</p>
-<p><strong>Ternary.</strong> <code>const label = score > 50 ? "pass" : "fail";</code> is a compact if/else: condition, then <code>?</code>, then the value-if-true, then <code>:</code>, then the value-if-false. When you see <code>? :</code>, read "inline if/else."</p>
-<p><strong>Optional chaining.</strong> <code>user?.profile?.name</code> safely reads nested properties; if <code>user</code> or <code>profile</code> is missing, it yields <code>undefined</code> instead of crashing. When you see <code>?.</code>, read "read this carefully, it might not be there."</p>
+<h3>Core syntax: recognizing the common shapes</h3>
+<p>Beyond declarations, a small set of shapes appears in nearly every file. You do not need to write them; you need to recognize them on sight so reading stops being slow. For each, learn the giveaway and what to read it as.</p>
+<p><strong>Arrow functions.</strong> <code>const add = (a, b) => a + b;</code> is a function. The <code>=></code> is the giveaway. It takes a and b and returns a + b. When you see <code>=></code>, read "function."</p>
+<p><strong>Template literals.</strong> Backticks with <code>&#36;{ }</code> inside: <code>&#96;Hello, &#36;{name}!&#96;</code> builds a string with name's value dropped in. When you see backticks, read "a string being assembled."</p>
+<p><strong>Destructuring.</strong> <code>const { id, email } = user;</code> pulls the id and email properties out of user into their own names. When you see <code>{ } =</code> (or <code>[ ] =</code>) on the left of an equals sign, read "unpacking values out of a thing."</p>
+<p><strong>Spread and rest.</strong> <code>...</code> means either spread it out (<code>[...a, ...b]</code> combines two arrays) or gather the rest (<code>function f(...args)</code> collects all arguments into args). When you see <code>...</code>, read "expanding or collecting."</p>
+<p><strong>Ternary.</strong> <code>const label = score &gt; 50 ? "pass" : "fail";</code> is a compact if/else: condition, then <code>?</code>, then value-if-true, then <code>:</code>, then value-if-false. When you see <code>? :</code>, read "inline if/else."</p>
+<p><strong>Optional chaining.</strong> <code>user?.profile?.name</code> safely reads nested properties; if user or profile is missing, it yields undefined instead of crashing. When you see <code>?.</code>, read "this might not be there, read it carefully."</p>
 <div class="callout truth">
   <div class="callout-label">The Whole Skill</div>
-  <p>You are not memorizing syntax to write it. You are building instant recognition so that reading Claude's code is fluent enough that you can spend your attention on whether it is RIGHT, not on what it says. Recognition is the floor; judgment is the goal.</p>
+  <p>You are not memorizing syntax to write it. You are building fast recognition so that reading Claude's code is fluent enough to spend your attention on whether it is RIGHT, not on what it says. Recognition is the floor; judgment is the goal.</p>
 </div>
-<div class="section-eyebrow">Hands On</div>
-<h3>Floor test: read the refactor, then run it</h3>
+<div class="section-eyebrow">Hands On: A Real Situation</div>
+<h3>Catch it yourself: Marcus and the reward tiers</h3>
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 2.2 &mdash; Read the Refactor</div>
-  <p>Below is a function Claude was asked to refactor. Read the "after" version and predict what it returns when called with <code>getTier(75)</code>, BEFORE you run it. Predict even if you are unsure, because being wrong here is how the lesson works. The original worked correctly. The refactor introduced a scope bug. Read carefully: did any declaration move into a block where it is read outside?</p>
-  <div id="pred-p2m1-scope-mount"></div>
+  <div class="floor-test-label">Floor Test 2.2: A Real Situation</div>
+  <p>Here is the kind of moment this whole module is for.</p>
+  <p>Marcus is a developer at an online sporting-goods store, working on its loyalty program. He asks Claude to clean up the function that decides a customer's reward tier from their points. Claude hands back the code below, and it looks reasonable, the logic reads correctly: 90 and up is gold, 70 and up is silver, everything else bronze. Marcus is about to commit it.</p>
+  <p>Before you run it, predict: what happens when this is called with a score of 75? Write your prediction down even if you are not sure, being wrong here is exactly how the lesson works. Then run it and see. Use the rooms picture: where is each <code>tier</code> created, and where is it asked for?</p>
+  <!-- PART2: prediction box ft-p2m1-scope -->
   <div class="code-block">
     <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">get-tier.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
     <pre><span class="key">function</span> <span class="val">getTier</span>(score) {
@@ -1329,22 +1373,26 @@ content:`
 
 console.log(<span class="val">getTier</span>(<span class="num">75</span>));</pre>
   </div>
-  <div id="runner-p2m1-scope-mount"></div>
+  <!-- PART2: runner ft-p2m1-scope-run -->
+  <!-- PART2: danger reveal callout -->
   <div class="callout danger">
-    <div class="callout-label">The Reveal</div>
-    <p>This throws a ReferenceError: tier is not defined. Each <code>const tier</code> is declared inside its own block (the if, the else-if, the else), so none of them exist at the <code>return tier;</code> line outside those blocks. The fix is to declare <code>tier</code> once in the function scope (<code>let tier;</code>) and assign it inside each branch, or return directly from each branch. This is the exact refactor mistake from the warning above: a declaration moved into a block where it is read outside. You just caught it by reading scope, which a week ago you could not do.</p>
+    <div class="callout-label">What Marcus Almost Committed</div>
+    <p>It does not return "silver". It throws a ReferenceError: tier is not defined. Each <code>const tier</code> is created inside its own room, the if, the else-if, the else. By the time <code>return tier;</code> runs, all three of those rooms have closed, and tier, which only ever lived inside one of them, is gone. The return is out in the function's room asking for a name that does not exist there. The fix is the same move you saw with check: create tier once in the function's room (<code>let tier;</code>) and assign it inside each branch, or return directly from inside each branch. Notice the logic was never wrong, the tiers, the cutoffs, all correct. The bug was purely WHERE the name was created. That is the kind of thing a careful reader catches and Claude, confidently, does not.</p>
   </div>
-  <p>Here is what just happened, pictured: the general scope principle, with <code>tier</code> as the example you just saw.</p>
-  <figure class="course-figure">
-    <img src="/images/scope-nested-boxes.png" loading="lazy" alt="Variable scope as nested boxes: const tier declared inside the inner block cannot be reached by the return statement in the outer function scope; let tier in the function scope can.">
-    <figcaption>A name lives only inside its box; code outside the box cannot see in.</figcaption>
-  </figure>
+  <div class="section-eyebrow">The Fix, Shown</div>
+  <h4>What Marcus should commit</h4>
+  <p>Two corrected versions, so the right shape is in front of you. The first creates <code>tier</code> once in the function's room, then assigns it inside each branch, the same move as the corrected check function:</p>
+  <!-- PART2: corrected code block 1 (let tier; version) -->
+  <p>The second skips the shared name entirely and returns from inside each branch, so there is never a name to escape a room:</p>
+  <!-- PART2: corrected code block 2 (return-from-branch version) -->
+  <p>Both are correct. The first keeps a single <code>tier</code> in the function's room where the return can reach it; the second returns immediately, so nothing has to survive a closing brace. Either fixes the bug, and now <code>getTier(75)</code> returns "silver" as Marcus expected.</p>
+  <!-- PART2: scope diagram figure -->
   <div class="pass-criteria">
     <div class="pass-label">Pass criteria</div>
     <p>You can look at the buggy <code>getTier</code> and explain, before running it, exactly why it throws and where the fix goes. Reading scope, not running code, is the skill.</p>
   </div>
 </div>
-<p>You came in able to run JavaScript without reading it. You leave able to read the part that matters: what each declaration promises, where a name lives, and the shapes that appear in every file, with one real scope bug caught by your own reading. That is the minimum viable literacy, and it is enough to start catching Claude's quietest mistakes. Next, 2.3 takes the single pattern that causes more silent production failures than any other: async and await, where the bug is not where a name lives but WHEN the code actually runs.</p>
+<p>You came in able to run JavaScript without reading it. You leave able to read the part that matters: what each declaration promises (const for constant, stable names; let for values that change), where a name lives and why stepping outside its room puts it out of reach, and the shapes that fill every file, with one real bug caught in a real situation by your own reading. That is the minimum viable literacy, and it is enough to start catching Claude's quietest mistakes. Next, in 2.3, we take the pattern that causes more silent production failures than any other, async and await, where the question is not where a name lives, but WHEN the code actually runs.</p>
 `},
 
 {id:'p2m2',phase:2,phaseName:'JavaScript You Must Know',num:'2.3',title:'Async/Await — The Pattern You See Everywhere',navTitle:'Async/Await Fundamentals',
