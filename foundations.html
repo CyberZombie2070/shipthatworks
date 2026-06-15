@@ -538,7 +538,7 @@ details.reveal[open] .reveal-body{animation:revealFade 180ms ease-out;}
 
 const TIME_MAP = {
   p1m1:'35 min',p1m2:'35 min',p1m3:'30 min',
-  p2m1:'28 min',p2m2:'32 min',p2m3:'25 min',p2m4:'24 min',
+  p2m0:'25 min',p2m1:'28 min',p2m2:'32 min',p2m3:'25 min',p2m4:'24 min',
   p3m1:'28 min',p3m2:'26 min',p3m3:'24 min',
   p4m1:'26 min',p4m2:'30 min',p4m3:'22 min',
   p5m1:'24 min',p5m2:'28 min',p5m3:'26 min',
@@ -547,7 +547,7 @@ const TIME_MAP = {
 
 const PHASE_META = [
   {n:1,name:'The Honest Reckoning',color:'#d97706',mods:['p1m1','p1m2','p1m3'],desc:'Build an accurate picture of what you know, what Claude Code hides, and what teams actually require.'},
-  {n:2,name:'JavaScript You Must Know',color:'#2563eb',mods:['p2m1','p2m2','p2m3','p2m4'],desc:'The JS patterns you will read in every Node/React codebase. Not a full course — a targeted literacy upgrade.'},
+  {n:2,name:'JavaScript You Must Know',color:'#2563eb',mods:['p2m0','p2m1','p2m2','p2m3','p2m4'],desc:'The technology landscape plus the JS patterns you will read in every Node/React codebase: a targeted reading-literacy upgrade starting with the map.'},
   {n:3,name:'Node.js / Express Patterns',color:'#16a34a',mods:['p3m1','p3m2','p3m3'],desc:'How server-side code is organized, why the layered structure matters, and what to check in every Claude diff.'},
   {n:4,name:'React Patterns',color:'#dc2626',mods:['p4m1','p4m2','p4m3'],desc:'Components, state, effects — the mental models that let you evaluate React output rather than just accept it.'},
   {n:5,name:'Workflow & Discipline',color:'#7c3aed',mods:['p5m1','p5m2','p5m3'],desc:'CLAUDE.md, surgical prompts, Git discipline — the habits that separate reliable contributors from one-hit wonders.'},
@@ -1025,14 +1025,162 @@ content:`
 </ul>
 `},
 
-{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
-lead:"You don't need to write JS fluently. You need to read it accurately. These are the patterns that appear constantly in Node.js and React code.",
+{id:'p2m0',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'The Landscape: What JavaScript, Node, and React Are',navTitle:'The Landscape',
+lead:"Before you read a single line of code, you need the map: what each technology in a modern web app is, where it runs, and why placement is the first move of evaluation.",
 content:`
 <div class="phase-intro">
   <div class="phase-intro-label">Phase 2 &mdash; JavaScript You Must Know</div>
   <h3>The reading literacy that makes everything else possible</h3>
-  <p>Four modules. Not a complete JS course &mdash; a targeted set of patterns you will see in every Node/React codebase and need to evaluate in Claude Code output.</p>
+  <p>Five modules. Not a complete JS course: a map of the technology landscape, then the targeted JS patterns you will see in every Node/React codebase and need to evaluate in Claude output.</p>
 </div>
+<p>You have almost certainly already shipped code in languages you could not name. You asked Claude for a feature, it produced files full of <code>const</code>, <code>import</code>, <code>useState</code>, <code>app.get</code>, and it worked, and you moved on. That is the magic-box trick, and it is exactly the thing this whole phase exists to take apart. Before you can read a single line and judge whether it is right, you need the one thing the magic box never gave you: a map. Not the syntax yet. The map. What is this stuff, what is each piece for, and when are you looking at which.</p>
+<div class="section-eyebrow">Orientation</div>
+<h3>Why a map comes before the territory</h3>
+<p>Here is the trap the magic box sets. It is so good at producing working code that it lets you skip the question every competent developer answered years ago: what am I even working in? You can prompt your way to a running app without ever knowing that the thing handling the button click and the thing talking to the database are written in the same language but run in two completely different places. And that ignorance is invisible right up until something breaks, at which point you cannot even tell which half of the app the bug is in, because you never knew the app had halves.</p>
+<p>So this module does something the rest of the phase depends on. It gives you the territory at a glance: the few technologies you will meet over and over, what each one is actually for, and how they fit together into the shape of a real application. Everything after this, reading scope, tracing async, evaluating a React component, slots into the map you build here. Skip the map and the later modules are just disconnected vocabulary. Build the map and they become a place you can navigate.</p>
+<div class="section-eyebrow">The Language</div>
+<h3>JavaScript: the language that runs almost everywhere</h3>
+<p>Start with the one that underlies all the rest. JavaScript is a programming language. That is the whole headline. It is the set of words and rules, <code>const</code>, <code>function</code>, <code>if</code>, <code>=></code>, that the code is written in. When you see Claude produce a block of code with <code>const total = items.reduce(...)</code>, you are looking at JavaScript, the language.</p>
+<p>The thing that makes JavaScript unusual, and the thing that confuses almost everyone at the start, is <em>where it runs</em>. For most of its life JavaScript ran in exactly one place: inside a web browser, making web pages interactive. Click a button, something happens, that was JavaScript, living in the browser. Then, in 2009, that changed, and the change is the reason your whole course exists in the shape it does. Someone took the JavaScript engine out of the browser and let it run directly on a computer, like any other program. That project is Node.js, and we will get to it in a second. The point for the map: <strong>JavaScript is one language that now runs in two very different homes</strong>: in the browser (where it makes the page interactive) and on the server (where it does the work behind the scenes). Same language, two homes. Hold onto that, because half the confusion in reading a full app comes from not knowing which home a given file lives in.</p>
+<div class="callout info">
+  <div class="callout-label">The One-Line Version</div>
+  <p>JavaScript is the language. It runs in two places: the browser (the page you see) and the server (the machine behind it). When you read JavaScript, your first orienting question is always: which home is this code in?</p>
+</div>
+<div class="section-eyebrow">The Server Runtime</div>
+<h3>Node.js: JavaScript with a job on the server</h3>
+<p>Node.js is JavaScript running on a server instead of in a browser. That is the entire idea, and it is smaller than the name makes it sound. "Node" is not a different language, it is the same JavaScript you just met, given a place to run that is not a web page and a set of powers a web page would never be allowed to have.</p>
+<p>Think about what a browser deliberately will not let code do. Browser JavaScript cannot reach into your computer's files, cannot open a direct connection to a database, cannot read secret keys off the machine. Browser code comes from strangers on the internet and letting it do those things would be a catastrophe. Node.js code is different: it is <em>your</em> code, running on <em>your</em> server, so it is trusted with exactly the powers the browser forbids. Reading and writing files, talking to databases, holding secret credentials, listening for incoming requests from the internet. That is what server code does, and Node.js is what lets it do that work in JavaScript.</p>
+<p>So when you see Claude write <code>const fs = require('fs')</code> and read a file, or <code>app.get('/users', ...)</code> and respond to a web request, you are looking at Node.js, JavaScript in its server home, doing server work. The reason this matters for evaluation: server code is where the consequences live. A bug in browser code makes a button look wrong. A bug in server code can leak data, corrupt a database, or expose a secret. Knowing you are in the server home tells you how high the stakes are.</p>
+<div class="section-eyebrow">The UI Library</div>
+<h3>React: a tool for building what the user sees</h3>
+<p>React is a library for building user interfaces: the actual visual stuff a person looks at and clicks. It is not a language, it is a set of tools, written in JavaScript, for one specific job: building the screen.</p>
+<p>Here is the cleanest way to place it. JavaScript is the language. React is a popular, widely-used <em>kit</em> written in that language for assembling interfaces out of reusable pieces called components. When you see Claude write something that looks like HTML mixed into JavaScript, with <code>&lt;Button onClick={...}&gt;</code> and <code>useState</code>, you are looking at React. It lives in the browser home (it builds the page the user sees), and it is built on top of JavaScript (it is JavaScript underneath, with a particular style and a particular set of rules layered on).</p>
+<p>Why a whole library just for the screen? Because user interfaces are where complexity explodes. A screen has state (is the menu open, is the form valid, is the data still loading), and keeping what the user sees in sync with all that changing state, by hand, is where bugs breed. React exists to manage that. And, relevant to you: it is exactly the area where Claude is fast and confidently wrong most often, which is why Phase 4 is dedicated to reading it. For now, the map entry is enough: <strong>React builds the screen, it lives in the browser, it is JavaScript underneath.</strong></p>
+<div class="section-eyebrow">The Type Layer</div>
+<h3>TypeScript: JavaScript with a safety rail bolted on</h3>
+<p>TypeScript is JavaScript plus a type layer. Same language, with extra annotations that say what kind of thing each value is supposed to be: this is a number, this is a string, this function takes a user and returns a boolean.</p>
+<p>You do not need to write TypeScript to benefit from understanding it, and you definitely do not need to master it. What matters for the map: when you see <code>function greet(name: string): string</code>, the <code>: string</code> bits are TypeScript, added notes about the <em>types</em> of things. They exist as a verification tool. They let the computer catch a whole class of mistake (passing a number where a name was expected) before the code ever runs. For you, the evaluator, types are a gift: they are the code telling you what it promises, in writing. Reading them is reading the contract. Phase 2's TypeScript module is about reading that contract well enough to catch when Claude's code quietly violates it.</p>
+<div class="callout truth">
+  <div class="callout-label">The Whole Map in Four Lines</div>
+  <p>JavaScript is the language. Node.js is that language running on the server, doing the heavy, high-stakes work. React is a kit for building the screen the user sees, running in the browser. TypeScript is JavaScript with type annotations that act as a built-in verification layer. Everything you read in this course is one of these four things.</p>
+</div>
+<div class="section-eyebrow">How They Fit</div>
+<h3>The shape of a real application</h3>
+<p>Now assemble the pieces, because the map is most useful as one picture. A typical modern web application has two halves that talk to each other across the internet.</p>
+<p>On one side is the <strong>frontend</strong>: what runs in the user's browser, the screen they see and touch. This is usually built with React, written in JavaScript (often TypeScript). When the user clicks "save," the frontend's job is to notice the click and send a message asking for the save to happen.</p>
+<p>On the other side is the <strong>backend</strong>: what runs on a server you control, out of the user's sight. This is usually Node.js (often with a tool called Express, which Phase 3 covers), written in the same JavaScript. Its job is to receive that "save" message, do the real work, check the data, talk to the database, enforce the rules, and send an answer back.</p>
+<p>Between them is a <strong>database</strong>, where the real information lives, which only the backend is allowed to touch.</p>
+<p>So the flow of a single click is: the React frontend (browser) sends a request to the Node backend (server), which reads or writes the database and sends a response back, which the frontend then shows. That round trip is the heartbeat of nearly every app you will read. And notice the single most important line on the whole map: <strong>the same JavaScript language spans both halves</strong>, which is exactly why it is so easy to lose track of which half you are in. The map's payoff is that you never have to be lost again: frontend and browser and React on one side, backend and server and Node on the other, one language across both.</p>
+<figure class="course-figure">
+  <img src="/images/full-stack-map.png" loading="lazy" alt="Diagram showing browser (React) on the left connected by request and response arrows to server (Node/Express) in the middle, which connects to a database on the right. A band underneath spanning both sides is labeled JavaScript, one language, both sides, with a thin layer above it labeled TypeScript, optional type layer.">
+  <figcaption>The full-stack map: browser, server, database, and the single language running in two homes.</figcaption>
+</figure>
+<div class="section-eyebrow">Why This Is the First Evaluation Skill</div>
+<h3>Placing code is the first thing you can now do</h3>
+<p>Here is what the map buys you immediately, before you have learned a single piece of syntax. When Claude hands you a file, you can now ask, and answer, the orienting questions that every later evaluation skill builds on.</p>
+<p>Which home is this in, browser or server? That tells you the stakes (a server bug is more dangerous) and what the code is even allowed to do (only server code touches the database or secrets). Is this frontend or backend work? That tells you which half of the app you are looking at and where a related bug might live. Is there a type layer? If you see <code>: string</code> and <code>interface</code>, you have a written contract to check the code against.</p>
+<p>None of that requires reading the logic yet. It is pure placement, and placement is the first move of evaluation. A developer who can instantly say "this is backend Node code talking to the database, so the stakes are high and I should check the data handling carefully" is already doing something the magic-box user cannot: they have located the code on the map, which means they know what kind of scrutiny it deserves. That is the whole skill of this module, and every reading-literacy module after it sharpens scrutiny you can only apply once you can place what you are looking at.</p>
+<div class="callout warning">
+  <div class="callout-label">The Trap This Closes</div>
+  <p>The magic-box user reads every file the same way: as undifferentiated "code that Claude wrote." They cannot tell a cosmetic frontend tweak from a database operation that could corrupt production. Placing code on the map is what lets you match your scrutiny to the stakes, and refusing to place it is how people approve dangerous changes because they "looked fine."</p>
+</div>
+<div class="section-eyebrow">Hands On</div>
+<h3>Floor test: place the code</h3>
+<div class="floor-test">
+  <div class="floor-test-label">Floor Test 2.1 &mdash; Place the Code</div>
+  <p>You will be shown four short, real code snippets: the kind Claude produces constantly. For each, before revealing the answer, predict whether this is browser (frontend/React) or server (backend/Node). Look for the tells you just learned: does it touch the screen (<code>&lt;div&gt;</code>, <code>useState</code>, <code>onClick</code> → browser/React) or does it touch files, databases, requests, or secrets (<code>require('fs')</code>, <code>app.get</code>, <code>db.query</code> → server/Node)? Is there a type layer (<code>: string</code>, <code>interface</code> → TypeScript)?</p>
+  <h4>Snippet 1</h4>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">UserCard.jsx</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="key">function</span> <span class="val">UserCard</span>({ name, email, role }) {
+  <span class="key">return</span> (
+    &lt;<span class="val">div</span> className=<span class="str">'card'</span>&gt;
+      &lt;<span class="val">h2</span>&gt;{name}&lt;/<span class="val">h2</span>&gt;
+      &lt;<span class="val">p</span>&gt;{email}&lt;/<span class="val">p</span>&gt;
+      &lt;<span class="val">span</span> className=<span class="str">'role-badge'</span>&gt;{role}&lt;/<span class="val">span</span>&gt;
+    &lt;/<span class="val">div</span>&gt;
+  );
+}</pre>
+  </div>
+  <p>Before looking at the answer, write your prediction below.</p>
+  <div id="pred-ft4-place1-mount"></div>
+  <details class="reveal">
+    <summary>Reveal answer</summary>
+    <div class="reveal-body">
+      <p><strong>Browser (frontend/React).</strong> The tells are immediate: the function returns what looks like HTML tags mixed into JavaScript (that is JSX, React's syntax for describing screen elements), and it uses <code>className</code> instead of HTML's <code>class</code> (a React convention). This code builds a visual card component that lives entirely in the browser. There is no database access, no file system, no server request handling. It receives data via props and renders it to the screen.</p>
+    </div>
+  </details>
+  <h4>Snippet 2</h4>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">users.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="val">app</span>.<span class="key">post</span>(<span class="str">'/api/users'</span>, <span class="key">async</span> (req, res) =&gt; {
+  <span class="key">const</span> { name, email } = req.body;
+  <span class="key">const</span> user = <span class="key">await</span> db.users.create({ name, email });
+  res.status(<span class="num">201</span>).json(user);
+});</pre>
+  </div>
+  <p>Before looking at the answer, write your prediction below.</p>
+  <div id="pred-ft4-place2-mount"></div>
+  <details class="reveal">
+    <summary>Reveal answer</summary>
+    <div class="reveal-body">
+      <p><strong>Server (backend/Node.js).</strong> Three server tells at once: <code>app.post</code> is Express listening for an incoming HTTP request (a server job), <code>req</code> and <code>res</code> are the request and response objects that only exist on the server side, and <code>db.users.create</code> is a direct database write. No browser is allowed near the database. This code runs on your server, handling an API call and writing a new user to the database.</p>
+    </div>
+  </details>
+  <h4>Snippet 3</h4>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">logger.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="key">const</span> path = <span class="val">require</span>(<span class="str">'path'</span>);
+<span class="key">const</span> config = <span class="val">require</span>(<span class="str">'./config'</span>);
+
+<span class="key">function</span> <span class="val">getLogPath</span>(filename) {
+  <span class="key">return</span> path.join(config.logDir, filename);
+}</pre>
+  </div>
+  <p>This one is subtler. Before looking at the answer, write your prediction and the single tell that decides it.</p>
+  <div id="pred-ft4-place3-mount"></div>
+  <details class="reveal">
+    <summary>Reveal answer</summary>
+    <div class="reveal-body">
+      <p><strong>Server (backend/Node.js).</strong> The single tell is <code>require('path')</code>. The <code>path</code> module is a Node.js built-in that deals with file system paths: combining directory names, resolving relative paths, finding file extensions. File system access is a server-only power. Browser JavaScript has no concept of file paths on a server. Whenever you see <code>require('path')</code>, <code>require('fs')</code>, or any Node built-in being required, you are in server territory.</p>
+    </div>
+  </details>
+  <h4>Snippet 4</h4>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">BlogFeed.tsx</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="key">import</span> { useState, useEffect } <span class="key">from</span> <span class="str">'react'</span>;
+
+<span class="key">interface</span> <span class="val">Post</span> {
+  id: <span class="str">number</span>;
+  title: <span class="str">string</span>;
+  author: <span class="str">string</span>;
+}
+
+<span class="key">function</span> <span class="val">BlogFeed</span>() {
+  <span class="key">const</span> [posts, setPosts] = useState&lt;<span class="val">Post</span>[]&gt;([]);
+  useEffect(() =&gt; { <span class="comment">/* fetch posts */</span> }, []);
+  <span class="key">return</span> &lt;<span class="val">ul</span>&gt;{posts.map(p =&gt; &lt;<span class="val">li</span>&gt;{p.title}&lt;/<span class="val">li</span>&gt;)}&lt;/<span class="val">ul</span>&gt;;
+}</pre>
+  </div>
+  <p>Before looking at the answer, write your prediction. Is there a type layer? What is the tell for where it runs?</p>
+  <div id="pred-ft4-place4-mount"></div>
+  <details class="reveal">
+    <summary>Reveal answer</summary>
+    <div class="reveal-body">
+      <p><strong>Browser (frontend/React), with a TypeScript type layer.</strong> The React tells: <code>import { useState, useEffect } from 'react'</code>, JSX in the return statement (<code>&lt;ul&gt;</code>), and the classic React state pattern. This component renders a list to the screen in the browser. The TypeScript layer is the <code>interface Post</code> block and the generic syntax <code>useState&lt;Post[]&gt;([])</code>: the angle brackets and the <code>interface</code> keyword are TypeScript, declaring the shape of each post object. The <code>.tsx</code> file extension confirms it: TypeScript plus JSX.</p>
+    </div>
+  </details>
+  <div class="pass-criteria">
+    <div class="pass-label">Pass criteria</div>
+    <p>You correctly placed at least three of the four snippets, and for each you named a specific tell, not just a gut feeling. Placement without a named tell is not yet evaluation: it is still guessing.</p>
+  </div>
+</div>
+<p>You came in able to operate the magic box and unable to say what it was building. You leave with the map: JavaScript the language, Node the server runtime, React the screen-builder, TypeScript the type layer, and the shape of the app that connects them. That map is not trivia. It is the thing that turns "code Claude wrote" into "backend Node code touching the database, which I should check carefully." Placement is the first move of evaluation. From here, Phase 2 teaches you to read the language itself, starting with the patterns Claude gets wrong most quietly. You now know where you are standing. Next, you learn to read what is in front of you.</p>
+`},
+
+{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
+lead:"You don't need to write JS fluently. You need to read it accurately. These are the patterns that appear constantly in Node.js and React code.",
+content:`
 <h3>Variables and Scope &mdash; Why This Matters for Code Review</h3>
 <p>When Claude Code refactors code, it often changes how variables are scoped. Getting this wrong causes bugs that only appear under certain conditions &mdash; the hardest kind to catch.</p>
 <div class="code-block">
@@ -1880,6 +2028,20 @@ p1m3:[
   {q:"The module connects PR size discipline to AI-assisted work specifically. What is the connection?",opts:["AI tools automatically split large changes into smaller pull requests","The tool can generate an enormous change in seconds, faster than any human can review it, so keeping changes small keeps them handoff-able","AI-generated code is always too small to need review","Reviewers trust AI-generated changes more, so they can be larger"],correct:1,explanation:"AI assistance makes it trivially easy to produce a huge change instantly, far faster than a human can genuinely review. Keeping changes small is partly the discipline of not letting the tool's generation speed outrun your ability to hand off what it produced in a reviewable form."},
   {q:"The module distinguishes a BLOCKING review comment from a SUGGESTION or NIT. Why does it say this distinction matters?",opts:["Blocking comments are written by senior reviewers and suggestions by junior ones","So you don't treat a preference as a mandate or a mandate as a preference","Suggestions can be ignored, so they're not worth reading","Blocking comments indicate the reviewer dislikes the author's approach"],correct:1,explanation:"A BLOCKING comment must be resolved before the change is accepted; a SUGGESTION or NIT is optional. Telling them apart is how you address what's actually broken without getting paralyzed by stylistic preferences, and without dismissing a real problem as mere opinion."},
   {q:"What 'private review' does the module say a solo learner can run with no reviewer present?",opts:["Running an automated linter over the code before committing","Reading your own code as if a stranger wrote it and asking the three PR questions out loud","Asking Claude Code to approve the change before merging","Waiting three months and re-reading the code with fresh eyes"],correct:1,explanation:"Before calling anything done, you read it as a stranger and ask what it does, why it's shaped that way, and how to verify it. The gap between what you can answer and what you can't is your own review, and it catches a surprising amount before anyone else is involved. (Waiting three months would work but isn't a practical workflow.)"}
+],
+p2m0:[
+  {q:"What is JavaScript, at the most basic level?",opts:["A UI framework for assembling interfaces out of reusable components","A programming language that runs in browsers and on servers","A scripting tool that was designed to only run in web browsers","A markup language that adds interactive behavior to HTML pages"],correct:1,explanation:"JavaScript is a programming language: a set of rules and words the code is written in. React is the UI framework for assembling components (option A). 'Designed only for browsers' was historically true until Node.js appeared in 2009 (option C). HTML is the markup language; it describes structure, not behavior (option D)."},
+  {q:"What happened in 2009 that matters for how this course is structured?",opts:["React was released, making JavaScript viable for large user interfaces","TypeScript was created, adding optional type annotations to JavaScript","Node.js was released, letting JavaScript run on servers outside the browser","ES6 was standardized, adding modern syntax like arrow functions and const"],correct:2,explanation:"Node.js (2009) took the JavaScript engine out of the browser and let it run directly on a server. That single change is why the same language now spans both the frontend (browser) and backend (server), which is why placement matters: browser code and server code look identical but have completely different stakes."},
+  {q:"Which statement about Node.js is correct?",opts:["Node.js is a separate language that compiles to JavaScript for the server","Node.js is JavaScript running on a server rather than in a browser","Node.js is a framework for building user interfaces, like React for the server","Node.js adds a type layer to JavaScript to catch errors before the code runs"],correct:1,explanation:"Node.js is JavaScript. Full stop. The same language, given a different place to run (a server) and a different set of allowed capabilities. The most common misconception is that it is a separate language. TypeScript adds the type layer (option D). React (and similar tools) handle user interfaces (option C). There is no compilation step from a separate language (option A)."},
+  {q:"Why is browser JavaScript deliberately prevented from reading files or accessing databases?",opts:["Browser performance limitations make those operations too slow for the user","Browser code comes from strangers on the internet, so those powers would be a security catastrophe","The HTML specification forbids it so web pages stay separate from application data","Browsers delegate all data access to TypeScript, which handles it separately"],correct:1,explanation:"Browser JavaScript runs code that came from a stranger's server. If it could read files, access databases, or read secrets on your machine, every website you visited would be a security threat. Node.js code is different: it is your own code running on your own server, so it earns the powers the browser deliberately withholds."},
+  {q:"A file contains `function UserCard({ name, email }) { return (<div className='card'><h2>{name}</h2></div>); }`. Where does this code run?",opts:["On the server; it is a Node.js route handler returning an HTML string","In the browser; it is a React component rendering UI to the screen","Either place; JavaScript functions work identically in both environments","On the server if TypeScript is present, in the browser if plain JavaScript"],correct:1,explanation:"The JSX syntax (HTML-like tags inside JavaScript returned from a function) is React's signature. React components render to the screen in the browser. The `className` instead of `class` is another React tell. Server code uses `app.get('/path', handler)` and `req`/`res` objects, not JSX tags in return statements. Whether TypeScript is present has no effect on where code runs."},
+  {q:"What is React and where does it run?",opts:["A server runtime that lets JavaScript handle database connections and file access","A UI library written in JavaScript that runs in the browser to build screens","A programming language that compiles to JavaScript for building interfaces","A type system that verifies JavaScript code catches type errors before runtime"],correct:1,explanation:"React is a library (not a language, not a runtime) for building user interfaces. It runs in the browser. It is JavaScript underneath, with a specific style for composing reusable UI components. Node.js is the server runtime for database connections (option A). TypeScript is the type system (option D). Nothing in this stack is 'compiled to JavaScript' in the sense option C implies."},
+  {q:"How does TypeScript relate to JavaScript?",opts:["TypeScript is a completely separate language that requires rewriting JavaScript code","TypeScript adds optional type annotations to JavaScript; it is the same language with an extra layer","TypeScript replaces JavaScript in any codebase that cares about correctness","TypeScript is a runtime that executes JavaScript on the server side"],correct:1,explanation:"TypeScript is JavaScript plus an optional type layer. You annotate values with types (`: string`, `interface User {...}`) and the type checker verifies them. Strip out the annotations and you have valid JavaScript. It is not a separate language (option A), it does not replace JavaScript (option C), and it does not determine where code runs (option D)."},
+  {q:"You see `app.post('/api/users', async (req, res) => { const user = await db.users.create(req.body); res.json(user); })`. Where does this run?",opts:["Browser code that builds a form and posts user data to a server","Server code (Node.js/Express) handling an incoming request and writing to a database","TypeScript code defining the shape of an API response object for validation","React code rendering a list and posting updates when the list changes"],correct:1,explanation:"`app.post` is Express registering a route handler on the server. `req` (incoming request) and `res` (outgoing response) are server-side objects. `db.users.create` is a database write, which is always a server responsibility. No browser is ever allowed to write directly to a production database. This is not TypeScript (no type annotations are visible)."},
+  {q:"Why does it matter whether a bug is in frontend (browser) code vs backend (server) code?",opts:["Frontend bugs are harder to reproduce because they depend on the user's browser version","A backend bug can leak data, corrupt a database, or expose secrets; a frontend bug typically makes something look wrong","Backend code runs faster, so its bugs have more impact on application performance","The two types do not differ significantly in risk; all generated bugs require equal care"],correct:1,explanation:"The stakes are completely different. Frontend (browser) bugs usually cause visual or interaction problems: a button looks wrong, a page doesn't update. Backend (server) bugs can expose private user data, corrupt production records, or reveal API keys and passwords. Knowing which side of the map you are on tells you immediately how carefully to read the code in front of you."},
+  {q:"You see `const fs = require('fs')` at the top of a file. What does this confirm?",opts:["This is a TypeScript file importing a type definition for file operations","This is a React component loading external assets via the file system module","This is Node.js server code; 'fs' is a built-in Node module for file system access","This is browser JavaScript that reads files the user has selected via a file input"],correct:2,explanation:"`fs` is a Node.js built-in module that reads and writes files on the server's machine. Browser JavaScript has no access to the server's file system. Any `require` of a Node built-in (`fs`, `path`, `os`, `crypto`) confirms you are looking at server-side Node.js code, full stop. TypeScript imports use ES module `import` syntax, not `require` for type definitions."},
+  {q:"In a TypeScript interface, what does `email?: string` mean?",opts:["The email field is required and must be validated before the interface can be used","The email field is optional: present as a string if provided, absent (undefined) if not","The question mark means email can accept any type, not just strings","This is a TypeScript shorthand; it is equivalent to `email: string | null`"],correct:1,explanation:"In TypeScript, `?` after a property name marks it as optional. `email?: string` means the object can include email (in which case it must be a string) or omit it entirely (in which case accessing it gives `undefined`, not `null`). Reading these optional markers lets you catch when Claude writes code that assumes the property is always present but the interface says it might not be."},
+  {q:"What is the core problem with treating all Claude-generated code as undifferentiated 'code that Claude wrote'?",opts:["It makes the code harder to read because you have not organized it by language or framework","You cannot match your scrutiny to the stakes, so a database write looks the same as a CSS color change","It prevents you from asking Claude follow-up questions about what the code does","It slows down review because you have to check every line for both visual and data bugs"],correct:1,explanation:"Without placing code on the map, you cannot know whether you are approving a low-stakes frontend tweak (wrong at worst) or a high-stakes server change that could corrupt production data or expose secrets. Matching scrutiny to stakes is the whole payoff of placement: a CSS change gets a glance, a database write gets a careful read. The magic-box user gives everything the same shallow treatment."}
 ],
 p2m1:[
   {q:"What is the key difference between var, let, and const in JavaScript?",opts:["var is for numbers, let for strings, const for objects","var is function-scoped; let and const are block-scoped; const cannot be reassigned","const values can never change even within objects; let and var can","They are interchangeable in modern JavaScript"],correct:1,explanation:"var is function-scoped (legacy), let is block-scoped and reassignable, const is block-scoped and cannot be reassigned. Understanding this helps you catch when Claude changes scoping without reason."},
@@ -3080,6 +3242,26 @@ function showModule(id) {
         id: 'ft3-gaps',
         prompt: "What a stranger couldn't tell from this code alone:",
         minHeightRem: 7
+      });
+    }, 150);
+  }
+  if (id === 'p2m0') {
+    setTimeout(function() {
+      mountPredictionBox(document.getElementById('pred-ft4-place1-mount'), {
+        id: 'ft4-place1',
+        prompt: 'Your prediction: browser (frontend/React) or server (backend/Node)? What is the tell?'
+      });
+      mountPredictionBox(document.getElementById('pred-ft4-place2-mount'), {
+        id: 'ft4-place2',
+        prompt: 'Your prediction: browser or server? Name the specific tell.'
+      });
+      mountPredictionBox(document.getElementById('pred-ft4-place3-mount'), {
+        id: 'ft4-place3',
+        prompt: 'Your prediction and the single tell that decides it:'
+      });
+      mountPredictionBox(document.getElementById('pred-ft4-place4-mount'), {
+        id: 'ft4-place4',
+        prompt: 'Your prediction: browser or server? Is there a type layer?'
       });
     }, 150);
   }
