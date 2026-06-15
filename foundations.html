@@ -1178,7 +1178,7 @@ content:`
 <p>You came in able to operate the magic box and unable to say what it was building. You leave with the map: JavaScript the language, Node the server runtime, React the screen-builder, TypeScript the type layer, and the shape of the app that connects them. That map is not trivia. It is the thing that turns "code Claude wrote" into "backend Node code touching the database, which I should check carefully." Placement is the first move of evaluation. From here, Phase 2 teaches you to read the language itself, starting with the patterns Claude gets wrong most quietly. You now know where you are standing. Next, you learn to read what is in front of you.</p>
 `},
 
-{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.1',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
+{id:'p2m1',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Reading JavaScript: The Minimum Viable Literacy',navTitle:'JS Minimum Viable Literacy',
 lead:"You don't need to write JS fluently. You need to read it accurately. These are the patterns that appear constantly in Node.js and React code.",
 content:`
 <h3>Variables and Scope &mdash; Why This Matters for Code Review</h3>
@@ -1230,7 +1230,7 @@ content:`
   <p>Whenever you see destructuring in a diff, ask: <em>what happens if the object is null?</em> This is one of the most common sources of silent bugs in Claude Code output.</p>
 </div>
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 2.1 &mdash; Read 20 Lines</div>
+  <div class="floor-test-label">Floor Test 2.2 &mdash; Read 20 Lines</div>
   <h4>No running, no AI help</h4>
   <p>Open a JS file Claude Code produced. Find a function of 15&ndash;25 lines. Without running it, answer: What does it take in? What does it return? What happens if the first argument is undefined?</p>
   <div class="pass-criteria">
@@ -1240,7 +1240,7 @@ content:`
 </div>
 `},
 
-{id:'p2m2',phase:2,phaseName:'JavaScript You Must Know',num:'2.2',title:'Async/Await — The Pattern You See Everywhere',navTitle:'Async/Await Fundamentals',
+{id:'p2m2',phase:2,phaseName:'JavaScript You Must Know',num:'2.3',title:'Async/Await — The Pattern You See Everywhere',navTitle:'Async/Await Fundamentals',
 lead:'The majority of Node.js and React bugs involving Claude Code output come from async misuse. You need to understand this cold.',
 content:`
 <p>Almost everything in a web application is asynchronous &mdash; database calls, API requests, file reads. JavaScript handles this with Promises and async/await. Claude Code uses these constantly. Misunderstanding them is how silent bugs get into production.</p>
@@ -1302,7 +1302,7 @@ content:`
 <span class="comment">// Risk: if either rejects, both fail. Handle errors.</span></pre>
 </div>
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 2.2 &mdash; Trace the Async Path</div>
+  <div class="floor-test-label">Floor Test 2.3 &mdash; Trace the Async Path</div>
   <h4>Find a missing await in a real file</h4>
   <p>Open an async function Claude Code wrote. Count every async operation. Does every one have an await? Is every await inside a try/catch? Write down what happens if any one of them fails.</p>
   <div class="pass-criteria">
@@ -1312,7 +1312,7 @@ content:`
 </div>
 `},
 
-{id:'p2m3',phase:2,phaseName:'JavaScript You Must Know',num:'2.3',title:'Modules, Imports, and Why Dependencies Matter',navTitle:'Modules & Dependencies',
+{id:'p2m3',phase:2,phaseName:'JavaScript You Must Know',num:'2.4',title:'Modules, Imports, and Why Dependencies Matter',navTitle:'Modules & Dependencies',
 lead:"Every file you import is a dependency you own. Understanding how modules work is what lets you evaluate whether Claude Code's import choices are safe.",
 content:`
 <p>Modern JavaScript code is split into modules &mdash; files that import and export specific pieces. When Claude Code writes code, it makes import decisions that carry real consequences: wrong version, wrong path, or an unnecessary dependency can break builds, create security vulnerabilities, or add megabytes to a bundle.</p>
@@ -1350,7 +1350,7 @@ content:`
   </div>
 </div>
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 2.3 &mdash; Audit an Import List</div>
+  <div class="floor-test-label">Floor Test 2.4 &mdash; Audit an Import List</div>
   <h4>Verify every dependency Claude added</h4>
   <p>Find a file Claude Code recently generated. List every import statement. For each one: is it in your package.json? Is it a relative import (safe) or an npm package? Run <code>npm ls [package]</code> to confirm the version. Flag any that seem unnecessary.</p>
   <div class="pass-criteria">
@@ -1360,7 +1360,7 @@ content:`
 </div>
 `},
 
-{id:'p2m4',phase:2,phaseName:'JavaScript You Must Know',num:'2.4',title:'TypeScript: Reading Types Without Being a TypeScript Expert',navTitle:'Reading TypeScript Types',
+{id:'p2m4',phase:2,phaseName:'JavaScript You Must Know',num:'2.5',title:'TypeScript: Reading Types Without Being a TypeScript Expert',navTitle:'Reading TypeScript Types',
 lead:"You don't need to write TypeScript. You need to read it accurately enough to evaluate what Claude Code produces.",
 content:`
 <p>TypeScript adds a type layer on top of JavaScript. When you work in a TypeScript codebase, Claude Code will produce typed code. You need to read those types accurately &mdash; not to write them from scratch, but to catch when Claude gets them wrong.</p>
@@ -1402,7 +1402,7 @@ content:`
 };</pre>
 </div>
 <div class="floor-test">
-  <div class="floor-test-label">Floor Test 2.4 &mdash; Type Audit</div>
+  <div class="floor-test-label">Floor Test 2.5 &mdash; Type Audit</div>
   <h4>Find every any in a TypeScript file</h4>
   <p>Run <code>grep -n "any" src/</code> on a TypeScript file Claude Code produced. For each hit: is it justified? Could it be typed more precisely? Note which ones represent genuine unknowns vs. Claude taking a shortcut.</p>
   <div class="pass-criteria">
