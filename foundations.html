@@ -1273,7 +1273,6 @@ content:`
 <p><strong>Now, what counts as a "room" in code?</strong> A room is a pair of curly braces <code>{ }</code>. A function has braces, so a function is a room. An <code>if</code> statement has its <em>own</em> braces, nested inside the function, so an if is a smaller room <em>inside</em> the bigger room. Rooms inside rooms. Keep that picture, we are about to walk through real code with it.</p>
 <figure class="course-figure">
   <img src="/images/scope-rooms.png" loading="lazy" alt="Scope shown as a room nested inside a larger room: a name created in the inner if-block room can be reached by code inside that room, but not by code in the outer function room; the inner wall blocks it.">
-  <figcaption>A name created in the inner room is reachable from inside it, not from the outer room. Once the inner room closes, the name is gone.</figcaption>
 </figure>
 <div class="section-eyebrow">Walk It Line by Line</div>
 <h3>The bug, as the computer sees it</h3>
