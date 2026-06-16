@@ -3543,7 +3543,8 @@ function buildQuizSection(modId) {
 function startQuiz(modId) {
   var bank = QB[modId];
   if (!bank) return;
-  var shuffled = bank.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 4);
+  var drawCount = Math.ceil(bank.length * 2 / 3);
+  var shuffled = bank.slice().sort(function() { return Math.random() - 0.5; }).slice(0, drawCount);
   var drawn = shuffled.map(function(q) {
     var opts = q.opts.slice();
     var correctText = opts[q.correct];
@@ -3620,7 +3621,7 @@ function showQuizResults(modId) {
   var state = quizState[modId];
   if (!state) return;
   var nCorrect = state.answers.filter(function(a) { return a.isCorrect; }).length;
-  var passed = nCorrect >= 3;
+  var passed = nCorrect >= (state.drawn.length - 1);
   if (passed) {
     passedQuizzes.add(modId);
     localStorage.setItem('adf_quizzes', JSON.stringify(Array.from(passedQuizzes)));
