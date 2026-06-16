@@ -2,7 +2,7 @@
 
 The map the refactor runs on. Companion to COURSE-DESIGN-PRINCIPLES.md: that doc says HOW to build a module; this doc says WHAT each module teaches, in what order, what it assumes, how it ties to the spine, and how the whole arc readies the learner for the AI Code Engineer course. Read both before expanding any module.
 
-This outline is the durable cross-session reference. When a future session expands a module, it works against this outline so the eighteen modules stay one coherent course rather than eighteen disconnected tutorials.
+This outline is the durable cross-session reference. When a future session expands a module, it works against this outline so the twenty-one modules stay one coherent course rather than twenty-one disconnected tutorials.
 
 ---
 
@@ -144,7 +144,7 @@ Reading React output with confidence. By the end, the learner can evaluate any R
 - Quiz: ~12.
 - Forward tie: design judgment is a through-skill into the Engineer course.
 
-# PHASE 5 — Workflow & Discipline (4 modules)
+# PHASE 5 — Workflow & Discipline (5 modules)
 The operational habits separating reliable contributors from people who get lucky. This phase begins explicitly priming the Engineer-course mindset: repeatable process over one-off success.
 
 ## 5.1 — CLAUDE.md and Session Discipline
@@ -180,7 +180,20 @@ The operational habits separating reliable contributors from people who get luck
 - Quiz: ~12.
 - Forward tie: deterministic validators are a major Engineer-course theme; this is the on-ramp.
 
-## 5.4 — Token and Context Discipline: Using the Tool Without Wasting It
+## 5.4 — Reading the Console: Tool Calls, Approvals, and When to Say No
+- Teaches: how to read what Claude Code is actually doing in the console — the tool-call types (run a shell command, edit a file, write a new file, read a file) and what each is about to do; how to decode an approval prompt before answering it (what a chained shell command runs, what `git add .` actually stages, what a proposed file edit changes); the red flags that mean slow down (destructive or irreversible operations, a command whose scope is broader than the task, an edit to a file you did not expect); and the three responses at the gate — approve, deny, or amend — with reflexive approval named as the magic-box habit in its purest form.
+- Assumes: Phase 1 (1.2's loop, and the permission-prompt-as-accountability framing it already introduces), 5.1 (session discipline), 5.3 (reading a diff and basic Git, which an edit or commit approval requires you to read).
+- Spine tie: the approval gate is where "verify, do not trust the confident surface" collapses to a single keystroke. A learner who cannot read the proposed action cannot evaluate it, so they approve it — the course's central failure, concentrated into one click.
+- What goes wrong (sourced from real incidents building this course, reconstructed as fictional practitioner mocks): approving a chained command after reading only its first clause; not noticing `git add .` stages more than intended; approving a write that overwrites a file rather than editing it; saying yes to a destructive command (delete, force-push, overwrite) because the prompt looked routine; never using deny or amend, so the gate becomes a rubber stamp.
+- Framing rule (critical, same family as 5.5's judgment-not-pricing): teach JUDGMENT, not the current console UI. The exact prompt layout, the numbered options, the keybindings all change across tool versions and date instantly. Teach the categories of action and what to check before approving each; show the current console only as a captured, date-stamped specimen under the Section 10 honesty rules (provenance shown, never presented as evergreen). Principles in, this-version's-keystrokes out.
+- Boundary with 5.5 (no double-teaching): this module owns the APPROVAL GATE — reading a proposed action and deciding approve/deny/amend before it runs. 5.5 owns the RUN — recognizing a stuck or runaway agent that is already executing and interrupting it, plus scope and context cost. Reviewing a proposed action versus controlling one in flight.
+- Code/exercise: read three captured approval prompts (a routine git add-and-commit chain, an over-broad shell command, a write that would overwrite) and decide approve, deny, or amend for each, naming the specific tell.
+- Diagram (create): the approval gate as a decision flow — proposed action -> read it (what is it? how broad? reversible?) -> approve | amend | deny -> runs, or does not. (Alternatively: the four tool-call types and what each one can touch — shell, edit, write, read.)
+- Interactive: an "approve, amend, or deny?" judgment exercise over captured prompts; a prediction box on what a given command will do, before the reveal.
+- Quiz: ~12.
+- Forward tie: live-agent control is the on-ramp to the Engineer course's agent-safety and permissioning material — running agents you can trust because you can see what they are about to do. (Meta-note for the builder: this course's own development is live source material — approving the wiring prompts that build these modules is itself the lesson, reconstructed as fictional mocks per Section 9.)
+
+## 5.5 — Token and Context Discipline: Using the Tool Without Wasting It
 - Teaches: that AI tools have real, finite costs (tokens, context window, time) and that a skilled practitioner manages them deliberately rather than firing prompts and hoping; how to scope a request to one operation; when to start a fresh chat/context versus continuing; externalizing state so context is disposable; not making the model re-derive what it could read; recognizing and stopping a stuck/runaway agent.
 - Assumes: Phase 1, 5.1 (session discipline), 5.2 (surgical prompts).
 - Spine tie: using the tool well includes using it efficiently and deliberately; the accountable practitioner controls the tool rather than letting it run open-ended. Same spine as verification: deliberate control, not blind trust.
@@ -224,7 +237,7 @@ The professional habits that build lasting trust and determine trajectory. This 
 - **No double-teaching:** async is owned by 2.3; later phases USE it but don't re-teach it. Same for types (2.5), Git (5.3), the handoff standard (Phase 1). When a later module needs a prior concept, reference it, don't re-explain.
 - **No gaps:** every concept a module ASSUMES must be taught in a prior module (see the "Assumes" line). If 4.2 needs closures, 2.2 must have covered them (2.1 is the Landscape, no code; reading-level scope/closures are taught in 2.2). Verify the chain holds when expanding.
 - **Spine visibility:** every module has an explicit "what Claude gets wrong here" treatment and ties back to verify-don't-trust. If a draft loses this, it has drifted.
-- **Diagram budget:** ~1 diagram per module (18 total across the course, ~15 new for Phases 2-6), each genuinely spatial per the design doc's test. Listed above per module. Don't exceed without reason; don't decorate.
+- **Diagram budget:** ~1 diagram per module (about 21 total across the course, ~17 new for Phases 2-6), each genuinely spatial per the design doc's test. Listed above per module. Don't exceed without reason; don't decorate.
 - **Engineer-course bridge:** Phases 5-6 explicitly name forward ties. The practitioner-findings integration map routes specific war-stories into Engineer modules; keep Foundations setting them up, not resolving them.
 
 ## Build order (confirmed)
@@ -234,5 +247,5 @@ The professional habits that build lasting trust and determine trajectory. This 
 3. Then the rest, phase by phase, 2 → 3 → 4 → 5 → 6, against this outline + the proven templates.
 4. Each module: full content draft + wiring prompt together (after the two template modules are approved).
 5. Diagrams produced per the design-doc recipe as each module is built (or batched per phase).
-6. Total module count is now 20 (Phase 2 grew from 4 to 5 with the landscape addition; Phase 5 grew from 3 to 4 with the token/context discipline addition, 5.4). Modules still to expand from stub: Phases 3-6 plus the new 5.4 (2.1 and 2.2 are built).
+6. Total module count is now 21 (Phase 2 grew from 4 to 5 with the landscape addition; Phase 5 grew from 3 to 5 — the token/context discipline module, now 5.5, and the console/approvals module, 5.4). Modules still to expand from stub: Phases 3-6 plus 5.4 and 5.5 (2.1 and 2.2 are built).
 7. Renumbering note: adding Landscape as 2.1 shifted the old 2.1-2.4 to 2.2-2.5. When wiring, the module ids (p2m1..p2m5) and navTitles must be updated consistently, and any cross-references to old numbers fixed.
