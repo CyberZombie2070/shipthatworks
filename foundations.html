@@ -252,9 +252,6 @@ pre .comment{color:#4a5570;}pre .key{color:#5b8ff9;}pre .val{color:#e8c547;}pre 
 .panel-ft-count{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--text-dim);}
 .panel-ft-saved{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--success);opacity:0;transition:opacity .3s;}
 .panel-ft-saved.show{opacity:1;}
-.transcript-ph{padding:2rem 1.25rem;text-align:center;color:var(--text-dim);}
-.transcript-ph .t-icon{font-size:2rem;margin-bottom:0.75rem;}
-.transcript-ph p{font-size:0.8125rem;line-height:1.7;}
 .overlay-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:flex-start;justify-content:center;padding-top:5rem;}
 .overlay-bg.show{display:flex;}
 .search-box{background:var(--surface);border:1px solid var(--border);border-radius:0.5rem;width:100%;max-width:33.75rem;overflow:hidden;}
@@ -458,7 +455,6 @@ details.reveal[open] .reveal-body{animation:revealFade 180ms ease-out;}
 <div id="notesPanel">
   <div class="panel-hdr">
     <button class="panel-tab-btn active" id="panelTabBtn-notes" onclick="switchPanelTab('notes')">Notes</button>
-    <button class="panel-tab-btn" id="panelTabBtn-transcript" onclick="switchPanelTab('transcript')">Transcript</button>
     <button class="panel-close" onclick="togglePanel()" title="Close">&times;</button>
   </div>
   <div class="panel-body">
@@ -467,12 +463,6 @@ details.reveal[open] .reveal-body{animation:revealFade 180ms ease-out;}
       <div class="panel-ft">
         <span class="panel-ft-count" id="panelNotesCount">0 chars</span>
         <span class="panel-ft-saved" id="panelSaved">Saved</span>
-      </div>
-    </div>
-    <div class="panel-content hidden" id="panelContent-transcript">
-      <div class="transcript-ph">
-        <div class="t-icon">&#127908;</div>
-        <p>Transcript will appear here once audio narration is added to this module.</p>
       </div>
     </div>
   </div>
@@ -3499,7 +3489,7 @@ function togglePanel() {
 
 function switchPanelTab(tab) {
   panelTab = tab;
-  ['notes','transcript'].forEach(function(t) {
+  ['notes'].forEach(function(t) {
     var btn = document.getElementById('panelTabBtn-' + t);
     var content = document.getElementById('panelContent-' + t);
     if (btn) btn.classList.toggle('active', t === tab);
