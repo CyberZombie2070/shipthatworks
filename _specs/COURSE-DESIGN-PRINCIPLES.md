@@ -199,7 +199,7 @@ This is the most important section for the code modules, and it was added after 
 - **Guardrail.** A character illustrates; it never replaces the second-person address to the reader, and never overrides a productive-failure exercise.
 
 ### Cast registry (living; append a beat whenever a core character appears)
-- **Dani — CORE** (persona: assigned, no prior developer title; building a customer onboarding app with Claude Code). Beat 1.1: ships a `greet()` function that emails "Hello, undefined!" to hundreds of real users; no error fires; her lead asks what happened and she cannot explain, because the code passed every signal she knew to check. [Future beats appended as built.]
+- **Dani — CORE** (persona: assigned, no prior developer title; building a customer onboarding app with Claude Code). Beat 1.1: ships a `greet()` function that emails "Hello, undefined!" to hundreds of real users; no error fires; her lead asks what happened and she cannot explain, because the code passed every signal she knew to check. Beat 1.2: at the permission prompt she waves through an edit she did not read (a config change that stops the app from starting) and notices only when it breaks; she is reading her own code more carefully now but still approves the tool's actions on reflex, so the gap now shows up in actions approved, not only code written. [Future beats appended as built.]
 - **Maria — GUEST** (2.2): refactoring the discount logic on a sporting-goods checkout; the var-leak bug rides from undefined to NaN to "$NaN" at checkout to collapsed sales. One-off, not part of the core arc.
 
 ## 9. Voice & writing principles
