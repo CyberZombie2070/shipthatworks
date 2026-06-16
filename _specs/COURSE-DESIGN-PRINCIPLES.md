@@ -152,7 +152,7 @@ This course is MORE interactive than typical video courses; that is the moat. Av
 
 ## 8. Quiz standard
 
-- ~12 questions per module, gated (Mark Complete requires passing).
+- Each module's quiz draws Math.ceil(bank.length * 2/3) questions per attempt from a larger bank (the held-out remainder defeats question- and answer-position memorization across attempts), in random order with options shuffled. Mark Complete requires missing at most one (about 83% on a 6-of-8 draw, about 88% on an 8-of-12 draw). Banks hold 8 to 12 questions; 12 is preferred so a full third stays held out (a bank of 8 reserves only 2, a thin pool; growing those banks to 12 is deferred content work). The former draw-4 / pass-3 (75% of a third of the bank) is retired.
 - **Distractor quality is non-negotiable:** options within ~25% length of each other; the correct answer is not reliably the longest; distractors are plausible misconceptions a real learner would hold, not throwaway filler. A quiz a learner can pass by pattern-matching answer length teaches nothing.
 - Each question has an explanation shown after answering.
 - Memory/personalization caveat: any question or floor step that says "ask Claude" must note results differ if the learner has personalized Claude.
