@@ -28,7 +28,7 @@ The thesis, which every design decision must serve: **rigor over polish; verify,
 
 **Coherence principle:** because the course is about using AI tools well, the course may itself use AI tools well in its own production (AI-generated diagrams, AI narration, captured AI responses) PROVIDED it does so with the same rigor it teaches: verify output, check licensing, be honest about provenance. What it must never do is use AI lazily — decorative AI slop, unverified output, or anything that contradicts the thesis. The test: would a careful practitioner be embarrassed by this artifact? If yes, redo it.
 
-**Responsible token/context discipline (taught AND practiced):** the course teaches deliberate, efficient tool use as part of using AI well — scope requests tightly, isolate heavy operations, externalize state into durable docs, start a fresh context when the conversation stops earning its keep, interrupt a runaway agent, point the tool at sources rather than re-deriving. This is a Phase 5 teaching topic (module 5.4), framed as JUDGMENT not pricing (no dollar-per-token mechanics, which date instantly and miss the point). It is also a BUILD discipline the course's own development must follow (see Section 11: stall ceiling, small isolated operations, git add . staging). The two reinforce each other: building this course efficiently is itself a worked example of the discipline it teaches, and the real incidents (the mega-prompt that hung and wasted ~50k tokens; deciding to hand off when context stopped earning its keep) are practitioner war-story material for 5.4, reconstructed as fictional mocks.
+**Responsible token/context discipline (taught AND practiced):** the course teaches deliberate, efficient tool use as part of using AI well — scope requests tightly, isolate heavy operations, externalize state into durable docs, start a fresh context when the conversation stops earning its keep, interrupt a runaway agent, point the tool at sources rather than re-deriving. This is a Phase 5 teaching topic (module 5.5), framed as JUDGMENT not pricing (no dollar-per-token mechanics, which date instantly and miss the point). It is also a BUILD discipline the course's own development must follow (see Section 11: stall ceiling, small isolated operations, git add . staging). The two reinforce each other: building this course efficiently is itself a worked example of the discipline it teaches, and the real incidents (the mega-prompt that hung and wasted ~50k tokens; deciding to hand off when context stopped earning its keep) are practitioner war-story material for 5.5, reconstructed as fictional mocks.
 
 ---
 
@@ -213,6 +213,7 @@ When showing real captured Claude outputs inline:
 - Supplement, not substitute: pools serve fixed demonstration prompts; open-ended practice still points to real Claude.
 - Compare-mode pools STACK vertically (full width), never side-by-side columns (which overflow with code).
 - Apply only where it fits; never where a frozen capture would corrupt a lesson about currency (e.g., not the Node-LTS staleness exercise).
+- This applies to console/UI screenshots as well (approval prompts, tool-call displays): captured, date-stamped, shown as dated specimens, never as the current or evergreen interface. The lesson is the judgment, not the version's layout or keybindings. (Used by module 5.4, Reading the Console.)
 
 ---
 
