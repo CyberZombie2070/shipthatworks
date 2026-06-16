@@ -1033,7 +1033,7 @@ content:`
   <h3>The reading literacy that makes everything else possible</h3>
   <p>Five modules. Not a complete JS course: a map of the technology landscape, then the targeted JS patterns you will see in every Node/React codebase and need to evaluate in Claude output.</p>
 </div>
-<p>You have almost certainly already shipped code in languages you could not name. You asked Claude for a feature, it produced files full of <code>const</code>, <code>import</code>, <code>useState</code>, <code>app.get</code>, and it worked, and you moved on. That is the magic-box trick, and it is exactly the thing this whole phase exists to take apart. Before you can read a single line and judge whether it is right, you need the one thing the magic box never gave you: a map. Not the syntax yet. The map. What is this stuff, what is each piece for, and when are you looking at which.</p>
+<p>Maybe you have shipped a feature you could not have written by hand. Maybe you have only watched Claude produce one and run it. Either way, you have already run code in languages you could not name: files full of <code>const</code>, <code>import</code>, <code>useState</code>, <code>app.get</code> that worked, so you moved on. That is the magic-box trick, and it is exactly the thing this whole phase exists to take apart. The fix is not syntax, not yet. It is knowing what you are looking at: which technology, doing which job, running in which place.</p>
 <div class="section-eyebrow">Orientation</div>
 <h3>Why a map comes before the territory</h3>
 <p>Here is the trap the magic box sets. It is so good at producing working code that it lets you skip the question every competent developer answered years ago: what am I even working in? You can prompt your way to a running app without ever knowing that the thing handling the button click and the thing talking to the database are written in the same language but run in two completely different places. And that ignorance is invisible right up until something breaks, at which point you cannot even tell which half of the app the bug is in, because you never knew the app had halves.</p>
@@ -1077,7 +1077,7 @@ content:`
 </figure>
 <div class="section-eyebrow">See It Before You Do It</div>
 <h3>Two files, fully labeled: watch the placement happen</h3>
-<p>You do not need to be fluent in JavaScript to do this. Below are two real files. Every single tell is labeled, on purpose. This is the one place in the course where nothing is hidden: watch how each file gets placed, and the move becomes yours. Later, you will do this with no labels at all. Right now, read the labels.</p>
+<p>You do not need to be fluent in JavaScript for this part. Below are two real files with every tell labeled, nothing left for you to infer: read the labels, watch each file get placed as browser or server code, and you are well on your way to making that call yourself. The floor test that follows takes the labels away.</p>
 <p>This first file is FRONTEND code. It runs in the browser, building the screen the user sees. Read the comment on each line that matters.</p>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">LikeButton.jsx</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
@@ -1101,7 +1101,7 @@ content:`
   );
 }</pre>
 </div>
-<p>This is frontend code: it runs in the browser. Three tells point the same way: <code>react</code>, <code>useState</code>, and <code>&lt;button onClick&gt;</code>. Each one is about building or reacting to the screen, and nothing builds the screen except browser code. You reached that conclusion from the tells alone, without working out what the code does. That is the skill: read the signals, not the logic.</p>
+<p>Three tells point the same way: <code>react</code>, <code>useState</code>, and <code>&lt;button onClick&gt;</code>. Each one is about building or reacting to the screen, and nothing builds the screen except browser code. You read that from the tells, without working out what the code does. That is the first move: read the signals, not the logic.</p>
 <p>This second file is BACKEND code. It runs on the server, doing work the user never sees. Again, every tell is labeled.</p>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">users.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
@@ -1126,16 +1126,18 @@ content:`
   //          request is server work.</span>
 });</pre>
 </div>
-<p>This is backend code: it runs on the server. Four tells point the same way: <code>require</code>, <code>app.get</code>, <code>db.query</code>, and <code>res.json</code>. And one settles it on its own: <code>db.query</code> talks to the database, which browser code is never allowed to do, so this can only be server code. Again, you placed it from the tells, without reading the logic.</p>
+<p>Four tells point the same way: <code>require</code>, <code>app.get</code>, <code>db.query</code>, and <code>res.json</code>. And one settles it on its own: <code>db.query</code> talks to the database, which browser code is never allowed to do, so this can only be server code. Again, the tells placed it, without reading the logic.</p>
 <div class="callout truth">
   <div class="callout-label">The Whole Move, Fully Shown</div>
   <p>Screen-words mean browser: <code>react</code>, <code>useState</code>, <code>onClick</code>, JSX tags like <code>&lt;button&gt;</code>. Data-words mean server: <code>require</code>, <code>app.get</code>, <code>db.query</code>, <code>res.json</code>. You just watched two real files get placed by their tells alone, with no logic read and nothing hidden. Notice how heavily labeled this was. That is on purpose, and it will not last: the floor test below gives you fresh files with NO labels, and asks you to call it yourself. The training wheels come off one module at a time. Right now, they are fully on, and that is exactly right.</p>
 </div>
 <div class="section-eyebrow">Why This Is the First Evaluation Skill</div>
 <h3>Placing code is the first thing you can now do</h3>
-<p>Here is what the map buys you immediately, before you have learned a single piece of syntax. When Claude hands you a file, you can now ask, and answer, the orienting questions that every later evaluation skill builds on.</p>
+<p>Here is what the map buys you immediately, before you have learned a single piece of syntax. When Claude hands you a file, you can begin to answer the orienting questions that every later evaluation skill builds on.</p>
 <p>Which home is this in, browser or server? That tells you the stakes (a server bug is more dangerous) and what the code is even allowed to do (only server code touches the database or secrets). Is this frontend or backend work? That tells you which half of the app you are looking at and where a related bug might live. Is there a type layer? If you see <code>: string</code> and <code>interface</code>, you have a written contract to check the code against.</p>
-<p>None of that requires reading the logic yet. It is pure placement, and placement is the first move of evaluation. A developer who can instantly say "this is backend Node code talking to the database, so the stakes are high and I should check the data handling carefully" is already doing something the magic-box user cannot: they have located the code on the map, which means they know what kind of scrutiny it deserves. That is the whole skill of this module, and every reading-literacy module after it sharpens scrutiny you can only apply once you can place what you are looking at.</p>
+<p>None of that requires reading the logic yet. It is pure placement, and placement is the first move of evaluation. A developer who can instantly say "this is backend Node code talking to the database, so the stakes are high and I should check the data handling carefully" is already doing something the magic-box user cannot: they have located the code on the map, which means they know what kind of scrutiny it deserves. That is the first thing this module makes possible, and every reading-literacy module after it sharpens scrutiny you can only apply once you can place what you are looking at.</p>
+
+<p>A short list of tells will not settle every file. Some mix both worlds, some need more than a glance, and you will meet those later. That is the point of starting here: this gives you the reliable first read for the common case, and the modules after it sharpen the harder calls. Placement is where evaluation starts, not where it ends.</p>
 <div class="callout warning">
   <div class="callout-label">The Trap This Closes</div>
   <p>The magic-box user reads every file the same way: as undifferentiated "code that Claude wrote." They cannot tell a cosmetic frontend tweak from a database operation that could corrupt production. Placing code on the map is what lets you match your scrutiny to the stakes, and refusing to place it is how people approve dangerous changes because they "looked fine."</p>
