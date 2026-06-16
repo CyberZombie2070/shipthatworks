@@ -144,7 +144,7 @@ Reading React output with confidence. By the end, the learner can evaluate any R
 - Quiz: ~12.
 - Forward tie: design judgment is a through-skill into the Engineer course.
 
-# PHASE 5 — Workflow & Discipline (3 modules)
+# PHASE 5 — Workflow & Discipline (4 modules)
 The operational habits separating reliable contributors from people who get lucky. This phase begins explicitly priming the Engineer-course mindset: repeatable process over one-off success.
 
 ## 5.1 — CLAUDE.md and Session Discipline
@@ -180,6 +180,18 @@ The operational habits separating reliable contributors from people who get luck
 - Quiz: ~12.
 - Forward tie: deterministic validators are a major Engineer-course theme; this is the on-ramp.
 
+## 5.4 — Token and Context Discipline: Using the Tool Without Wasting It
+- Teaches: that AI tools have real, finite costs (tokens, context window, time) and that a skilled practitioner manages them deliberately rather than firing prompts and hoping; how to scope a request to one operation; when to start a fresh chat/context versus continuing; externalizing state so context is disposable; not making the model re-derive what it could read; recognizing and stopping a stuck/runaway agent.
+- Assumes: Phase 1, 5.1 (session discipline), 5.2 (surgical prompts).
+- Spine tie: using the tool well includes using it efficiently and deliberately; the accountable practitioner controls the tool rather than letting it run open-ended. Same spine as verification: deliberate control, not blind trust.
+- What goes wrong (all sourced from REAL incidents building this course, reconstructed as fictional practitioner mocks): bundling too much into one request so it is expensive AND unreliable (the mega-prompt that hung for over an hour and wasted ~50k tokens before timing out); letting a stuck agent run instead of interrupting it (no output for minutes is stuck, not thinking); re-explaining what is already written in a file instead of pointing the tool at it; carrying a huge conversation forward when the durable knowledge is already externalized in docs, paying the long-context premium on every action; vague open-ended requests that make the model wander and re-search.
+- Framing rule (critical): teach JUDGMENT, not pricing. No "tokens cost $X per million" (dates instantly, misses the point). Teach the discipline: scope tightly, isolate heavy operations, externalize state into durable docs, start fresh when context stops earning its keep, interrupt a runaway, point the tool at sources instead of re-deriving. Principles in, product-specific pricing mechanics out (consistent with the practitioner-findings rule).
+- Code/exercise: take a bloated, over-bundled request and split it into scoped operations; identify the point where a conversation should have become a fresh context; "what is missing that would let this run in a fresh chat" (i.e. what state needs externalizing).
+- Diagram (create): when to continue vs start fresh — a simple decision flow (is the durable knowledge written down? is the history still doing work? is every action paying a long-context tax?). Or: scoped-operation vs bundled-operation (one hangs, one completes).
+- Interactive: "scope this request" or "continue or start fresh?" judgment exercise.
+- Quiz: ~12.
+- Forward tie: context/cost discipline scales directly into the Engineer course's agent-workflow and long-running-task material. Meta-note for the builder: this very course's development was a live demonstration of these lessons; that authenticity is the point, keep the war-stories real (reconstructed as fictional mocks).
+
 # PHASE 6 — Team Collaboration (2 modules)
 The professional habits that build lasting trust and determine trajectory. This phase explicitly bridges to the Engineer course: the learner finishes ready to build production systems on a team, with the reading/evaluation/discipline literacy in place.
 
@@ -209,8 +221,8 @@ The professional habits that build lasting trust and determine trajectory. This 
 
 ## Cross-phase consistency checks (catch drift early)
 
-- **No double-teaching:** async is owned by 2.2; later phases USE it but don't re-teach it. Same for types (2.4), Git (5.3), the handoff standard (Phase 1). When a later module needs a prior concept, reference it, don't re-explain.
-- **No gaps:** every concept a module ASSUMES must be taught in a prior module (see the "Assumes" line). If 4.2 needs closures, 2.1 must have covered them. Verify the chain holds when expanding.
+- **No double-teaching:** async is owned by 2.3; later phases USE it but don't re-teach it. Same for types (2.5), Git (5.3), the handoff standard (Phase 1). When a later module needs a prior concept, reference it, don't re-explain.
+- **No gaps:** every concept a module ASSUMES must be taught in a prior module (see the "Assumes" line). If 4.2 needs closures, 2.2 must have covered them (2.1 is the Landscape, no code; reading-level scope/closures are taught in 2.2). Verify the chain holds when expanding.
 - **Spine visibility:** every module has an explicit "what Claude gets wrong here" treatment and ties back to verify-don't-trust. If a draft loses this, it has drifted.
 - **Diagram budget:** ~1 diagram per module (18 total across the course, ~15 new for Phases 2-6), each genuinely spatial per the design doc's test. Listed above per module. Don't exceed without reason; don't decorate.
 - **Engineer-course bridge:** Phases 5-6 explicitly name forward ties. The practitioner-findings integration map routes specific war-stories into Engineer modules; keep Foundations setting them up, not resolving them.
@@ -222,5 +234,5 @@ The professional habits that build lasting trust and determine trajectory. This 
 3. Then the rest, phase by phase, 2 → 3 → 4 → 5 → 6, against this outline + the proven templates.
 4. Each module: full content draft + wiring prompt together (after the two template modules are approved).
 5. Diagrams produced per the design-doc recipe as each module is built (or batched per phase).
-6. Total module count is now 19 (Phase 2 grew from 4 to 5 with the landscape addition); 16 modules remain to expand from stub (Phases 2-6).
+6. Total module count is now 20 (Phase 2 grew from 4 to 5 with the landscape addition; Phase 5 grew from 3 to 4 with the token/context discipline addition, 5.4). Modules still to expand from stub: Phases 3-6 plus the new 5.4 (2.1 and 2.2 are built).
 7. Renumbering note: adding Landscape as 2.1 shifted the old 2.1-2.4 to 2.2-2.5. When wiring, the module ids (p2m1..p2m5) and navTitles must be updated consistently, and any cross-references to old numbers fixed.
