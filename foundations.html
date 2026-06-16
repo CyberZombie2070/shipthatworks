@@ -583,12 +583,12 @@ content:`
 <p>Here's the part that matters for you specifically: with traditional hand-written coding, Reason 2 has a natural ceiling. You eventually hit a wall. A bug you can't trial-and-error your way past, a concept you can't fake. The wall forces you to learn. The confusion is the curriculum. Generations of developers learned this way, painfully but reliably.</p>
 <p><strong>With Claude Code, that ceiling disappears.</strong> The tool will keep generating plausible, professional-looking, frequently <em>working</em> output indefinitely. The wall never arrives. You can operate in Reason 2 mode for months, shipping real things the entire time, and the feedback loop that would have forced understanding simply never fires.</p>
 <p>This is not a criticism of Claude Code. It's a description of a trap that the tool creates <em>specifically for motivated, productive people,</em> the kind of person who measures themselves by output. The more you ship, the more confident you feel, and the wider the invisible gap grows underneath you.</p>
+<p>Picture Dani. She was pulled onto a customer onboarding project at work with no developer title, when her team moved to Claude Code. Three months in, she has shipped a dozen features, and every one of them works. She feels, reasonably, like she is getting good at this. She is the person this trap is built for, and we are going to follow her through this module, because what happens to her is the whole argument.</p>
 <p>The gap doesn't announce itself. It waits. It waits for the production incident, the security review, the senior developer reading your pull request (a PR: the bundle of changes a developer submits for team review before it joins the shared codebase), the customer-facing bug that Claude can't fix because <em>you</em> can't describe what's actually wrong. Then it presents the bill all at once.</p>
 
 <div class="section-eyebrow">SILENT FAILURE</div>
 <h3>Why the Most Dangerous Failures Don&apos;t Throw Errors</h3>
-<p>Let's make this concrete immediately, with code simple enough that no prior experience is needed.</p>
-<p>Here is a function, a small named piece of code that takes something in and gives something back. This one takes a name and produces a greeting:</p>
+<p>Let's make this concrete, with code simple enough that no prior experience is needed. Dani asked Claude for a function (a small named piece of code that takes something in and gives something back) to greet a new user by name. This is what it returned:</p>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">greet.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
   <pre><span class="key">function</span> <span class="val">greet</span>(name) {
@@ -598,7 +598,7 @@ content:`
 console.log(greet(<span class="str">"Maria"</span>));</pre>
 </div>
 <p>Run it, and you get: <code>Hello, Maria!</code></p>
-<p>It works. A new builder pastes this into their app, sees the output, moves on. Reason 2 in action, and so far, no harm done.</p>
+<p>It works. Dani saw <code>Hello, Maria!</code>, wired the function into the welcome email, and moved on. Reason 2 in action: it ran, it looked right, no harm was visible. She has shipped a dozen features this way, and every one of them worked.</p>
 <p>Now watch what happens when the function gets called <em>without</em> a name. Maybe a form field was left blank. Maybe another part of the program passed nothing by mistake:</p>
 <div class="code-block">
   <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-label">greet.js</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
@@ -609,9 +609,9 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
   <p><code>Hello, undefined!</code></p>
   <p>No error. No crash. No red text. The program ran "successfully" and produced something wrong.</p>
 </div>
-<p>If this function fed a welcome email system, real customers would receive "Hello, undefined!" in their inbox. Nothing in any log would flag it. The code "works" by every signal a non-reader can see, and fails by the only standard that matters.</p>
+<p>Here is the part Dani never saw coming. Weeks later, a wave of new users signs up through a form where the name field was optional. The welcome emails go out: <code>Hello, undefined!</code>, hundreds of them, to real people, in real inboxes. No error fired. No log turned red. The code ran "successfully" every single time. The first Dani hears of it is a support ticket, and then her lead asking what happened. She cannot answer, because the code worked by every signal she knew how to check.</p>
 <p>This is the category of failure that AI-assisted development multiplies: <strong>silent failure</strong>, the industry's name for exactly this: a program that keeps running and reports success while producing wrong results. Crashes are loud. Even a beginner notices a crash. Silent failure is only visible to someone who can <em>read the code and predict its behavior under conditions nobody demonstrated.</em></p>
-<p>That skill, looking at five lines of code and asking "and what happens when the input is missing? empty? enormous? hostile?", is not advanced. It's foundational. It's also exactly the skill that shipping working demos never builds. You will start building it in this module's floor test, and you will drill it for the rest of this course.</p>
+<p>Notice what would have saved Dani. Not another test of the case that already worked, but one question asked of the code before it shipped: what happens if the name is missing? That question, looking at five lines and asking "what happens when the input is missing? empty? enormous? hostile?", is not advanced. It is foundational. It is also the exact question that shipping working demos never forces you to ask. You will start asking it in this module's floor test, and drill it for the rest of the course.</p>
 
 <div class="section-eyebrow">CALIBRATION</div>
 <h3>The Confidence Calibration Problem</h3>
@@ -620,6 +620,8 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 <p>AI-assisted development breaks the self-correction mechanism, and it's worth understanding exactly how.</p>
 <p>Your brain estimates your own competence using <em>signals</em>: clean-looking code, features that work, tests that pass, fast progress, positive feedback. For all of human programming history, those signals were reliable proxies for understanding, because producing them <em>required</em> understanding.</p>
 <p>Claude Code decouples the signals from the substance. It produces all of them (clean code, working features, passing tests, fast progress) on your behalf. Your brain receives every signal of competence while the underlying competence belongs to the tool. The result is calibration error at a scale the Dunning-Kruger researchers never had to model: people who feel like intermediate developers while possessing nearly zero independent capability.</p>
+
+<p>Dani is not careless, and she is not unintelligent. She is exactly this. Every signal told her the work was going well, because the tool produced every signal, and nothing in three months of shipping taught her to distrust them. That is the trap doing precisely what it does, to precisely the person most vulnerable to it: the one who measures herself by output and keeps getting the output.</p>
 <p>Two things make this worse in the enterprise scenario:</p>
 <p><strong>Output is being measured.</strong> If your organization is tracking velocity (tickets closed, PRs merged), the incentive structure actively rewards Reason 2 behavior. Shipping without understanding is <em>faster</em> this sprint. The cost lands in a future sprint, on the person debugging the incident, who may also be you.</p>
 <p><strong>Everyone around you is in the same trap.</strong> When a whole team is newly AI-assisted, there's no calibrated person nearby to catch the drift. The team's collective confidence inflates together. Code review, the traditional correction mechanism, degrades into people who can't fully read code approving code written by a tool, requested by people who can't fully read code.</p>
@@ -645,6 +647,8 @@ console.log(greet(<span class="str">"Maria"</span>));</pre>
 <p><strong>What this looks like on a team:</strong> During an incident, you contribute observations and hypotheses, even if someone more senior lands the fix.</p>
 <p><strong>The trap it prevents:</strong> Being the person a team has to work <em>around</em> during an incident instead of <em>with</em>.</p>
 <p>Everything else in this course (the JavaScript literacy, the Node patterns, the React concepts, the workflow discipline) exists in service of these three skills. They are the curriculum. The technologies are the terrain you practice on.</p>
+
+<p>Reading, explaining, or debugging: any one of the three, exercised before Dani shipped, would have caught the undefined greeting before it reached a single inbox.</p>
 
 <div class="section-eyebrow">YOUR SITUATION</div>
 <h3>If You Were Assigned This Course</h3>
