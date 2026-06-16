@@ -159,6 +159,8 @@ This course is MORE interactive than typical video courses; that is the moat. Av
 
 ---
 
+- Quiz stems pose a novel instance and ask the learner to APPLY the concept (classify it, pick what fits a stated goal, or predict a result), not to recall the module's wording. Avoid stems framed as "what does the module say/describe/treat/recommend"; turn them into a situation. Worked reference: 2.2's predict-getTier(75) and the p1m1 application pass.
+
 ## 8b. The scaffolding gradient (how much help, and what kind, at each stage)
 
 Support is heavy early and removed as the learner gains capability. This is deliberate, and it means early modules look intentionally MORE hand-held than late ones. Do NOT "normalize" early-module scaffolding to match leaner late modules in the name of consistency — flattening the gradient breaks the pedagogy. Consistency applies to visual system and structure, not to scaffolding density.
